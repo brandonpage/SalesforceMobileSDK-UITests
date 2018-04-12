@@ -38,7 +38,7 @@ class HybridRemoteAppPageObject(private val app: TestApplication) : BasePageObje
         Thread.sleep(timeout)
         val title = device.findObject(UiSelector().className("android.view.View").descriptionContains("Salesforce Mobile SDK Test"))
         title.waitForExists(timeout)
-        Thread.sleep(timeout / 2)
+        Thread.sleep(timeout / 3)
         Assert.assertEquals("App did not successfully testLogin.", "Salesforce Mobile SDK Test", title.contentDescription)
     }
 }

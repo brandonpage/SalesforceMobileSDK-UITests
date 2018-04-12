@@ -36,7 +36,7 @@ class HybridLocalAppPageObject(private val app: TestApplication) : BasePageObjec
 
     fun assertAppLoads() {
         val title = device.findObject(UiSelector().className("android.view.View").descriptionContains("Users"))
-        title.waitForExists(timeout)
+        title.waitForExists(timeout * 2)
         Assert.assertEquals("App did not successfully testLogin.", "Users", title.contentDescription)
     }
 }
