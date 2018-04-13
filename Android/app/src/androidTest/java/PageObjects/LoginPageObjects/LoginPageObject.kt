@@ -29,6 +29,8 @@ package PageObjects
 import android.os.Build
 import android.support.test.uiautomator.UiSelector
 import android.util.Log
+import android.support.test.InstrumentationRegistry
+import android.view.accessibility.AccessibilityWindowInfo
 
 /**
  * Created by bpage on 2/21/18.
@@ -55,10 +57,10 @@ class LoginPageObject : BasePageObject() {
         }
 
         Log.i("uia", "Waiting for username filed to be present.")
-        assert(usernameField.waitForExists(timeout * 5))
+        assert(usernameField.waitForExists(timeout * 3))
         if (isOldDevice) {
+            dismissKeyboard()
             usernameField.legacySetText(name)
-            Thread.sleep(timeout)
         }
         else {
             usernameField.text = name
@@ -79,9 +81,7 @@ class LoginPageObject : BasePageObject() {
 
         // Get keyboard out of the way
         if (isOldDevice) {
-            Log.i("uia", "Hitting back button to uncover password field")
-            device.pressBack()
-            Thread.sleep(timeout)
+            dismissKeyboard()
             passwordField.legacySetText(password)
         }
         else {
@@ -98,11 +98,20 @@ class LoginPageObject : BasePageObject() {
         }
 
         if (isOldDevice) {
-            Log.i("uia", "Login button: try hitting back")
-            device.pressBack()
-            Thread.sleep(timeout)
+            dismissKeyboard()
         }
         assert(loginButton.waitForExists(timeout * 2))
         loginButton.click()
+    }
+
+    private fun dismissKeyboard() {
+        Thread.sleep(timeout)
+        for (window in InstrumentationRegistry.getInstrumentation().uiAutomation.windows) {
+            if (window.type == AccessibilityWindowInfo.TYPE_INPUT_METHOD) {
+                Log.i("uia", "Keyboard present dismissing it.")
+                device.pressBack()
+                Thread.sleep(timeout)
+            }
+        }
     }
 }
