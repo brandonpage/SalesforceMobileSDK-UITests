@@ -24,25 +24,55 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package PageObjects
+package com.salesforce.mobilesdk.mobilesdkuitest.Login
 
+import PageObjects.*
+import TestUtility.*
 import android.support.test.InstrumentationRegistry
-import android.content.Intent
+import android.support.test.runner.AndroidJUnit4
+import android.support.test.uiautomator.UiDevice
+import android.support.test.uiautomator.UiSelector
+import org.junit.Assert
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
 
 /**
- * Created by bpage on 2/21/18.
+ * Created by bpage on 2/2/18.
  */
 
-open class TestApplication {
-    private var packageName = InstrumentationRegistry.getArguments().get("packageName") as String
-    open var name = packageName.split(".").last().replace("_java", "") + "_androidApp"
-    var type = AppType.valueOf(packageName.split(".").last().toUpperCase())
+@RunWith(AndroidJUnit4::class)
+class StandardLoginTests {
+    var app = TestApplication()
+    var userUtil = UserUtility()
+    private var device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+    var timeout:Long = 30000
+    var username = userUtil.username
+    var password = userUtil.password
 
-    fun launch() {
-        val context = InstrumentationRegistry.getContext()
-        val intent = context.packageManager.getLaunchIntentForPackage(packageName)
+    @Before
+    fun setupTestApp() {
+        app.launch()
+    }
 
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        context.startActivity(intent)
+    @Test
+    fun testLogin() {
+        val loginPage = LoginPageObject()
+        loginPage.setUsername(username)
+        loginPage.setPassword(password)
+        loginPage.tapLogin()
+        AuthorizationPageObject().tapAllow()
+        Thread.sleep(timeout * 2)
+
+        when (app.type) {
+            AppType.NATIVE_JAVA, AppType.NATIVE_KOTLIN ->
+                NativeAppPageObject(app).assertAppLoads()
+            AppType.HYBRID_LOCAL ->
+                HybridLocalAppPageObject(app).assertAppLoads()
+            AppType.HYBRID_REMOTE ->
+                HybridRemoteAppPageObject(app).assertAppLoads()
+            AppType.REACT_NATIVE ->
+                ReactNativeAppPageObject().assertAppLoads()
+        }
     }
 }

@@ -1,4 +1,5 @@
 $is_ci = ENV.has_key? 'CIRCLECI'
+$password = getPassword
 
 lane :ios do |options|
   password = getPassword
@@ -28,7 +29,7 @@ lane :ios do |options|
   sim_id = `xcrun simctl create #{sim_name} com.apple.CoreSimulator.SimDeviceType.#{device} com.apple.CoreSimulator.SimRuntime.iOS-#{ios}`.delete("\n")
 
   Dir.chdir('../../') do
-    generateApp('ios', run_type, sfdx)
+    generateApp('ios', run_type, nil, sfdx)
     app_name = "#{run_type}_iosApp"
     path = Dir.glob("tmp*").first.concat("/#{app_name}/")
 
@@ -82,16 +83,38 @@ lane :ios do |options|
 end
 
 lane :android do |options|
-  password = getPassword
   run_type = options[:type]
   UI.user_error!('Please specify run type.') unless(run_type)
   sfdx = options[:sfdx]
-  skipRemoveApp = options[:skipRemoveApp]
   app_name = (run_type == 'native') ? 'native_java' : run_type
   package_name = "com.salesforce.#{app_name}"
 
   Dir.chdir('../../') do
-    generateApp('android', run_type, sfdx)
+    generateApp('android', run_type, nil, sfdx)
+    path = Dir.glob("tmp*").last.concat("/#{run_type}_androidApp/")
+
+    case run_type
+      when 'react_native'
+        path.concat('android/')
+      when 'hybrid_local', 'hybrid_remote'
+        path.concat('platforms/android/')
+    end
+
+    installApk(path)
+    test_class = 'com.salesforce.mobilesdk.mobilesdkuitest.Login.StandardLoginTests.kt'
+    runAndroidTests(test_class, package_name)
+  end
+end
+
+lane :android_idp do |options|
+  run_type = options[:type]
+  UI.user_error!('Please specify run type.') unless(run_type)
+  sfdx = options[:sfdx]
+  app_name = (run_type == 'native') ? 'native_java' : run_type
+  package_name = "com.salesforce.#{app_name}"
+
+  Dir.chdir('../../') do
+    generateApp('android', run_type, nil,  sfdx)
     path = Dir.glob("tmp*").first.concat("/#{run_type}_androidApp/")
 
     case run_type
@@ -101,37 +124,24 @@ lane :android do |options|
         path.concat('platforms/android/')
     end
 
-    Dir.chdir(path) do
-      UI.important 'Installing App on Emulator'
-      result = `adb install -r app/build/outputs/apk/debug/app-debug.apk`.split("\n").last.delete("\r")
-      UI.user_error!("APK did not install successfully. \n\nError: #{result}") unless(result.eql? 'Success')
+    enableIDPAndroid(app_name, path)
+    installApk(path)
 
-      if run_type == 'react_native'
-        system("npm start&")
-        system("adb shell pm grant #{package_name} android.permission.SYSTEM_ALERT_WINDOW")
-      end
-    end
+    # IDP App
+    idpTempalateUri = 'https://github.com/forcedotcom/SalesforceMobileSDK-AuthTemplates/AndroidIDPTemplate'
+    generateApp('android', nil, idpTempalateUri,  sfdx)
+    idpPath = Dir.glob("tmp*").first.concat('/native_kotlin_androidApp/')
+    installApk(idpPath)
 
-    Dir.chdir('Android/') do
-      UI.header 'Run Tests'
-      begin
-        package_param = "-Pandroid.testInstrumentationRunnerArguments.packageName=#{package_name}"
-        password_param = "-Pandroid.testInstrumentationRunnerArguments.password=#{password}"
-        result = system("./gradlew #{package_param} #{password_param} connectedAndroidTest --no-daemon --max-workers 2")
-      ensure
-        `mkdir screenshots`
-        `mkdir screenshots/#{run_type}`
-        search = $is_ci ? "sed 's/\r$//'" : "perl -pe 's/\x0D\x0A/\x0A/g'"
-        system("adb shell screencap -p | #{search} > screenshots/#{run_type}/login.png")
-
-        unless skipRemoveApp
-          system("adb uninstall #{package_name}")
-        end
-        UI.user_error!('Tests failed.') unless(result)
-      end
-    end
+    test_class = 'com.salesforce.mobilesdk.mobilesdkuitest.Login.IDPTests.kt'
+    idp_package_name = '-Pandroid.testInstrumentationRunnerArguments.idpPackageName=com.salesforce.native_kotlin'
+    runAndroidTests(test_class, package_name, idp_package_name)
+    system("adb uninstall #{idp_package_name}")
   end
 end
+
+
+
 
 # Helper Functions
 
@@ -150,14 +160,85 @@ def getPassword()
   end
 end
 
-def generateApp(os, type, sfdx)
-  system('rm -rf tmp*/')
+#
+# Either type or template needs to be set.
+#
+def generateApp(os, type = nil, template = nil, sfdx = nil)
+  UI.crash!('Error: Cannot generate app without type or template.') unless(type or template)
+
+  #system('rm -rf tmp*/')
   system('rm -rf Android/app/build/')
   system('killall -9 node')
-  generate_command = "./SalesforceMobileSDK-Package/test/test_force.js --os=#{os} --apptype=#{type}"
+  generate_command = "./SalesforceMobileSDK-Package/test/test_force.js --os=#{os}"
+  if type
+    generate_command.concat(" --apptype=#{type}")
+  else
+    generate_command.concat("  --templaterepouri=#{template}")
+  end
+
   if sfdx
     generate_command.concat(' --use-sfdx')
   end
   result = system(generate_command)
   UI.user_error!('Test app was not successfully created.') unless(result)
+end
+
+def enableIDPAndroid(appName, appPath)
+  idpCommnet = '// SmartSyncSDKManager.getInstance().setIDPAppURIScheme(idpAppURIScheme);'
+  idpCode = 'SmartSyncSDKManager.getInstance().setIDPAppURIScheme("com.salesforce.native_kotlin://authenticator");'
+
+  sourceExtention = (appName.eql? 'native_kotlin') ? 'kt' : 'java'
+  sourcePath = appPath + "app/src/com/salesforce/#{appName}/MainApplication.#{sourceExtention}"
+  modifiedSouceCode = File.read(sourcePath).sub(idpCommnet, idpCode)
+  File.open(sourcePath, 'w') { |file| file.puts modifiedSouceCode }
+
+  Dir.chdir(appPath) do
+    UI.important 'Building SP App after Source Modifications'
+    `./gradlew assembleDebug`
+  end
+end
+
+def installApk(appPath, release = nil)
+  apkPath = 'debug/app-debug.apk'
+
+  Dir.chdir(appPath) do
+    if release
+      UI.important 'Building Release APK'
+      `./gradlew assembleRelease`
+      apkPath = 'release/app-release.apk'
+    end
+
+    UI.important 'Installing App on Emulator'
+    result = `adb install -r app/build/outputs/apk/#{apkPath}`.split("\n").last.delete("\r")
+    UI.user_error!("APK did not install successfully. \n\nError: #{result}") unless(result.eql? 'Success')
+
+    if run_type == 'react_native'
+      system("npm start&")
+      system("adb shell pm grant #{package_name} android.permission.SYSTEM_ALERT_WINDOW")
+    end
+  end
+end
+
+def runAndroidTests(test_class, package_name, addition_ops = nil)
+  class_param =  "-Pandroid.testInstrumentationRunnerArguments.class=#{test_class}"
+  package_param = "-Pandroid.testInstrumentationRunnerArguments.packageName=#{package_name}"
+  password_param = "-Pandroid.testInstrumentationRunnerArguments.password=#{$password}"
+  addition_ops = '' unless addition_ops
+
+  Dir.chdir('Android/') do
+    UI.header 'Run Tests'
+    begin
+      result = system("./gradlew #{class_param} #{package_param} #{password_param} #{addition_ops} connectedAndroidTest --no-daemon --max-workers 2")
+    ensure
+      #`mkdir screenshots`
+      #`mkdir screenshots/#{run_type}`
+      #search = $is_ci ? "sed 's/\r$//'" : "perl -pe 's/\x0D\x0A/\x0A/g'"
+      #system("adb shell screencap -p | #{search} > screenshots/#{run_type}/login.png")
+
+      unless skipRemoveApp
+        system("adb uninstall #{package_name}")
+      end
+      UI.user_error!('Tests failed.') unless(result)
+    end
+  end
 end
