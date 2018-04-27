@@ -10,24 +10,73 @@
 		A3045A28203E241B0028F46F /* TestApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3045A27203E241B0028F46F /* TestApplication.swift */; };
 		A3045A2A203E26AD0028F46F /* LoginPageObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3045A29203E26AD0028F46F /* LoginPageObject.swift */; };
 		A3045A2C203E2F420028F46F /* AuthorizationPageObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3045A2B203E2F420028F46F /* AuthorizationPageObject.swift */; };
+		A34DC589208A547C007D1FC3 /* LoginTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A34DC588208A547C007D1FC3 /* LoginTests.swift */; };
+		A3817977208FE35900FADF56 /* SelectLoginFlowPageObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3817976208FE35900FADF56 /* SelectLoginFlowPageObject.swift */; };
 		A38B56D92049CE00008D53A2 /* AppType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A38B56D82049CE00008D53A2 /* AppType.swift */; };
-		A39442FB2024D440006022F8 /* LoginTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39442FA2024D440006022F8 /* LoginTests.swift */; };
+		A38C8BEF2090E88F002DB7FA /* IDPTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A34DC582208A52DB007D1FC3 /* IDPTests.swift */; };
+		A38C8BFB2090EA4A002DB7FA /* UserUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3F06181206DC48100ADA1DD /* UserUtility.swift */; };
+		A38C8BFC2090EA54002DB7FA /* AuthorizationPageObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3045A2B203E2F420028F46F /* AuthorizationPageObject.swift */; };
+		A38C8BFD2090EA54002DB7FA /* LoginPageObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3045A29203E26AD0028F46F /* LoginPageObject.swift */; };
+		A38C8BFE2090EA54002DB7FA /* SelectLoginFlowPageObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3817976208FE35900FADF56 /* SelectLoginFlowPageObject.swift */; };
+		A38C8BFF2090EA54002DB7FA /* AppType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A38B56D82049CE00008D53A2 /* AppType.swift */; };
+		A38C8C002090EA54002DB7FA /* TestApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3045A27203E241B0028F46F /* TestApplication.swift */; };
+		A38C8C012090EA54002DB7FA /* IDPApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3EC49CD208E44DD00393924 /* IDPApplication.swift */; };
+		A3EC49CE208E44DD00393924 /* IDPApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3EC49CD208E44DD00393924 /* IDPApplication.swift */; };
 		A3F06182206DC48100ADA1DD /* UserUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3F06181206DC48100ADA1DD /* UserUtility.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		A3EC49C9208A657000393924 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A34A746B202281AC00846B32 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A34A749E20239B4E00846B32;
+			remoteInfo = "SalesforceMobileSDK-UITest";
+		};
+		A3EC49CF208FDE3700393924 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A34A746B202281AC00846B32 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A34A749E20239B4E00846B32;
+			remoteInfo = "SalesforceMobileSDK-UITest";
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		A3045A27203E241B0028F46F /* TestApplication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestApplication.swift; sourceTree = "<group>"; };
 		A3045A29203E26AD0028F46F /* LoginPageObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginPageObject.swift; sourceTree = "<group>"; };
 		A3045A2B203E2F420028F46F /* AuthorizationPageObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationPageObject.swift; sourceTree = "<group>"; };
 		A34A749F20239B4E00846B32 /* SalesforceMobileSDK-UITest.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SalesforceMobileSDK-UITest.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A34DC574208A522E007D1FC3 /* LoginTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LoginTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A34DC578208A522E007D1FC3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A34DC580208A52DB007D1FC3 /* IDPTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IDPTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A34DC582208A52DB007D1FC3 /* IDPTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IDPTests.swift; sourceTree = "<group>"; };
+		A34DC584208A52DB007D1FC3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A34DC588208A547C007D1FC3 /* LoginTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginTests.swift; sourceTree = "<group>"; };
+		A3817976208FE35900FADF56 /* SelectLoginFlowPageObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectLoginFlowPageObject.swift; sourceTree = "<group>"; };
 		A38B56D82049CE00008D53A2 /* AppType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppType.swift; sourceTree = "<group>"; };
-		A39442FA2024D440006022F8 /* LoginTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginTests.swift; sourceTree = "<group>"; };
+		A38C8BF22090E960002DB7FA /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		A39F9D4B2024CD5100251414 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		A3EC49CD208E44DD00393924 /* IDPApplication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IDPApplication.swift; sourceTree = "<group>"; };
 		A3F06181206DC48100ADA1DD /* UserUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserUtility.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		A34A749C20239B4E00846B32 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A34DC571208A522E007D1FC3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A34DC57D208A52DB007D1FC3 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -43,6 +92,7 @@
 				A3F06183206DCA2D00ADA1DD /* LoginPageObjects */,
 				A38B56D82049CE00008D53A2 /* AppType.swift */,
 				A3045A27203E241B0028F46F /* TestApplication.swift */,
+				A3EC49CD208E44DD00393924 /* IDPApplication.swift */,
 			);
 			path = PageObjects;
 			sourceTree = "<group>";
@@ -52,9 +102,11 @@
 			children = (
 				A3F06180206DC46900ADA1DD /* TestUtility */,
 				A3045A26203E23580028F46F /* PageObjects */,
-				A39442F92024D3FD006022F8 /* Login */,
 				A39F9D4B2024CD5100251414 /* README.md */,
+				A34DC575208A522E007D1FC3 /* LoginTests */,
+				A34DC581208A52DB007D1FC3 /* IDPTests */,
 				A34A74A020239B4E00846B32 /* Products */,
+				A38C8BF12090E960002DB7FA /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -62,16 +114,36 @@
 			isa = PBXGroup;
 			children = (
 				A34A749F20239B4E00846B32 /* SalesforceMobileSDK-UITest.xctest */,
+				A34DC574208A522E007D1FC3 /* LoginTests.xctest */,
+				A34DC580208A52DB007D1FC3 /* IDPTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		A39442F92024D3FD006022F8 /* Login */ = {
+		A34DC575208A522E007D1FC3 /* LoginTests */ = {
 			isa = PBXGroup;
 			children = (
-				A39442FA2024D440006022F8 /* LoginTests.swift */,
+				A34DC588208A547C007D1FC3 /* LoginTests.swift */,
+				A34DC578208A522E007D1FC3 /* Info.plist */,
 			);
-			path = Login;
+			path = LoginTests;
+			sourceTree = "<group>";
+		};
+		A34DC581208A52DB007D1FC3 /* IDPTests */ = {
+			isa = PBXGroup;
+			children = (
+				A34DC582208A52DB007D1FC3 /* IDPTests.swift */,
+				A34DC584208A52DB007D1FC3 /* Info.plist */,
+			);
+			path = IDPTests;
+			sourceTree = "<group>";
+		};
+		A38C8BF12090E960002DB7FA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A38C8BF22090E960002DB7FA /* XCTest.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		A3F06180206DC46900ADA1DD /* TestUtility */ = {
@@ -87,6 +159,7 @@
 			children = (
 				A3045A2B203E2F420028F46F /* AuthorizationPageObject.swift */,
 				A3045A29203E26AD0028F46F /* LoginPageObject.swift */,
+				A3817976208FE35900FADF56 /* SelectLoginFlowPageObject.swift */,
 			);
 			path = LoginPageObjects;
 			sourceTree = "<group>";
@@ -111,17 +184,62 @@
 			productReference = A34A749F20239B4E00846B32 /* SalesforceMobileSDK-UITest.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		A34DC573208A522E007D1FC3 /* LoginTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A34DC57B208A522E007D1FC3 /* Build configuration list for PBXNativeTarget "LoginTests" */;
+			buildPhases = (
+				A34DC570208A522E007D1FC3 /* Sources */,
+				A34DC571208A522E007D1FC3 /* Frameworks */,
+				A34DC572208A522E007D1FC3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A3EC49CA208A657000393924 /* PBXTargetDependency */,
+			);
+			name = LoginTests;
+			productName = LoginTests;
+			productReference = A34DC574208A522E007D1FC3 /* LoginTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		A34DC57F208A52DB007D1FC3 /* IDPTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A34DC587208A52DB007D1FC3 /* Build configuration list for PBXNativeTarget "IDPTests" */;
+			buildPhases = (
+				A34DC57C208A52DB007D1FC3 /* Sources */,
+				A34DC57D208A52DB007D1FC3 /* Frameworks */,
+				A34DC57E208A52DB007D1FC3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A3EC49D0208FDE3700393924 /* PBXTargetDependency */,
+			);
+			name = IDPTests;
+			productName = IDPTests;
+			productReference = A34DC580208A52DB007D1FC3 /* IDPTests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		A34A746B202281AC00846B32 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0920;
+				LastSwiftUpdateCheck = 0930;
 				LastUpgradeCheck = 0920;
 				TargetAttributes = {
 					A34A749E20239B4E00846B32 = {
 						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+					};
+					A34DC573208A522E007D1FC3 = {
+						CreatedOnToolsVersion = 9.3;
+						LastSwiftMigration = 0930;
+						ProvisioningStyle = Automatic;
+					};
+					A34DC57F208A52DB007D1FC3 = {
+						CreatedOnToolsVersion = 9.3;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -139,12 +257,28 @@
 			projectRoot = "";
 			targets = (
 				A34A749E20239B4E00846B32 /* SalesforceMobileSDK-UITest */,
+				A34DC573208A522E007D1FC3 /* LoginTests */,
+				A34DC57F208A52DB007D1FC3 /* IDPTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		A34A749D20239B4E00846B32 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A34DC572208A522E007D1FC3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A34DC57E208A52DB007D1FC3 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -158,16 +292,53 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A3817977208FE35900FADF56 /* SelectLoginFlowPageObject.swift in Sources */,
+				A3EC49CE208E44DD00393924 /* IDPApplication.swift in Sources */,
 				A3045A28203E241B0028F46F /* TestApplication.swift in Sources */,
 				A38B56D92049CE00008D53A2 /* AppType.swift in Sources */,
 				A3045A2C203E2F420028F46F /* AuthorizationPageObject.swift in Sources */,
 				A3F06182206DC48100ADA1DD /* UserUtility.swift in Sources */,
-				A39442FB2024D440006022F8 /* LoginTests.swift in Sources */,
 				A3045A2A203E26AD0028F46F /* LoginPageObject.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A34DC570208A522E007D1FC3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A34DC589208A547C007D1FC3 /* LoginTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A34DC57C208A52DB007D1FC3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A38C8BFC2090EA54002DB7FA /* AuthorizationPageObject.swift in Sources */,
+				A38C8BFD2090EA54002DB7FA /* LoginPageObject.swift in Sources */,
+				A38C8BFE2090EA54002DB7FA /* SelectLoginFlowPageObject.swift in Sources */,
+				A38C8BFF2090EA54002DB7FA /* AppType.swift in Sources */,
+				A38C8C002090EA54002DB7FA /* TestApplication.swift in Sources */,
+				A38C8C012090EA54002DB7FA /* IDPApplication.swift in Sources */,
+				A38C8BFB2090EA4A002DB7FA /* UserUtility.swift in Sources */,
+				A38C8BEF2090E88F002DB7FA /* IDPTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A3EC49CA208A657000393924 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A34A749E20239B4E00846B32 /* SalesforceMobileSDK-UITest */;
+			targetProxy = A3EC49C9208A657000393924 /* PBXContainerItemProxy */;
+		};
+		A3EC49D0208FDE3700393924 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A34A749E20239B4E00846B32 /* SalesforceMobileSDK-UITest */;
+			targetProxy = A3EC49CF208FDE3700393924 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		A34A746F202281AC00846B32 /* Debug */ = {
@@ -312,6 +483,264 @@
 			};
 			name = Release;
 		};
+		A34DC579208A522E007D1FC3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 4PZ44KB26X;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = LoginTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.salesforce.LoginTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		A34DC57A208A522E007D1FC3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 4PZ44KB26X;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = LoginTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.salesforce.LoginTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		A34DC585208A52DB007D1FC3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 4PZ44KB26X;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = IDPTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.salesforce.IDPTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		A34DC586208A52DB007D1FC3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 4PZ44KB26X;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = IDPTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.salesforce.IDPTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -329,6 +758,24 @@
 			buildConfigurations = (
 				A34A74A620239B4E00846B32 /* Debug */,
 				A34A74A720239B4E00846B32 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A34DC57B208A522E007D1FC3 /* Build configuration list for PBXNativeTarget "LoginTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A34DC579208A522E007D1FC3 /* Debug */,
+				A34DC57A208A522E007D1FC3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A34DC587208A52DB007D1FC3 /* Build configuration list for PBXNativeTarget "IDPTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A34DC585208A52DB007D1FC3 /* Debug */,
+				A34DC586208A52DB007D1FC3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

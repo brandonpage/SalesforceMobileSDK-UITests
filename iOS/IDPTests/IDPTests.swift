@@ -25,21 +25,22 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 //
-//  LoginTest.swift
-//  MobileSDKUITest
+//  IDPTests.swift
+//  IDPTests
 //
-//  Created by Brandon Page on 2/2/18.
+//  Created by Brandon Page on 4/20/18.
 //
 
 import XCTest
 
-class LoginTests: XCTestCase {
-    private var username = UserUtility().username
-    private var password = UserUtility().password
+class IDPTests: XCTestCase {
+    private var username = UserUtility().defaultUsername
+    private var password = UserUtility().defaultPassword
     private var appLoadError = "App did not load."
     private var timeout:double_t = 30
     private let reactNativeUsers = "Automated Process Brandon Page circleci Integration User Security User Chatter Expert Mobile SDK Sample App"
     private let sampleAppTitle = "Mobile SDK Sample App"
+    
     
     override func setUp() {
         super.setUp()
@@ -50,31 +51,42 @@ class LoginTests: XCTestCase {
         super.tearDown()
     }
     
-    func testLogin() {
-        let app = TestApplication()
-        let loginPage = LoginPageObject(testApp: app)
-        let authPage = AuthorizationPageObject(testApp: app)
+    func testSPInitiatedFreshLogin() {
+        let spApp = TestApplication(bundleIdentifier: "")
+        let idpApp = IDPApplicaiton(bundleIdentifier: "")
+        let loginPage = LoginPageObject(testApp: idpApp)
+        let spAuthPage = AuthorizationPageObject(testApp: spApp)
+        let idpAuthPage = AuthorizationPageObject(testApp: idpApp)
+        let selectLoginFlowPage = SelectLoginFlowPageObject(testApp: spApp)
         
-        app.launch()
+        // SP App
+        spApp.launch()
+        selectLoginFlowPage.selectIDPFlow()
+        
+        // IDP App
+        idpApp.activate()
         loginPage.setUsername(name: username)
         loginPage.setPassword(password: password)
         loginPage.tapLogin()
-        authPage.tapAllow()
+        idpAuthPage.tapAllow()
+        
+        // SP App
+        spAuthPage.tapAllow()
         
         // Assert App loads
-        switch app.appType {
+        switch spApp.appType {
         case .nativeObjC, .nativeSwift:
-            XCTAssert(app.navigationBars[sampleAppTitle].waitForExistence(timeout: timeout), appLoadError)
+            XCTAssert(spApp.navigationBars[sampleAppTitle].waitForExistence(timeout: timeout), appLoadError)
         case .hybridLocal, .hyrbidRemote:
-            let titleText = (app.appType == .hybridLocal) ? "Users" : "Salesforce Mobile SDK Test"
-            let title = app.staticTexts[titleText]
+            let titleText = (spApp.appType == .hybridLocal) ? "Users" : "Salesforce Mobile SDK Test"
+            let title = spApp.staticTexts[titleText]
             let exists = NSPredicate(format: "exists == 1")
             
             expectation(for: exists, evaluatedWith: title, handler: nil)
             waitForExpectations(timeout: timeout, handler: nil)
             XCTAssert(title.exists, appLoadError)
         case .reactNative:
-            let titleElement = app.children(matching: .window).element(boundBy: 0).children(matching: .other).element.children(matching: .other)[reactNativeUsers].children(matching: .other)[reactNativeUsers].children(matching: .other)[reactNativeUsers].children(matching: .other)[reactNativeUsers].children(matching: .other)[reactNativeUsers].children(matching: .other)[sampleAppTitle].children(matching: .other)[sampleAppTitle].children(matching: .other)[sampleAppTitle]
+            let titleElement = spApp.children(matching: .window).element(boundBy: 0).children(matching: .other).element.children(matching: .other)[reactNativeUsers].children(matching: .other)[reactNativeUsers].children(matching: .other)[reactNativeUsers].children(matching: .other)[reactNativeUsers].children(matching: .other)[reactNativeUsers].children(matching: .other)[sampleAppTitle].children(matching: .other)[sampleAppTitle].children(matching: .other)[sampleAppTitle]
             XCTAssert(titleElement.waitForExistence(timeout: timeout), appLoadError)
         }
     }

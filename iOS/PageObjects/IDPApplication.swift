@@ -25,34 +25,20 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 //
-//  TestApplication.swift
-//  MobileSDKUITest
+//  IDPApplication.swift
+//  SalesforceMobileSDK-UITest
 //
-//  Created by Brandon Page on 2/21/18.
+//  Created by Brandon Page on 4/23/18.
 //
 
 import Foundation
-import XCTest
 
-class TestApplication: XCUIApplication {
-    // Get the Test App Bundle from command line arg
-    //var bundleString = ProcessInfo.processInfo.environment["TEST_APP_BUNDLE"]!
-    var bundleString = "com.salesforce.native-iosApp"
-    lazy var appType : AppType = AppType(rawValue: bundleString)!
+class IDPApplicaiton: TestApplication {
+    // Get the IDP App Bundle from command line arg
+    //var thisBundleString = ProcessInfo.processInfo.environment["IDP_APP_BUNDLE"]!
+    var thisBundleString = "com.salesforce.native_swift_iosApp"
     
-    // TODO: FIX THIS
     override init(bundleIdentifier: String) {
-        if !bundleIdentifier.isEmpty {
-            bundleString = bundleIdentifier
-        }
-        super.init(bundleIdentifier: bundleString)
-    }
-    
-    override func launch() {
-        super.launch()
-        
-        if(appType == .reactNative) {
-            sleep(30)
-        }
+        super.init(bundleIdentifier: thisBundleString)
     }
 }

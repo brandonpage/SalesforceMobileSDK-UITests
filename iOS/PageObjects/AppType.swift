@@ -33,8 +33,10 @@
 
 import Foundation
 
-class AppType {
-    enum AppType {
-        case nativeObjC, nativeSwift, hybridLocal, hyrbidRemote, reactNative
-    }
+enum AppType: String {
+    case nativeObjC = "com.salesforce.native-iosApp"
+    case nativeSwift = "com.salesforce.native-swift-iosApp"
+    case hybridLocal = "com.salesforce.hybrid_local"
+    case hyrbidRemote = "com.salesforce.hybrid_remote"
+    case reactNative = "com.salesforce.react-native-iosApp"
 }

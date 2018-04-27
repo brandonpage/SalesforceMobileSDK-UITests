@@ -34,14 +34,15 @@
 import Foundation
 
 class UserUtility {
-    var username = ""
-    var password = ""
+    var defaultUsername = ""
+    var defaultPassword = ""
 
     init() {
-        username = ProcessInfo.processInfo.environment["USERNAME"]!
-        if(username.isEmpty) {
-            username = "circleci@mobilesdk.com"
-        }
-        password = ProcessInfo.processInfo.environment["PASSWORD"]!
+        //defaultUsername = ProcessInfo.processInfo.environment["USERNAME"]!
+        //if(defaultUsername.isEmpty) {
+            defaultUsername = "circleci@mobilesdk.com"
+        //}
+        //defaultPassword = ProcessInfo.processInfo.environment["PASSWORD"]!
+        defaultPassword = "1234test"
     }
 }

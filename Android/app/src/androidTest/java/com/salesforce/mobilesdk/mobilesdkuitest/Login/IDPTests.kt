@@ -1,6 +1,7 @@
 package com.salesforce.mobilesdk.mobilesdkuitest.Login
 
 import PageObjects.*
+import PageObjects.IDPPageOjects.AccountSelectorPageObject
 import PageObjects.TestAppPageObjects.IDPTestApplication
 import TestUtility.*
 import android.support.test.InstrumentationRegistry
@@ -29,16 +30,21 @@ class IDPTests {
     @Before
     fun setup() {
         // clear both apps
+
     }
 
     @Test
-    fun testSPInitaitedLogin() {
+    fun testSPInitaitedFreshLogin() {
         spApp.launch()
+        val loginPage = LoginPageObject()
 
         // Tap Login with IDP
+        loginPage.tapLaunchIDPApp()
+        val accountSelector = AccountSelectorPageObject()
+        accountSelector.tapAddAccount()
+        Thread.sleep(timeout * 2)
 
         // In IDP App
-        val loginPage = LoginPageObject()
         loginPage.setUsername(username)
         loginPage.setPassword(password)
         loginPage.tapLogin()
@@ -61,4 +67,30 @@ class IDPTests {
                 ReactNativeAppPageObject().assertAppLoads()
         }
     }
+
+/*
+    @Test
+    fun TestSPInitiatedWithoutLogin() {
+        spApp.launch()
+        val loginPage = LoginPageObject()
+
+        // Tap Login with IDP
+        loginPage.tapLaunchIDPApp()
+        val accountSelector = AccountSelectorPageObject()
+        accountSelector.tapSelectAccount()
+        Thread.sleep(timeout * 2)
+
+        // Wait for Swizzle back to SP App
+        when (spApp.type) {
+            AppType.NATIVE_JAVA, AppType.NATIVE_KOTLIN ->
+                NativeAppPageObject(spApp).assertAppLoads()
+            AppType.HYBRID_LOCAL ->
+                HybridLocalAppPageObject(spApp).assertAppLoads()
+            AppType.HYBRID_REMOTE ->
+                HybridRemoteAppPageObject(spApp).assertAppLoads()
+            AppType.REACT_NATIVE ->
+                ReactNativeAppPageObject().assertAppLoads()
+        }
+    }
+    */
 }

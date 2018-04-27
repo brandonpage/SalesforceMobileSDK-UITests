@@ -25,34 +25,28 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 //
-//  TestApplication.swift
-//  MobileSDKUITest
+//  SelectFlowPageObject.swift
+//  SalesforceMobileSDK-UITest
 //
-//  Created by Brandon Page on 2/21/18.
+//  Created by Brandon Page on 4/24/18.
 //
 
 import Foundation
 import XCTest
 
-class TestApplication: XCUIApplication {
-    // Get the Test App Bundle from command line arg
-    //var bundleString = ProcessInfo.processInfo.environment["TEST_APP_BUNDLE"]!
-    var bundleString = "com.salesforce.native-iosApp"
-    lazy var appType : AppType = AppType(rawValue: bundleString)!
+class SelectLoginFlowPageObject: XCUIScreen {
+    let app:XCUIApplication
+    let timeout:double_t = 5
     
-    // TODO: FIX THIS
-    override init(bundleIdentifier: String) {
-        if !bundleIdentifier.isEmpty {
-            bundleString = bundleIdentifier
-        }
-        super.init(bundleIdentifier: bundleString)
+    init(testApp: XCUIApplication) {
+        app = testApp
     }
     
-    override func launch() {
-        super.launch()
-        
-        if(appType == .reactNative) {
-            sleep(30)
-        }
+    func selectIDPFlow() -> Void {
+        app.buttons["IDP Login"].tap()
+    }
+    
+    func selectStandardFlow() -> Void {
+        app.buttons["Local Login"].tap()
     }
 }

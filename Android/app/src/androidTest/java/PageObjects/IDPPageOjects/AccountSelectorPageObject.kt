@@ -24,35 +24,26 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-//
-//  TestApplication.swift
-//  MobileSDKUITest
-//
-//  Created by Brandon Page on 2/21/18.
-//
+package PageObjects.IDPPageOjects
 
-import Foundation
-import XCTest
+import PageObjects.BasePageObject
+import android.support.test.uiautomator.UiSelector
 
-class TestApplication: XCUIApplication {
-    // Get the Test App Bundle from command line arg
-    //var bundleString = ProcessInfo.processInfo.environment["TEST_APP_BUNDLE"]!
-    var bundleString = "com.salesforce.native-iosApp"
-    lazy var appType : AppType = AppType(rawValue: bundleString)!
-    
-    // TODO: FIX THIS
-    override init(bundleIdentifier: String) {
-        if !bundleIdentifier.isEmpty {
-            bundleString = bundleIdentifier
-        }
-        super.init(bundleIdentifier: bundleString)
+
+/**
+ * Created by bpage on 4/19/18.
+ */
+class AccountSelectorPageObject : BasePageObject() {
+
+    fun tapSelectAccount() {
+        var selectAccountButton = device.findObject(UiSelector().resourceId("com.salesforce.native_kotlin:id/sf__switcher_apply_button"))
+        assert(selectAccountButton.waitForExists(timeout * 2))
+        selectAccountButton.click()
     }
-    
-    override func launch() {
-        super.launch()
-        
-        if(appType == .reactNative) {
-            sleep(30)
-        }
+
+    fun tapAddAccount() {
+        var addAccountButton = device.findObject(UiSelector().resourceId("com.salesforce.native_kotlin:id/sf__add_account_button"))
+        assert(addAccountButton.waitForExists(timeout * 2))
+        addAccountButton.click()
     }
 }
