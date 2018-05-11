@@ -39,8 +39,8 @@ class IDPApplicaiton: XCUIApplication {
     var appType: AppType
     
     override init() {
-        //bundleString = "com.salesforce.idp"
-        bundleString = ProcessInfo.processInfo.environment["IDP_APP_BUNDLE"]!
+        let opVal:String? = ProcessInfo.processInfo.environment["IDP_APP_BUNDLE"]
+        bundleString = (opVal?.isEmpty)! ? "com.salesforce.idp" : opVal!
         appType = AppType(rawValue: bundleString)!
         super.init(bundleIdentifier: bundleString)
     }

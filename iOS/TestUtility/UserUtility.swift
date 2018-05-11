@@ -38,12 +38,8 @@ class UserUtility {
     var defaultPassword = ""
 
     init() {
-        NSLog("Process ENV: %s", ProcessInfo.processInfo.environment)
-        defaultUsername = ProcessInfo.processInfo.environment["USERNAME"]!
-        if(defaultUsername.isEmpty) {
-            defaultUsername = "circleci@mobilesdk.com"
-        }
-        NSLog("env pass: %s", ProcessInfo.processInfo.environment["PASSWORD"]!)
+        let optVal:String? = ProcessInfo.processInfo.environment["USERNAME"]
+        defaultUsername = (optVal?.isEmpty)! ? "circleci@mobilesdk.com" : optVal!
         defaultPassword = ProcessInfo.processInfo.environment["PASSWORD"]!
     }
 }

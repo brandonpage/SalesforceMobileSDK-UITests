@@ -65,12 +65,12 @@ lane :ios do |options|
     system("open #{xcode_path} --args -CurrentDeviceUDID #{sim_id}")
 
     install_ios_app(path)
-    run_ios_tests(sim_name, bundle_name, )
+    run_ios_tests(sim_name, bundle_name, 'LoginTests', nil)
   end
 end
 
 lane :ios_idp do |options|
-  #system('rm -rf ../../tmp*')
+  system('rm -rf ../../tmp*')
 
   $password = get_password
   run_type = options[:type]
@@ -95,11 +95,11 @@ lane :ios_idp do |options|
     ios = '11-3'
   end
 
-  #system("xcrun simctl delete #{sim_name}") or puts "No old device to delete"
-  #sim_id = `xcrun simctl create #{sim_name} com.apple.CoreSimulator.SimDeviceType.#{device} com.apple.CoreSimulator.SimRuntime.iOS-#{ios}`.delete("\n")
+  system("xcrun simctl delete #{sim_name}") or puts "No old device to delete"
+  sim_id = `xcrun simctl create #{sim_name} com.apple.CoreSimulator.SimDeviceType.#{device} com.apple.CoreSimulator.SimRuntime.iOS-#{ios}`.delete("\n")
 
   Dir.chdir('../../') do
-    #generate_app('ios', run_type, nil, sfdx)
+    generate_app('ios', run_type, nil, sfdx)
     app_name = "#{run_type}_iosApp"
     path = Dir.glob("tmp*").first.concat("/#{app_name}/")
 
@@ -123,31 +123,31 @@ lane :ios_idp do |options|
     end
 
     # Start Simulator
-    #system("xcrun simctl boot #{sim_id}")
-    #system("open #{xcode_path} --args -CurrentDeviceUDID #{sim_id}")
+    system("xcrun simctl boot #{sim_id}")
+    system("open #{xcode_path} --args -CurrentDeviceUDID #{sim_id}")
 
-    #enable_ios_sp(path)
-    #enable_ios_logout(path)
-    #install_ios_app(path)
+    enable_ios_sp(path)
+    enable_ios_logout(path)
+    install_ios_app(path)
 
     # IDP App
     template_url = 'https://github.com/forcedotcom/SalesforceMobileSDK-AuthTemplates/iOSIDPTemplate'
-    #generate_app('ios', nil,  template_url)
+    generate_app('ios', nil,  template_url)
     idp_path = Dir.glob("tmp*").sort.last.concat('/native_swift_iosApp/')
-    #change_connected_app(idp_path, 'native_swift_iosApp', $idp_consumer_key, $idp_redirect_uri)
+    change_connected_app(idp_path, 'native_swift_iosApp', $idp_consumer_key, $idp_redirect_uri)
 
     project_name = idp_path.split('/').last
     plist_path = File.expand_path(idp_path + '/' + project_name + '/Info.plist')
     value = [{'CFBundleURLSchemes' => [$idp_redirect_uri.split(':').first]}]
-    #set_info_plist_value(path: plist_path, key: 'CFBundleURLTypes', value: value)
+    set_info_plist_value(path: plist_path, key: 'CFBundleURLTypes', value: value)
 
     project_path = File.expand_path(idp_path + project_name + '.xcodeproj')
-    #update_app_identifier(xcodeproj: project_path, plist_path: plist_path, app_identifier: 'com.salesforce.idp')
-    #install_ios_app(idp_path)
+    update_app_identifier(xcodeproj: project_path, plist_path: plist_path, app_identifier: 'com.salesforce.idp')
+    install_ios_app(idp_path)
 
     test_scheme = 'IDPTests'
     idp_bundle_name = 'IDP_APP_BUNDLE=com.salesforce.idp'
-    run_ios_tests(sim_name, bundle_name, test_scheme, idp_bundle_name)
+    run_ios_tests(sim_name, bundle_name, test_scheme, nil)
   end
 end
 
@@ -374,17 +374,18 @@ def install_ios_app(app_path, release = nil)
   end
 end
 
-def run_ios_tests(sim_name, bundle_name, test_scheme = nil, xcargs = nil)
+def run_ios_tests(sim_name, bundle_name, test_scheme, xcargs = nil)
+  xcargs_string = ''
+  xcargs.each { |arg| xcargs_string += "'#{arg}'" } unless xcargs.nil?
+
   Dir.chdir('iOS/') do
     destination = "#{sim_name} (" + `instruments -s devices | grep #{sim_name} | awk -F"[()]" '{print $2}'`.delete("\n") + ")"
-
-    puts "scheme: #{test_scheme}, destination: #{destination}, bundle: #{bundle_name}, password: #{$password}, xargs: #{xcargs}"
     scan(
         project: 'iOS/SalesforceMobileSDK-UITest.xcodeproj',
         scheme: test_scheme,
         device: destination,
         output_directory: 'test_output',
-        xcargs: "TEST_APP_BUNDLE=#{bundle_name} PASSWORD=#{$password} " + xcargs
+        xcargs: "'TEST_APP_BUNDLE=#{bundle_name}' 'PASSWORD=#{$password}' #{xcargs_string}"
     )
   end
 end

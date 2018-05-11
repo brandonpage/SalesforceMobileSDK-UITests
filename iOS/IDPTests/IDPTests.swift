@@ -36,10 +36,8 @@ import XCTest
 class IDPTests: XCTestCase {
     private var spApp = TestApplication()
     private var idpApp = IDPApplicaiton()
-    //private var username = UserUtility().defaultUsername
-    //private var password = UserUtility().defaultPassword
-    private var username: String = ""
-    private var password: String = ""
+    private var username = UserUtility().defaultUsername
+    private var password = UserUtility().defaultPassword
     private var appLoadError = "App did not load."
     private var timeout:double_t = 30
     private let reactNativeUsers = "Automated Process Brandon Page circleci Integration User Security User Chatter Expert Mobile SDK Sample App"
@@ -48,12 +46,8 @@ class IDPTests: XCTestCase {
     override func setUp() {
         super.setUp()
         continueAfterFailure = false
-        let userUtil = UserUtility()
         
-        username = userUtil.defaultUsername
-        password = userUtil.defaultPassword
         spApp.logout()
-        //idpApp.logout()
         idpApp.launch()
         IDPAppPageObject(testApp: idpApp).logout()
     }
