@@ -27,7 +27,10 @@
 package PageObjects
 
 import android.os.Build
+import android.support.test.uiautomator.By
+import android.support.test.uiautomator.Direction
 import android.support.test.uiautomator.UiSelector
+import android.support.test.uiautomator.Until
 import android.util.Log
 
 /**
@@ -102,6 +105,14 @@ class LoginPageObject : BasePageObject() {
             device.pressBack()
             Thread.sleep(timeout)
         }
+
+        if (isArm) {
+            val webview2 = device.wait(Until.findObject(By.clazz("android.webkit.WebView")), timeout)
+            Log.i("uia", "Scrolling webview.")
+            webview2.scroll(Direction.DOWN, 0.5f)
+            Thread.sleep(timeout * 2)
+        }
+
         assert(loginButton.waitForExists(timeout * 2))
         loginButton.click()
     }

@@ -24,25 +24,22 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package PageObjects
+//
+//  SelectFlowPageObject.swift
+//  SalesforceMobileSDK-UITest
+//
+//  Created by Brandon Page on 4/24/18.
+//
 
-import android.support.test.InstrumentationRegistry
-import android.content.Intent
+import Foundation
+import XCTest
 
-/**
- * Created by bpage on 2/21/18.
- */
-
-open class TestApplication {
-    private var packageName = InstrumentationRegistry.getArguments().get("packageName") as String
-    open var name = packageName.split(".").last().replace("_java", "") + "_androidApp"
-    var type = AppType.valueOf(packageName.split(".").last().toUpperCase())
-
-    fun launch() {
-        val context = InstrumentationRegistry.getContext()
-        val intent = context.packageManager.getLaunchIntentForPackage(packageName)
-
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        context.startActivity(intent)
+class SelectLoginFlowPageObject: BasePageObject {
+    func selectIDPFlow() {
+        app.buttons["IDP Login"].tap()
+    }
+    
+    func selectStandardFlow() {
+        app.buttons["Local Login"].tap()
     }
 }

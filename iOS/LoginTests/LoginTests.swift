@@ -31,9 +31,10 @@
 //  Created by Brandon Page on 2/2/18.
 //
 
-import XCTest
+import XCTest   
 
 class LoginTests: XCTestCase {
+    private var app = TestApplication()
     private var username = UserUtility().defaultUsername
     private var password = UserUtility().defaultPassword
     private var appLoadError = "App did not load."
@@ -44,6 +45,7 @@ class LoginTests: XCTestCase {
     override func setUp() {
         super.setUp()
         continueAfterFailure = false
+        app.logout()
     }
     
     override func tearDown() {
@@ -51,7 +53,6 @@ class LoginTests: XCTestCase {
     }
     
     func testLogin() {
-        let app = TestApplication(bundleIdentifier: "")
         let loginPage = LoginPageObject(testApp: app)
         let authPage = AuthorizationPageObject(testApp: app)
         
@@ -76,6 +77,11 @@ class LoginTests: XCTestCase {
         case .reactNative:
             let titleElement = app.children(matching: .window).element(boundBy: 0).children(matching: .other).element.children(matching: .other)[reactNativeUsers].children(matching: .other)[reactNativeUsers].children(matching: .other)[reactNativeUsers].children(matching: .other)[reactNativeUsers].children(matching: .other)[reactNativeUsers].children(matching: .other)[sampleAppTitle].children(matching: .other)[sampleAppTitle].children(matching: .other)[sampleAppTitle]
             XCTAssert(titleElement.waitForExistence(timeout: timeout), appLoadError)
+        //default:
+        //case .idp:
+        //    break
+        case .idp: break
+            
         }
     }
 }

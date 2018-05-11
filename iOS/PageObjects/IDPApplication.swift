@@ -32,13 +32,16 @@
 //
 
 import Foundation
+import XCTest
 
-class IDPApplicaiton: TestApplication {
-    // Get the IDP App Bundle from command line arg
-    //var thisBundleString = ProcessInfo.processInfo.environment["IDP_APP_BUNDLE"]!
-    var thisBundleString = "com.salesforce.native_swift_iosApp"
+class IDPApplicaiton: XCUIApplication {
+    let bundleString: String
+    var appType: AppType
     
-    override init(bundleIdentifier: String) {
-        super.init(bundleIdentifier: thisBundleString)
+    override init() {
+        //bundleString = "com.salesforce.idp"
+        bundleString = ProcessInfo.processInfo.environment["IDP_APP_BUNDLE"]!
+        appType = AppType(rawValue: bundleString)!
+        super.init(bundleIdentifier: bundleString)
     }
 }

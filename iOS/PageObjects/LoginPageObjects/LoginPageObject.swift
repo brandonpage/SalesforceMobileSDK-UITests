@@ -34,14 +34,7 @@
 import Foundation
 import XCTest
 
-class LoginPageObject: XCUIScreen {
-    let app:XCUIApplication
-    let timeout:double_t = 5
-    
-    init(testApp: XCUIApplication) {
-        app = testApp
-    }
-    
+class LoginPageObject: BasePageObject {
     func setUsername(name: String) -> Void {
         let nameField = app.descendants(matching: .textField).element
         _ = nameField.waitForExistence(timeout: timeout)

@@ -34,14 +34,7 @@
 import Foundation
 import XCTest
 
-class AuthorizationPageObject: XCUIScreen {
-    let app:XCUIApplication
-    let timeout:double_t = 5
-    
-    init(testApp: XCUIApplication) {
-        app = testApp
-    }
-    
+class AuthorizationPageObject: BasePageObject {
     func tapAllow() {
         pressButton(lable: "Allow")
     }

@@ -25,28 +25,20 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 //
-//  SelectFlowPageObject.swift
+//  BasePageObject.swift
 //  SalesforceMobileSDK-UITest
 //
-//  Created by Brandon Page on 4/24/18.
+//  Created by Brandon Page on 5/7/18.
 //
 
 import Foundation
 import XCTest
 
-class SelectLoginFlowPageObject: XCUIScreen {
+class BasePageObject: XCUIScreen {
     let app:XCUIApplication
     let timeout:double_t = 5
     
     init(testApp: XCUIApplication) {
         app = testApp
-    }
-    
-    func selectIDPFlow() -> Void {
-        app.buttons["IDP Login"].tap()
-    }
-    
-    func selectStandardFlow() -> Void {
-        app.buttons["Local Login"].tap()
     }
 }

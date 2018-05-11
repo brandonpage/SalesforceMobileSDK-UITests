@@ -24,39 +24,31 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-//
-//  TestApplication.swift
-//  MobileSDKUITest
-//
-//  Created by Brandon Page on 2/21/18.
-//
+package PageObjects
 
-import Foundation
-import XCTest
+import android.support.test.InstrumentationRegistry
+import android.content.Intent
 
-class TestApplication: XCUIApplication {
-    let bundleString: String
-    var appType: AppType
-    
-    override init() {
-        //bundleString = "com.salesforce.native-iosApp"
-        bundleString = ProcessInfo.processInfo.environment["TEST_APP_BUNDLE"]!
-        appType = AppType(rawValue: bundleString)!
-        super.init(bundleIdentifier: bundleString)
+/**
+ * Created by bpage on 2/21/18.
+ */
+
+open class TestApplication {
+    //open val packageName: String get() =  "com.salesforce.native_java"
+    open val packageName: String get() = InstrumentationRegistry.getArguments().get("packageName") as String
+    open val name: String get() = packageName.split(".").last().replace("_java", "") + "_androidApp"
+    val type: AppType get() = AppType.valueOf(packageName.split(".").last().toUpperCase())
+
+    fun launch() {
+        val context = InstrumentationRegistry.getContext()
+        val intent = context.packageManager.getLaunchIntentForPackage(packageName)
+
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        context.startActivity(intent)
     }
-    
-    override func launch() {
-        super.launch()
-        
-        if(appType == .reactNative) {
-            sleep(30)
-        }
-    }
-    
-    func logout() {
-        let argsCopy = self.launchArguments
-        launchArguments.append("logout")
-        launch()
-        launchArguments = argsCopy
+
+    fun resetApplication() {
+        InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand("pm clear $packageName")
+        Thread.sleep(5000)
     }
 }

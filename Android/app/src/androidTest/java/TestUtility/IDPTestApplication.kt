@@ -24,7 +24,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package PageObjects.TestAppPageObjects
+package TestUtility
 
 import PageObjects.TestApplication
 import android.support.test.InstrumentationRegistry
@@ -34,6 +34,7 @@ import android.support.test.InstrumentationRegistry
  */
 
 class IDPTestApplication : TestApplication() {
-    private var packageName = InstrumentationRegistry.getArguments().get("idpPackageName") as String
-    override var name = "IDP_App"
+    //override val packageName: String = "com.salesforce.native_kotlin"
+    override val packageName: String = InstrumentationRegistry.getArguments().get("idpPackageName") as String
+    override val name: String = "IDP_App"
 }

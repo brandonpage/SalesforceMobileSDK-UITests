@@ -39,4 +39,5 @@ enum AppType: String {
     case hybridLocal = "com.salesforce.hybrid_local"
     case hyrbidRemote = "com.salesforce.hybrid_remote"
     case reactNative = "com.salesforce.react-native-iosApp"
+    case idp = "com.salesforce.idp"
 }

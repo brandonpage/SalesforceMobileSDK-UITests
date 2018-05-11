@@ -25,38 +25,17 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 //
-//  TestApplication.swift
-//  MobileSDKUITest
+//  SelectUserPageObject.swift
+//  SalesforceMobileSDK-UITest
 //
-//  Created by Brandon Page on 2/21/18.
+//  Created by Brandon Page on 5/7/18.
 //
 
 import Foundation
 import XCTest
 
-class TestApplication: XCUIApplication {
-    let bundleString: String
-    var appType: AppType
-    
-    override init() {
-        //bundleString = "com.salesforce.native-iosApp"
-        bundleString = ProcessInfo.processInfo.environment["TEST_APP_BUNDLE"]!
-        appType = AppType(rawValue: bundleString)!
-        super.init(bundleIdentifier: bundleString)
-    }
-    
-    override func launch() {
-        super.launch()
-        
-        if(appType == .reactNative) {
-            sleep(30)
-        }
-    }
-    
-    func logout() {
-        let argsCopy = self.launchArguments
-        launchArguments.append("logout")
-        launch()
-        launchArguments = argsCopy
+class SelectUserPageObject: BasePageObject {
+    func selectUser(user: String) {
+        app.tables.cells.containing(.staticText, identifier: user).firstMatch.tap()
     }
 }

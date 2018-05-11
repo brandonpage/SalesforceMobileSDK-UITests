@@ -3,7 +3,7 @@
    LastUpgradeVersion = "0930"
    version = "1.3">
    <BuildAction
-      parallelizeBuildables = "YES"
+      parallelizeBuildables = "NO"
       buildImplicitDependencies = "YES">
       <BuildActionEntries>
          <BuildActionEntry
@@ -17,6 +17,20 @@
                BlueprintIdentifier = "A34DC573208A522E007D1FC3"
                BuildableName = "LoginTests.xctest"
                BlueprintName = "LoginTests"
+               ReferencedContainer = "container:SalesforceMobileSDK-UITest.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "A34A749E20239B4E00846B32"
+               BuildableName = "CommonUtil.xctest"
+               BlueprintName = "CommonUtil"
                ReferencedContainer = "container:SalesforceMobileSDK-UITest.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -87,15 +101,6 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "A34DC573208A522E007D1FC3"
-            BuildableName = "LoginTests.xctest"
-            BlueprintName = "LoginTests"
-            ReferencedContainer = "container:SalesforceMobileSDK-UITest.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

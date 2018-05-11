@@ -39,6 +39,12 @@ class AccountSelectorPageObject : BasePageObject() {
         var selectAccountButton = device.findObject(UiSelector().resourceId("com.salesforce.native_kotlin:id/sf__switcher_apply_button"))
         assert(selectAccountButton.waitForExists(timeout * 2))
         selectAccountButton.click()
+
+        var sleep_time = timeout * 2
+        if (isArm) {
+            sleep_time *= 2
+        }
+        Thread.sleep(sleep_time)
     }
 
     fun tapAddAccount() {
