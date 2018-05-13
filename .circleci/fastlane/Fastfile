@@ -1,6 +1,7 @@
 $is_ci = ENV.has_key? 'CIRCLECI'
 $password
 $comment = '// '
+$sim_name = 'testsim'
 
 $default_consumer_key = '3MVG9Iu66FKeHhINkB1l7xt7kR8czFcCTUhgoA8Ol2Ltf1eYHOU4SqQRSEitYFDUpqRWcoQ2.dBv_a1Dyu5xa'
 $default_redirect_uri = 'testsfdc:///mobilesdk/detect/oauth/done'
@@ -10,128 +11,23 @@ $sp_consumer_key = '3MVG9CEn_O3jvv0wTqRT0Le6tm_o8ls39jF8hMAsMM_ev_8Q5CbKTXiJB8Pp
 $sp_redirect_uri = 'mobilesdksp://sp'
 
 lane :ios do |options|
-  $password = get_password
-  run_type = options[:type]
-  UI.user_error!('Please specify run type.') unless(run_type)
-  sfdx = options[:sfdx]
-  skipRemoveApp = options[:skipRemoveApp]
-  device = options[:device]
-  ios = options[:ios]
-  sim_name = 'testsim'
-  xcode_path = '/Applications/Xcode.app/Contents/Developer/Applications/Simulator.app'
+  path, bundle_name = base_ios_test_setup(options)
 
-  if device
-    device.gsub!(' ', '-')
-  else
-    device = 'iPhone-8'
-  end
-
-  if ios
-    ios.slice!(0, 3)
-    ios.gsub!('.', '-')
-  else
-    ios = '11-3'
-  end
-
-  system("xcrun simctl delete #{sim_name}") or puts "No old device to delete"
-  sim_id = `xcrun simctl create #{sim_name} com.apple.CoreSimulator.SimDeviceType.#{device} com.apple.CoreSimulator.SimRuntime.iOS-#{ios}`.delete("\n")
-
-  Dir.chdir('../../') do
-    generate_app('ios', run_type, nil, sfdx)
-    app_name = "#{run_type}_iosApp"
-    path = Dir.glob("tmp*").first.concat("/#{app_name}/")
-
-    case run_type
-      when 'native'
-        bundle_name = 'com.salesforce.native-iosApp'
-      when 'native_swift'
-        bundle_name = 'com.salesforce.native-swift-iosApp'
-      when 'react_native'
-        path.concat('ios/')
-        bundle_name = 'com.salesforce.react-native-iosApp'
-
-        if run_type == 'react_native'
-          Dir.chdir(path) do
-            system('npm start&')
-          end
-        end
-      else
-        path.concat('platforms/ios/')
-        bundle_name = 'com.salesforce.'.concat(run_type)
-    end
-
-    # Start Simulator
-    system("xcrun simctl boot #{sim_id}")
-    system("open #{xcode_path} --args -CurrentDeviceUDID #{sim_id}")
-
-    install_ios_app(path)
-    run_ios_tests(sim_name, bundle_name, 'LoginTests', nil)
-  end
+  install_ios_app(path)
+  run_ios_tests(bundle_name, 'LoginTests', nil)
 end
 
 lane :ios_idp do |options|
-  system('rm -rf ../../tmp*')
+  path, bundle_name = base_ios_test_setup(options)
 
-  $password = get_password
-  run_type = options[:type]
-  UI.user_error!('Please specify run type.') unless(run_type)
-  sfdx = options[:sfdx]
-  skipRemoveApp = options[:skipRemoveApp]
-  device = options[:device]
-  ios = options[:ios]
-  sim_name = 'testsim'
-  xcode_path = '/Applications/Xcode.app/Contents/Developer/Applications/Simulator.app'
+  # Setup SP App
+  enable_ios_sp(path)
+  enable_ios_logout(path)
+  install_ios_app(path)
 
-  if device
-    device.gsub!(' ', '-')
-  else
-    device = 'iPhone-8'
-  end
-
-  if ios
-    ios.slice!(0, 3)
-    ios.gsub!('.', '-')
-  else
-    ios = '11-3'
-  end
-
-  system("xcrun simctl delete #{sim_name}") or puts "No old device to delete"
-  sim_id = `xcrun simctl create #{sim_name} com.apple.CoreSimulator.SimDeviceType.#{device} com.apple.CoreSimulator.SimRuntime.iOS-#{ios}`.delete("\n")
-
+  # Setup IDP App
+  template_url = 'https://github.com/forcedotcom/SalesforceMobileSDK-AuthTemplates/iOSIDPTemplate'
   Dir.chdir('../../') do
-    generate_app('ios', run_type, nil, sfdx)
-    app_name = "#{run_type}_iosApp"
-    path = Dir.glob("tmp*").first.concat("/#{app_name}/")
-
-    case run_type
-      when 'native'
-        bundle_name = 'com.salesforce.native-iosApp'
-      when 'native_swift'
-        bundle_name = 'com.salesforce.native-swift-iosApp'
-      when 'react_native'
-        path.concat('ios/')
-        bundle_name = 'com.salesforce.react-native-iosApp'
-
-        if run_type == 'react_native'
-          Dir.chdir(path) do
-            system('npm start&')
-          end
-        end
-      else
-        path.concat('platforms/ios/')
-        bundle_name = 'com.salesforce.'.concat(run_type)
-    end
-
-    # Start Simulator
-    system("xcrun simctl boot #{sim_id}")
-    system("open #{xcode_path} --args -CurrentDeviceUDID #{sim_id}")
-
-    enable_ios_sp(path)
-    enable_ios_logout(path)
-    install_ios_app(path)
-
-    # IDP App
-    template_url = 'https://github.com/forcedotcom/SalesforceMobileSDK-AuthTemplates/iOSIDPTemplate'
     generate_app('ios', nil,  template_url)
     idp_path = Dir.glob("tmp*").sort.last.concat('/native_swift_iosApp/')
     change_connected_app(idp_path, 'native_swift_iosApp', $idp_consumer_key, $idp_redirect_uri)
@@ -144,12 +40,72 @@ lane :ios_idp do |options|
     project_path = File.expand_path(idp_path + project_name + '.xcodeproj')
     update_app_identifier(xcodeproj: project_path, plist_path: plist_path, app_identifier: 'com.salesforce.idp')
     install_ios_app(idp_path)
+  end
 
-    test_scheme = 'IDPTests'
-    idp_bundle_name = 'IDP_APP_BUNDLE=com.salesforce.idp'
-    run_ios_tests(sim_name, bundle_name, test_scheme, nil)
+  run_ios_tests(bundle_name, 'IDPTests', nil)
+end
+
+def base_ios_test_setup(options)
+  system('rm -rf ../../tmp*')
+  system('rm -rf ../../test_output/')
+
+  $password = get_password
+  run_type = options[:type]
+  UI.user_error!('Please specify run type.') unless(run_type)
+  sfdx = options[:sfdx]
+  skipRemoveApp = options[:skipRemoveApp]
+  device = options[:device]
+  ios = options[:ios]
+  xcode_path = '/Applications/Xcode.app/Contents/Developer/Applications/Simulator.app'
+
+  if device
+    device.gsub!(' ', '-')
+  else
+    device = 'iPhone-8'
+  end
+
+  if ios
+    ios.slice!(0, 3)
+    ios.gsub!('.', '-')
+  else
+    ios = '11-3'
+  end
+
+  system("xcrun simctl delete #{$sim_name}") or puts "No old device to delete"
+  sim_id = `xcrun simctl create #{$sim_name} com.apple.CoreSimulator.SimDeviceType.#{device} com.apple.CoreSimulator.SimRuntime.iOS-#{ios}`.delete("\n")
+
+  Dir.chdir('../../') do
+    generate_app('ios', run_type, nil, sfdx)
+    app_name = "#{run_type}_iosApp"
+    path = Dir.glob("tmp*").first.concat("/#{app_name}/")
+
+    case run_type
+      when 'native'
+        bundle_name = 'com.salesforce.native-iosApp'
+      when 'native_swift'
+        bundle_name = 'com.salesforce.native-swift-iosApp'
+      when 'react_native'
+        path.concat('ios/')
+        bundle_name = 'com.salesforce.react-native-iosApp'
+
+        if run_type == 'react_native'
+          Dir.chdir(path) do
+            system('npm start&')
+          end
+        end
+      else
+        path.concat('platforms/ios/')
+        bundle_name = 'com.salesforce.'.concat(run_type)
+    end
+
+    # Start Simulator
+    system("xcrun simctl boot #{sim_id}")
+    system("open #{xcode_path} --args -CurrentDeviceUDID #{sim_id}")
+
+    return '../../' + path, bundle_name
   end
 end
+
 
 lane :android do |options|
   app_path, package_name = base_android_test_setup(options)
@@ -200,12 +156,10 @@ end
 
 # Either type or template needs to be set.
 def generate_app(os, type = nil, template = nil, sfdx = nil)
-  puts 'in generate app'
-  puts "pwd #{`pwd`}"
   UI.crash!('Error: Cannot generate app without type or template.') unless(type or template)
 
-  #system('rm -rf tmp*/')
-  #system('rm -rf Android/app/build/')
+  system('rm -rf tmp*/')
+  system('rm -rf Android/app/build/')
   #system('killall -9 node')
   generate_command = "./SalesforceMobileSDK-Package/test/test_force.js --os=#{os}"
   if type
@@ -217,23 +171,17 @@ def generate_app(os, type = nil, template = nil, sfdx = nil)
   if sfdx
     generate_command.concat(' --use-sfdx')
   end
-  puts "generate command: #{generate_command}"
   result = system(generate_command)
   UI.user_error!('Test app was not successfully created.') unless(result)
 end
 
 def modify_source(source_path, old_code, new_code)
-  puts 'in modify source'
-  puts "source path: #{source_path}"
-  puts "old code: #{old_code}"
-  puts "new code: #{new_code}"
   modified_souce_code = File.read(source_path).sub(old_code, new_code)
   File.open(source_path, 'w') { |file| file.puts modified_souce_code }
 end
 
 # You only need to pass the existing consumer key and redirect uri if they are not the default
 def change_connected_app(app_path, app_name, consumer_key, redirect_uri, old_key = nil, old_uri = nil)
-  puts 'in change connected app'
   old_key = $default_consumer_key unless old_key
   old_uri = $default_redirect_uri unless old_uri
 
@@ -295,8 +243,6 @@ def base_android_test_setup(options)
 end
 
 def install_apk(appPath, release = nil)
-  puts 'In install_apk'
-  puts "App path: #{appPath}"
   apkPath = 'debug/app-debug.apk'
   Dir.chdir(appPath) do
     if release
@@ -310,19 +256,16 @@ def install_apk(appPath, release = nil)
 
     UI.important 'Installing App on Emulator'
     result = `adb install -r app/build/outputs/apk/#{apkPath}`.split("\n").last.delete("\r")
-    puts "install results: #{result}"
     UI.user_error!("APK did not install successfully. \n\nError: #{result}") unless(result.eql? 'Success')
   end
 end
 
 def run_android_tests(test_class, package_name, addition_ops = nil)
-  puts 'In run_andorid_tests'
   class_param =  "-Pandroid.testInstrumentationRunnerArguments.class=#{test_class}"
   package_param = "-Pandroid.testInstrumentationRunnerArguments.packageName=#{package_name}"
   password_param = "-Pandroid.testInstrumentationRunnerArguments.password=#{$password}"
   addition_ops = '' unless addition_ops
 
-  puts 'run tests, dir: ' + `pwd`
   Dir.chdir('./Android/') do
     UI.header 'Run Tests'
     begin
@@ -342,7 +285,6 @@ def run_android_tests(test_class, package_name, addition_ops = nil)
 end
 
 def enable_android_sp(app_path)
-  puts 'in enable_idp_android'
   # FIX THIS - hardcoded
   app_name = 'native_java'
   idp_commnet = '// SmartSyncSDKManager.getInstance().setIDPAppURIScheme(idpAppURIScheme);'
@@ -374,12 +316,12 @@ def install_ios_app(app_path, release = nil)
   end
 end
 
-def run_ios_tests(sim_name, bundle_name, test_scheme, xcargs = nil)
+def run_ios_tests(bundle_name, test_scheme, xcargs = nil)
   xcargs_string = ''
   xcargs.each { |arg| xcargs_string += "'#{arg}'" } unless xcargs.nil?
 
-  Dir.chdir('iOS/') do
-    destination = "#{sim_name} (" + `instruments -s devices | grep #{sim_name} | awk -F"[()]" '{print $2}'`.delete("\n") + ")"
+  Dir.chdir('../../iOS/') do
+    destination = "#{$sim_name} (" + `instruments -s devices | grep #{$sim_name} | awk -F"[()]" '{print $2}'`.delete("\n") + ")"
     scan(
         project: 'iOS/SalesforceMobileSDK-UITest.xcodeproj',
         scheme: test_scheme,
