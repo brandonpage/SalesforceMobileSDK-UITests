@@ -48,7 +48,6 @@ class IDPTests: XCTestCase {
         continueAfterFailure = false
         
         spApp.logout()
-        idpApp.launch()
         IDPAppPageObject(testApp: idpApp).logout()
     }
     

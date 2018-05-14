@@ -37,6 +37,7 @@ import XCTest
  class IDPAppPageObject: BasePageObject {
     
     func logout() {
+        app.launch()
         if app.tabBars.buttons["Users"].exists {
             app.tabBars.buttons["Users"].tap()
             app.navigationBars["Users"].buttons["Share"].tap()

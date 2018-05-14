@@ -109,7 +109,7 @@ end
 
 lane :android do |options|
   app_path, package_name = base_android_test_setup(options)
-  install_apk(app_path)
+  install_android_app(app_path)
   test_class = 'com.salesforce.mobilesdk.mobilesdkuitest.Login.StandardLoginTests'
   run_android_tests(test_class, package_name)
 end
@@ -118,7 +118,7 @@ lane :android_idp do |options|
   system('rm -rf ../../tmp*')
   app_path, package_name = base_android_test_setup(options)
   enable_android_sp(app_path)
-  install_apk(app_path)
+  install_android_app(app_path)
 
   # IDP App
   idpTempalateUri = 'https://github.com/forcedotcom/SalesforceMobileSDK-AuthTemplates/AndroidIDPTemplate'
@@ -126,7 +126,7 @@ lane :android_idp do |options|
   idp_path = Dir.glob("tmp*").sort.last.concat('/native_kotlin_androidApp/')
   # Change Bundle ID
   change_connected_app(app_path, 'native_kotlin_androidApp', $idp_consumer_key, $idp_redirect_uri)
-  install_apk(idp_path)
+  install_android_app(idp_path)
 
   test_class = 'com.salesforce.mobilesdk.mobilesdkuitest.Login.IDPTests'
   idp_package_name = '-Pandroid.testInstrumentationRunnerArguments.idpPackageName=com.salesforce.native_kotlin'
@@ -242,7 +242,7 @@ def base_android_test_setup(options)
   return path, package_name
 end
 
-def install_apk(appPath, release = nil)
+def install_android_app(appPath, release = nil)
   apkPath = 'debug/app-debug.apk'
   Dir.chdir(appPath) do
     if release
@@ -271,21 +271,13 @@ def run_android_tests(test_class, package_name, addition_ops = nil)
     begin
       result = system("./gradlew #{class_param} #{package_param} #{password_param} #{addition_ops} connectedAndroidTest --no-daemon --max-workers 2")
     ensure
-      #`mkdir screenshots`
-      #`mkdir screenshots/#{run_type}`
-      #search = $is_ci ? "sed 's/\r$//'" : "perl -pe 's/\x0D\x0A/\x0A/g'"
-      #system("adb shell screencap -p | #{search} > screenshots/#{run_type}/login.png")
-
-      #unless skipRemoveApp
-      #  system("adb uninstall #{package_name}")
-      #end
       UI.user_error!('Tests failed.') unless(result)
     end
   end
 end
 
+# This is only setup to run against native java app
 def enable_android_sp(app_path)
-  # FIX THIS - hardcoded
   app_name = 'native_java'
   idp_commnet = '// SmartSyncSDKManager.getInstance().setIDPAppURIScheme(idpAppURIScheme);'
   idp_code = 'SmartSyncSDKManager.getInstance().setIDPAppURIScheme("com.salesforce.native_kotlin://authenticator");'
@@ -305,10 +297,15 @@ end
 # iOS Helper Functions
 #
 def install_ios_app(app_path, release = nil)
-  app_name = app_path.split('/').last
+  app_name = app_path.split('/').grep(/iosApp/).first
 
-  UI.header 'Build for Simulator'
+  puts "\n\n\n App Path: #{app_path}"
+  puts "\n\n\n App Name: #{app_name}"
+
+
+
   Dir.chdir(app_path) do
+    UI.header 'Build for Simulator'
     system("xcodebuild build -scheme #{app_name} -workspace #{app_name}.xcworkspace -sdk iphonesimulator -derivedDataPath ./DerivedData | xcpretty --color --simple") or exit
 
     UI.important 'Installing App on Simulator'
@@ -318,7 +315,7 @@ end
 
 def run_ios_tests(bundle_name, test_scheme, xcargs = nil)
   xcargs_string = ''
-  xcargs.each { |arg| xcargs_string += "'#{arg}'" } unless xcargs.nil?
+  xcargs.each { |arg| xcargs_string += "'#{arg}' " } unless xcargs.nil?
 
   Dir.chdir('../../iOS/') do
     destination = "#{$sim_name} (" + `instruments -s devices | grep #{$sim_name} | awk -F"[()]" '{print $2}'`.delete("\n") + ")"
@@ -330,6 +327,7 @@ def run_ios_tests(bundle_name, test_scheme, xcargs = nil)
         xcargs: "'TEST_APP_BUNDLE=#{bundle_name}' 'PASSWORD=#{$password}' #{xcargs_string}"
     )
   end
+  system("xcrun simctl shutdown #{$sim_name}")
 end
 
 def enable_ios_sp(app_path)
@@ -338,10 +336,6 @@ def enable_ios_sp(app_path)
   enable_idp = "[SalesforceSDKManager sharedManager].idpAppURIScheme = @\"#{$idp_redirect_uri.split(':').first}\";"
   handle_response = 'return [[SFUserAccountManager sharedInstance] handleAdvancedAuthenticationResponse:url options:options];'
 
-  # DO it need display name?
-  # [SalesforceSDKManager sharedManager].appDisplayName = @"SPApp";
-
-  #sourcePath = app_path + '/' + app_name + '/AppDelegate.m'
   sourcePath = app_path + app_name + '/AppDelegate.m'
   modify_source(sourcePath, enable_idp_comment, enable_idp)
   modify_source(sourcePath, $comment + handle_response, handle_response)
