@@ -171,7 +171,9 @@ def generate_app(os, type = nil, template = nil, sfdx = nil)
   if sfdx
     generate_command.concat(' --use-sfdx')
   end
-  result = system(generate_command)
+
+  UI.important 'Generating App'
+  result = silence_output { system(generate_command) }
   UI.user_error!('Test app was not successfully created.') unless(result)
 end
 
@@ -206,6 +208,23 @@ def change_connected_app(app_path, app_name, consumer_key, redirect_uri, old_key
 
     modify_source(source_path, old_key, consumer_key)
     modify_source(source_path, old_uri, redirect_uri)
+  end
+end
+
+def silence_output
+  begin
+    stderr, stdout = $stderr.clone, $stdout.clone
+    $stderr.reopen(File.new('/dev/null', 'w'))
+    $stdout.reopen(File.new('/dev/null', 'w'))
+
+    yield
+  rescue Exception => e
+    $stdout.reopen(stdout)
+    $stderr.reopen(stderr)
+    raise e
+  ensure
+    $stdout.reopen(stdout)
+    $stderr.reopen(stderr)
   end
 end
 
@@ -306,9 +325,9 @@ def install_ios_app(app_path, release = nil)
 
   Dir.chdir(app_path) do
     UI.header 'Build for Simulator'
-    system("xcodebuild build -scheme #{app_name} -workspace #{app_name}.xcworkspace -sdk iphonesimulator -derivedDataPath ./DerivedData | xcpretty --color --simple") or exit
+    silence_output { system("xcodebuild build -scheme #{app_name} -workspace #{app_name}.xcworkspace -sdk iphonesimulator -derivedDataPath ./DerivedData") }
 
-    UI.important 'Installing App on Simulator'
+    UI.header 'Installing App on Simulator'
     system("xcrun simctl install booted ./DerivedData/Build/Products/Debug-iphonesimulator/#{app_name}.app")
   end
 end
@@ -324,6 +343,7 @@ def run_ios_tests(bundle_name, test_scheme, xcargs = nil)
         scheme: test_scheme,
         device: destination,
         output_directory: 'test_output',
+        clean: true,
         xcargs: "'TEST_APP_BUNDLE=#{bundle_name}' 'PASSWORD=#{$password}' #{xcargs_string}"
     )
   end

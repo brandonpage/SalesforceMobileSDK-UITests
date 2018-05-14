@@ -5,8 +5,15 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
     sudo apt-get install libqt5widgets5
 fi
 
-sudo npm install -g cordova@7.0.0
-sudo npm install -g sfdx-cli
+npm install -g shelljs@0.7.0
+if [[ -n "$CIRCLECI" ]]; then
+    sudo npm install -g cordova@7.0.0
+    sudo npm install -g sfdx-cli
+else
+    npm install -g cordova@7.0.0
+    npm install -g sfdx-cli
+fi
+
 cordova telemetry off
 gem install --no-document fastlane
 
