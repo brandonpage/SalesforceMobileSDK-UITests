@@ -163,8 +163,10 @@ def generate_app(os, type = nil, template = nil, sfdx = nil)
   #system('killall -9 node')
   generate_command = "./SalesforceMobileSDK-Package/test/test_force.js --os=#{os}"
   if type
+    UI.header "Generating #{type} App"
     generate_command.concat(" --apptype=#{type}")
   else
+    UI.header 'Generating SP App'
     generate_command.concat("  --templaterepouri=#{template}")
   end
 
@@ -172,7 +174,6 @@ def generate_app(os, type = nil, template = nil, sfdx = nil)
     generate_command.concat(' --use-sfdx')
   end
 
-  UI.important 'Generating App'
   result = silence_output { system(generate_command) }
   UI.user_error!('Test app was not successfully created.') unless(result)
 end
@@ -202,9 +203,6 @@ def change_connected_app(app_path, app_name, consumer_key, redirect_uri, old_key
         source_path = app_path + app_name + '/AppDelegate.swift'
       # hybrid local/remote + react
     end
-    #app_delegate_path = app_path + app_name + '/AppDelegate.swift'
-    #default_consumer_key = '3MVG9g9rbsTkKnAVZKH353rwNPSNxK7EC.JENfWndAnLC5s1S8YK4W68IJ0.RHCbvfJ9N5hAPgZIKoYhRKH91'
-    #default_redirect_uri = 'authenticator:///mobilesdk/detect/oauth/done'
 
     modify_source(source_path, old_key, consumer_key)
     modify_source(source_path, old_uri, redirect_uri)
