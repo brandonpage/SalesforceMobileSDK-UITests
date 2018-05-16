@@ -43,16 +43,9 @@ class TestApplication: XCUIApplication {
         appType = AppType(rawValue: bundleString)!
         super.init(bundleIdentifier: bundleString)
     }
-    
-    override func launch() {
-        super.launch()
-        
-        if(appType == .reactNative) {
-            sleep(30)
-        }
-    }
-    
+
     func logout() {
+        XCUIDevice.shared.press(.home)
         let argsCopy = self.launchArguments
         launchArguments.append("logout")
         launch()

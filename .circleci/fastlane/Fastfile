@@ -125,13 +125,13 @@ lane :android_idp do |options|
   generate_app('android', nil, idpTempalateUri, nil)
   idp_path = Dir.glob("tmp*").sort.last.concat('/native_kotlin_androidApp/')
   # Change Bundle ID
-  change_connected_app(app_path, 'native_kotlin_androidApp', $idp_consumer_key, $idp_redirect_uri)
+  change_connected_app(idp_path,'native_kotlin_androidApp', $idp_consumer_key, $idp_redirect_uri)
   install_android_app(idp_path)
 
   test_class = 'com.salesforce.mobilesdk.mobilesdkuitest.Login.IDPTests'
   idp_package_name = '-Pandroid.testInstrumentationRunnerArguments.idpPackageName=com.salesforce.native_kotlin'
   run_android_tests(test_class, package_name, idp_package_name)
-  #system("adb uninstall #{idp_package_name}")
+  system("adb uninstall #{idp_package_name}")
 end
 
 
@@ -315,12 +315,6 @@ end
 #
 def install_ios_app(app_path, release = nil)
   app_name = app_path.split('/').grep(/iosApp/).first
-
-  puts "\n\n\n App Path: #{app_path}"
-  puts "\n\n\n App Name: #{app_name}"
-
-
-
   Dir.chdir(app_path) do
     UI.header 'Build for Simulator'
     silence_output { system("xcodebuild build -scheme #{app_name} -workspace #{app_name}.xcworkspace -sdk iphonesimulator -derivedDataPath ./DerivedData") }
