@@ -336,16 +336,19 @@ def run_ios_tests(bundle_name, test_scheme, xcargs = nil)
 
   Dir.chdir('../../iOS/') do
     destination = "#{$sim_name} (" + `instruments -s devices | grep #{$sim_name} | awk -F"[()]" '{print $2}'`.delete("\n") + ")"
-    scan(
+    begin
+      scan(
         project: 'iOS/SalesforceMobileSDK-UITest.xcodeproj',
         scheme: test_scheme,
         device: destination,
         output_directory: 'test_output',
         clean: true,
         xcargs: "'TEST_APP_BUNDLE=#{bundle_name}' 'PASSWORD=#{$password}' #{xcargs_string}"
-    )
+      )
+    ensure
+      system("xcrun simctl shutdown #{$sim_name}")
+    end
   end
-  system("xcrun simctl shutdown #{$sim_name}")
 end
 
 def enable_ios_sp(app_path)

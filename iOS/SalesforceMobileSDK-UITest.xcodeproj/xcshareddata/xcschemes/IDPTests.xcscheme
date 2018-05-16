@@ -83,15 +83,6 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "A34DC57F208A52DB007D1FC3"
-            BuildableName = "IDPTests.xctest"
-            BlueprintName = "IDPTests"
-            ReferencedContainer = "container:SalesforceMobileSDK-UITest.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>

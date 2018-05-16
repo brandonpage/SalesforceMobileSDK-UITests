@@ -53,6 +53,15 @@
             </BuildableReference>
          </TestableReference>
       </Testables>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "A34DC573208A522E007D1FC3"
+            BuildableName = "LoginTests.xctest"
+            BlueprintName = "LoginTests"
+            ReferencedContainer = "container:SalesforceMobileSDK-UITest.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
       <EnvironmentVariables>
          <EnvironmentVariable
             key = "TEST_APP_BUNDLE"
