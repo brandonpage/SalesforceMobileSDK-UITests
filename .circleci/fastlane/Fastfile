@@ -45,68 +45,6 @@ lane :ios_idp do |options|
   run_ios_tests(bundle_name, 'IDPTests', nil)
 end
 
-def base_ios_test_setup(options)
-  system('rm -rf ../../tmp*')
-  system('rm -rf ../../test_output/')
-
-  $password = get_password
-  run_type = options[:type]
-  UI.user_error!('Please specify run type.') unless(run_type)
-  sfdx = options[:sfdx]
-  skipRemoveApp = options[:skipRemoveApp]
-  device = options[:device]
-  ios = options[:ios]
-  xcode_path = '/Applications/Xcode.app/Contents/Developer/Applications/Simulator.app'
-
-  if device
-    device.gsub!(' ', '-')
-  else
-    device = 'iPhone-8'
-  end
-
-  if ios
-    ios.slice!(0, 3)
-    ios.gsub!('.', '-')
-  else
-    ios = '11-3'
-  end
-
-  system("xcrun simctl delete #{$sim_name}") or puts "No old device to delete"
-  sim_id = `xcrun simctl create #{$sim_name} com.apple.CoreSimulator.SimDeviceType.#{device} com.apple.CoreSimulator.SimRuntime.iOS-#{ios}`.delete("\n")
-
-  Dir.chdir('../../') do
-    generate_app('ios', run_type, nil, sfdx)
-    app_name = "#{run_type}_iosApp"
-    path = Dir.glob("tmp*").first.concat("/#{app_name}/")
-
-    case run_type
-      when 'native'
-        bundle_name = 'com.salesforce.native-iosApp'
-      when 'native_swift'
-        bundle_name = 'com.salesforce.native-swift-iosApp'
-      when 'react_native'
-        path.concat('ios/')
-        bundle_name = 'com.salesforce.react-native-iosApp'
-
-        if run_type == 'react_native'
-          Dir.chdir(path) do
-            system('npm start&')
-          end
-        end
-      else
-        path.concat('platforms/ios/')
-        bundle_name = 'com.salesforce.'.concat(run_type)
-    end
-
-    # Start Simulator
-    system("xcrun simctl boot #{sim_id}")
-    system("open #{xcode_path} --args -CurrentDeviceUDID #{sim_id}")
-
-    return '../../' + path, bundle_name
-  end
-end
-
-
 lane :android do |options|
   app_path, package_name = base_android_test_setup(options)
   install_android_app(app_path)
@@ -288,6 +226,7 @@ def run_android_tests(test_class, package_name, addition_ops = nil)
     begin
       result = system("./gradlew #{class_param} #{package_param} #{password_param} #{addition_ops} connectedAndroidTest --no-daemon --max-workers 2")
     ensure
+      system("adb uninstall #{package_name}")
       UI.user_error!('Tests failed.') unless(result)
     end
   end
@@ -313,6 +252,67 @@ end
 #
 # iOS Helper Functions
 #
+def base_ios_test_setup(options)
+  system('rm -rf ../../tmp*')
+  system('rm -rf ../../test_output/')
+
+  $password = get_password
+  run_type = options[:type]
+  UI.user_error!('Please specify run type.') unless(run_type)
+  sfdx = options[:sfdx]
+  skipRemoveApp = options[:skipRemoveApp]
+  device = options[:device]
+  ios = options[:ios]
+  xcode_path = '/Applications/Xcode.app/Contents/Developer/Applications/Simulator.app'
+
+  if device
+    device.gsub!(' ', '-')
+  else
+    device = 'iPhone-8'
+  end
+
+  if ios
+    ios.slice!(0, 3)
+    ios.gsub!('.', '-')
+  else
+    ios = '11-3'
+  end
+
+  system("xcrun simctl delete #{$sim_name}") or puts "No old device to delete"
+  sim_id = `xcrun simctl create #{$sim_name} com.apple.CoreSimulator.SimDeviceType.#{device} com.apple.CoreSimulator.SimRuntime.iOS-#{ios}`.delete("\n")
+
+  Dir.chdir('../../') do
+    generate_app('ios', run_type, nil, sfdx)
+    app_name = "#{run_type}_iosApp"
+    path = Dir.glob("tmp*").first.concat("/#{app_name}/")
+
+    case run_type
+      when 'native'
+        bundle_name = 'com.salesforce.native-iosApp'
+      when 'native_swift'
+        bundle_name = 'com.salesforce.native-swift-iosApp'
+      when 'react_native'
+        path.concat('ios/')
+        bundle_name = 'com.salesforce.react-native-iosApp'
+
+        if run_type == 'react_native'
+          Dir.chdir(path) do
+            system('npm start&')
+          end
+        end
+      else
+        path.concat('platforms/ios/')
+        bundle_name = 'com.salesforce.'.concat(run_type)
+    end
+
+    # Start Simulator
+    system("xcrun simctl boot #{sim_id}")
+    system("open #{xcode_path} --args -CurrentDeviceUDID #{sim_id}")
+
+    return '../../' + path, bundle_name
+  end
+end
+
 def install_ios_app(app_path, release = nil)
   app_name = app_path.split('/').grep(/iosApp/).first
   Dir.chdir(app_path) do
