@@ -144,6 +144,19 @@ jobs:
       - store_test_results:
           path: Android/app/build/outputs/androidTest-results/
 
+  test-android-idp:
+    <<: *linux
+    steps:
+      - checkout
+      - run:
+          name: Start Emulator
+          command: source .circleci/avd_helper.sh && startAVD
+          background: true
+      - run: *upgrade-git
+      - run: *setup
+      - run:
+          name: Wait for Emulator
+          command: source .circleci/avd_helper.sh && waitForAVD
       - run:
           name: Test IDP
           command: cd .circleci && fastlane android_idp type:native
@@ -170,20 +183,6 @@ jobs:
       - checkout
       - run: *setup
       - run: *install-ant
-
-      - run:
-          name: Test IDP
-          command: cd .circleci && fastlane ios_idp type:native
-          when: always
-          no_output_timeout: 900
-      - store_artifacts:
-          path: test_output/report.html
-          destination: iOS_IDP
-      - store_artifacts:
-          path: /home/circleci/.fastlane/latest_crash.json
-          destination: iOS_IDP
-      - store_test_results:
-          path: test_output/report.junit
 
       - run:
           name: Test Native Objective-C App
@@ -255,13 +254,35 @@ jobs:
       - store_test_results:
           path: test_output/report.junit
 
+  test-ios-idp:
+    <<: *mac
+    steps:
+      - checkout
+      - run: *setup
+      - run: *install-ant
+
+      - run:
+          name: Test IDP
+          command: cd .circleci && fastlane ios_idp type:native
+          when: always
+          no_output_timeout: 900
+      - store_artifacts:
+          path: test_output/report.html
+          destination: iOS_IDP
+      - store_artifacts:
+          path: /home/circleci/.fastlane/latest_crash.json
+          destination: iOS_IDP
+      - store_test_results:
+          path: test_output/report.junit
 workflows:
   version: 2
 
   pr-build-all-apps:
     jobs:
       - test-android
+      - test-android-idp
       - test-ios
+      - test-ios-idp
 
   # Cron are on a timezone 8 hours ahead of PST
   # Build everything on Saturday Afternoon
@@ -275,4 +296,6 @@ workflows:
                 - master
     jobs:
       - test-android
+      - test-android-idp
       - test-ios
+      - test-ios-idp
