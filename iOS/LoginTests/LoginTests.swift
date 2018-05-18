@@ -31,7 +31,7 @@
 //  Created by Brandon Page on 2/2/18.
 //
 
-import XCTest   
+import XCTest
 
 class LoginTests: XCTestCase {
     private var app = TestApplication()
@@ -77,12 +77,14 @@ class LoginTests: XCTestCase {
         case .reactNative:
             let titleElement = app.children(matching: .window).element(boundBy: 0).children(matching: .other).element.children(matching: .other)[reactNativeUsers].children(matching: .other)[reactNativeUsers].children(matching: .other)[reactNativeUsers].children(matching: .other)[reactNativeUsers].children(matching: .other)[reactNativeUsers].children(matching: .other)[sampleAppTitle].children(matching: .other)[sampleAppTitle].children(matching: .other)[sampleAppTitle]
             XCTAssert(titleElement.waitForExistence(timeout: timeout), appLoadError)
-        //default:
-        //case .idp:
+            //default:
+            //case .idp:
         //    break
         case .idp: break
             
         }
     }
 }
+
+
 

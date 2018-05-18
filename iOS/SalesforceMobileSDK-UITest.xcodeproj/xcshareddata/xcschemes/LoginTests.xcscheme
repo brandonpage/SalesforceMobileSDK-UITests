@@ -14,7 +14,7 @@
             buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "A34DC573208A522E007D1FC3"
+               BlueprintIdentifier = "A391D5CD20AF741000E1391A"
                BuildableName = "LoginTests.xctest"
                BlueprintName = "LoginTests"
                ReferencedContainer = "container:SalesforceMobileSDK-UITest.xcodeproj">
@@ -32,7 +32,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "A34DC573208A522E007D1FC3"
+               BlueprintIdentifier = "A391D5CD20AF741000E1391A"
                BuildableName = "LoginTests.xctest"
                BlueprintName = "LoginTests"
                ReferencedContainer = "container:SalesforceMobileSDK-UITest.xcodeproj">
@@ -42,7 +42,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "A34DC573208A522E007D1FC3"
+            BlueprintIdentifier = "A391D5CD20AF741000E1391A"
             BuildableName = "LoginTests.xctest"
             BlueprintName = "LoginTests"
             ReferencedContainer = "container:SalesforceMobileSDK-UITest.xcodeproj">
@@ -81,7 +81,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "A34DC573208A522E007D1FC3"
+            BlueprintIdentifier = "A391D5CD20AF741000E1391A"
             BuildableName = "LoginTests.xctest"
             BlueprintName = "LoginTests"
             ReferencedContainer = "container:SalesforceMobileSDK-UITest.xcodeproj">
@@ -99,7 +99,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "A34DC573208A522E007D1FC3"
+            BlueprintIdentifier = "A391D5CD20AF741000E1391A"
             BuildableName = "LoginTests.xctest"
             BlueprintName = "LoginTests"
             ReferencedContainer = "container:SalesforceMobileSDK-UITest.xcodeproj">
