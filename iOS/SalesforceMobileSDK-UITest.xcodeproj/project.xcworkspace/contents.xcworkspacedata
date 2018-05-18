@@ -2,6 +2,12 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:/Users/bpage/workspace/dev/SalesforceMobileSDK-UITests/iOS/LoginTests/Info.plist">
+   </FileRef>
+   <FileRef
+      location = "group:/Users/bpage/workspace/dev/SalesforceMobileSDK-UITests/iOS/LoginTests/LoginTests.swift">
+   </FileRef>
+   <FileRef
       location = "self:">
    </FileRef>
 </Workspace>
