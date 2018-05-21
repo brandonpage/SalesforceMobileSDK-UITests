@@ -28,6 +28,7 @@ package com.salesforce.mobilesdk.mobilesdkuitest.Login
 
 import PageObjects.*
 import PageObjects.IDPPageOjects.AccountSelectorPageObject
+import PageObjects.IDPPageOjects.IDPAppPageObject
 import TestUtility.IDPTestApplication
 import TestUtility.*
 import android.support.test.InstrumentationRegistry
@@ -71,27 +72,18 @@ class IDPTests {
 
         // In SP App - Tap Login with IDP
         loginPage.tapLaunchIDPApp()
-        //val accountSelector = AccountSelectorPageObject()
-        //accountSelector.tapAddAccount()
-        Thread.sleep(timeout * 2)
 
         // In IDP App
+        Thread.sleep(timeout * 2)
         loginPage.setUsername(username)
         loginPage.setPassword(password)
         loginPage.tapLogin()
         AuthorizationPageObject().tapAllow()
-        Thread.sleep(timeout * 2)
+        Thread.sleep(timeout * 8)
 
-        when (spApp.type) {
-            AppType.NATIVE_JAVA, AppType.NATIVE_KOTLIN ->
-                NativeAppPageObject(spApp).assertAppLoads()
-            AppType.HYBRID_LOCAL ->
-                HybridLocalAppPageObject(spApp).assertAppLoads()
-            AppType.HYBRID_REMOTE ->
-                HybridRemoteAppPageObject(spApp).assertAppLoads()
-            AppType.REACT_NATIVE ->
-                ReactNativeAppPageObject().assertAppLoads()
-        }
+        assertAppLoads(spApp)
+        idpApp.launch()
+        assertAppLoads(idpApp)
     }
 
     /*
@@ -109,7 +101,9 @@ class IDPTests {
         loginPage.tapLogin()
         AuthorizationPageObject().tapAllow()
         Thread.sleep(timeout)
+
         // Assert IDP is logged in
+        assertAppLoads(idpApp)
 
         spApp.launch()
         loginPage.tapLaunchIDPApp()
@@ -117,15 +111,23 @@ class IDPTests {
         accountSelector.tapSelectAccount()
 
         // Wait for Swizzle back to SP App
-        when (spApp.type) {
+        assertAppLoads(spApp)
+    }
+
+    private fun assertAppLoads(app: TestApplication) {
+        when (app.type) {
             AppType.NATIVE_JAVA, AppType.NATIVE_KOTLIN ->
-                NativeAppPageObject(spApp).assertAppLoads()
+                NativeAppPageObject(app).assertAppLoads()
             AppType.HYBRID_LOCAL ->
-                HybridLocalAppPageObject(spApp).assertAppLoads()
+                HybridLocalAppPageObject(app).assertAppLoads()
             AppType.HYBRID_REMOTE ->
-                HybridRemoteAppPageObject(spApp).assertAppLoads()
+                HybridRemoteAppPageObject(app).assertAppLoads()
             AppType.REACT_NATIVE ->
-                ReactNativeAppPageObject().assertAppLoads()
+                ReactNativeAppPageObject(app).assertAppLoads()
+            AppType.IDP ->
+                IDPAppPageObject(app as IDPTestApplication).assertAppLoads()
         }
     }
+
+
 }

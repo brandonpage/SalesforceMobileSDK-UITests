@@ -98,13 +98,12 @@ def generate_app(os, type = nil, template = nil, sfdx = nil)
 
   system('rm -rf tmp*/')
   system('rm -rf Android/app/build/')
-  #system('killall -9 node')
   generate_command = "./SalesforceMobileSDK-Package/test/test_force.js --os=#{os}"
   if type
     UI.header "Generating #{type} App"
     generate_command.concat(" --apptype=#{type}")
   else
-    UI.header 'Generating SP App'
+    UI.header 'Generating IDP App'
     generate_command.concat("  --templaterepouri=#{template}")
   end
 
@@ -316,10 +315,10 @@ end
 def install_ios_app(app_path, release = nil)
   app_name = app_path.split('/').grep(/iosApp/).first
   Dir.chdir(app_path) do
-    UI.header 'Build for Simulator'
+    UI.important 'Build for Simulator'
     silence_output { system("xcodebuild build -scheme #{app_name} -workspace #{app_name}.xcworkspace -sdk iphonesimulator -derivedDataPath ./DerivedData") }
 
-    UI.header 'Installing App on Simulator'
+    UI.important 'Installing App on Simulator'
     system("xcrun simctl install booted ./DerivedData/Build/Products/Debug-iphonesimulator/#{app_name}.app")
   end
 end

@@ -49,7 +49,7 @@ class AccountSelectorPageObject : BasePageObject() {
 
     fun tapAddAccount() {
         var addAccountButton = device.findObject(UiSelector().resourceId("com.salesforce.native_kotlin:id/sf__add_account_button"))
-        assert(addAccountButton.waitForExists(timeout * 2))
+        assert(addAccountButton.waitForExists(timeout * 5))
         addAccountButton.click()
     }
 }

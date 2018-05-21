@@ -34,7 +34,6 @@ import android.support.test.InstrumentationRegistry
  */
 
 class IDPTestApplication : TestApplication() {
-    //override val packageName: String = "com.salesforce.native_kotlin"
     override val packageName: String = InstrumentationRegistry.getArguments().get("idpPackageName") as String
-    override val name: String = "IDP_App"
+    override val name: String = "native_kotlin_androidApp"
 }

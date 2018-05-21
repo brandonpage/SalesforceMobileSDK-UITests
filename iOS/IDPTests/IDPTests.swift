@@ -87,11 +87,8 @@ class IDPTests: XCTestCase {
         case .reactNative:
             let titleElement = spApp.children(matching: .window).element(boundBy: 0).children(matching: .other).element.children(matching: .other)[reactNativeUsers].children(matching: .other)[reactNativeUsers].children(matching: .other)[reactNativeUsers].children(matching: .other)[reactNativeUsers].children(matching: .other)[reactNativeUsers].children(matching: .other)[sampleAppTitle].children(matching: .other)[sampleAppTitle].children(matching: .other)[sampleAppTitle]
             XCTAssert(titleElement.waitForExistence(timeout: timeout), appLoadError)
-        //default:
-        //case .idp:
-        //    break
-        case .idp: break
-            
+        default:
+            break
         }
     }
     
@@ -131,11 +128,8 @@ class IDPTests: XCTestCase {
         case .reactNative:
             let titleElement = spApp.children(matching: .window).element(boundBy: 0).children(matching: .other).element.children(matching: .other)[reactNativeUsers].children(matching: .other)[reactNativeUsers].children(matching: .other)[reactNativeUsers].children(matching: .other)[reactNativeUsers].children(matching: .other)[reactNativeUsers].children(matching: .other)[sampleAppTitle].children(matching: .other)[sampleAppTitle].children(matching: .other)[sampleAppTitle]
             XCTAssert(titleElement.waitForExistence(timeout: timeout), appLoadError)
-        //default:
-        //case .idp:
-        //    break
-        case .idp: break
-            
+        default:
+            break
         }
     }
 }

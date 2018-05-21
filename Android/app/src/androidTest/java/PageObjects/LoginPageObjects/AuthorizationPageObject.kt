@@ -51,7 +51,7 @@ class AuthorizationPageObject : BasePageObject() {
         }
 
         Log.i("uia", "Waiting for allow button to be present.")
-        assert(allowButton.waitForExists(timeout * 5))
+        assert(allowButton.waitForExists(timeout * 3))
         if (isArm) {
             Thread.sleep(timeout)
         }

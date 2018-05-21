@@ -121,5 +121,6 @@ class LoginPageObject : BasePageObject() {
         val launchIDPButton = device.findObject(UiSelector().resourceId("com.salesforce.native_java:id/sf__idp_login_button"))
         assert(launchIDPButton.waitForExists(timeout * 2))
         launchIDPButton.click()
+        Thread.sleep(timeout * 2)
     }
 }

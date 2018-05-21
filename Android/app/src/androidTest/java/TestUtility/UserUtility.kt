@@ -34,6 +34,5 @@ import android.support.test.InstrumentationRegistry
 class UserUtility {
     private var _username = InstrumentationRegistry.getArguments().get("username") as? String
     var username: String = if(_username == null ) "circleci@mobilesdk.com" else _username as String
-    //var password: String = "1234test"
     var password: String = (InstrumentationRegistry.getArguments().get("password") as? String) as String
 }

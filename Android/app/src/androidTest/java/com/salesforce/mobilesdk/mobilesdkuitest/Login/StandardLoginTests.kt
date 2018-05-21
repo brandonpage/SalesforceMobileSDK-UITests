@@ -45,7 +45,6 @@ import org.junit.runner.RunWith
 class StandardLoginTests {
     var app = TestApplication()
     var userUtil = UserUtility()
-    private var device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
     var timeout:Long = 30000
     var username = userUtil.username
     var password = userUtil.password
@@ -72,7 +71,9 @@ class StandardLoginTests {
             AppType.HYBRID_REMOTE ->
                 HybridRemoteAppPageObject(app).assertAppLoads()
             AppType.REACT_NATIVE ->
-                ReactNativeAppPageObject().assertAppLoads()
+                ReactNativeAppPageObject(app).assertAppLoads()
+            else ->
+                Assert.assertTrue("Unexpected App: " + app.type.toString(), false)
         }
     }
 }

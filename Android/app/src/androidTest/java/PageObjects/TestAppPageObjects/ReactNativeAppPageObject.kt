@@ -34,7 +34,7 @@ import org.junit.Assert
  * Created by bpage on 3/6/18.
  */
 
-class ReactNativeAppPageObject : BasePageObject() {
+class ReactNativeAppPageObject(private val app: TestApplication) : BasePageObject() {
 
     init {
         timeout *= 3
