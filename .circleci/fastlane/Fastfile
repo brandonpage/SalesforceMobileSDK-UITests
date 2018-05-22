@@ -46,6 +46,8 @@ lane :ios_idp do |options|
 end
 
 lane :android do |options|
+  Dir.chdir('../../')
+  
   app_path, package_name = base_android_test_setup(options)
   install_android_app(app_path)
   test_class = 'com.salesforce.mobilesdk.mobilesdkuitest.Login.StandardLoginTests'
