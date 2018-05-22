@@ -54,17 +54,18 @@ end
 
 lane :android_idp do |options|
   system('rm -rf ../../tmp*')
+
+  # IDP App
+  idp_template_uri = 'https://github.com/forcedotcom/SalesforceMobileSDK-AuthTemplates/AndroidIDPTemplate'
+  generate_app('android', nil, idp_template_uri, nil)
+  idp_path = Dir.glob("tmp*").sort.last.concat('/native_kotlin_androidApp/')
+  change_connected_app(idp_path,'native_kotlin_androidApp', $idp_consumer_key, $idp_redirect_uri)
+  install_android_app(idp_path)
+
+  # SP App
   app_path, package_name = base_android_test_setup(options)
   enable_android_sp(app_path)
   install_android_app(app_path)
-
-  # IDP App
-  idpTempalateUri = 'https://github.com/forcedotcom/SalesforceMobileSDK-AuthTemplates/AndroidIDPTemplate'
-  generate_app('android', nil, idpTempalateUri, nil)
-  idp_path = Dir.glob("tmp*").sort.last.concat('/native_kotlin_androidApp/')
-  # Change Bundle ID
-  change_connected_app(idp_path,'native_kotlin_androidApp', $idp_consumer_key, $idp_redirect_uri)
-  install_android_app(idp_path)
 
   test_class = 'com.salesforce.mobilesdk.mobilesdkuitest.Login.IDPTests'
   idp_package_name = '-Pandroid.testInstrumentationRunnerArguments.idpPackageName=com.salesforce.native_kotlin'
