@@ -39,7 +39,8 @@ linux: &linux
     - TERM: "dumb"
     - ADB_INSTALL_TIMEOUT: 15
     - JVM_OPTS: -Xmx3200m
-    - _JAVA_OPTIONS: "-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
+    #- _JAVA_OPTIONS: "-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
+    - _JAVA_OPTIONS: “-Xms512m -Xmx3072m”
     - GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx2048m -XX:+HeapDumpOnOutOfMemoryError"'
     - ANDROID_NDK: '/opt/ndk/android-ndk-r10e'
     - BUILD_THREADS: 2

@@ -39,8 +39,7 @@ class TestApplication: XCUIApplication {
     var appType: AppType
     
     override init() {
-        //bundleString = ProcessInfo.processInfo.environment["TEST_APP_BUNDLE"]!
-        bundleString = "com.salesforce.native-iosApp"
+        bundleString = ProcessInfo.processInfo.environment["TEST_APP_BUNDLE"]!
         appType = AppType(rawValue: bundleString)!
         super.init(bundleIdentifier: bundleString)
     }

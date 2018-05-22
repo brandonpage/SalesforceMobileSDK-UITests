@@ -40,7 +40,6 @@ class UserUtility {
     init() {
         let optVal:String? = ProcessInfo.processInfo.environment["USERNAME"]
         defaultUsername = (optVal?.isEmpty)! ? "circleci@mobilesdk.com" : optVal!
-        //defaultPassword = ProcessInfo.processInfo.environment["PASSWORD"]!
-        defaultPassword = "1234test"
+        defaultPassword = ProcessInfo.processInfo.environment["PASSWORD"]!
     }
 }
