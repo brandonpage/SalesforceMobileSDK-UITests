@@ -36,7 +36,7 @@ import android.content.Intent
 open class TestApplication {
     open val packageName: String get() = InstrumentationRegistry.getArguments().get("packageName") as String
     open val name: String get() = packageName.split(".").last().replace("_java", "") + "_androidApp"
-    val type: AppType get() = AppType.valueOf(packageName.split(".").last().toUpperCase())
+    open val type: AppType get() = AppType.valueOf(packageName.split(".").last().toUpperCase())
 
     fun launch() {
         val context = InstrumentationRegistry.getContext()

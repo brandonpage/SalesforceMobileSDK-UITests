@@ -26,6 +26,7 @@
  */
 package TestUtility
 
+import PageObjects.AppType
 import PageObjects.TestApplication
 import android.support.test.InstrumentationRegistry
 
@@ -36,4 +37,5 @@ import android.support.test.InstrumentationRegistry
 class IDPTestApplication : TestApplication() {
     override val packageName: String = InstrumentationRegistry.getArguments().get("idpPackageName") as String
     override val name: String = "native_kotlin_androidApp"
+    override val type: AppType get() = AppType.IDP
 }
