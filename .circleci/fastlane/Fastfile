@@ -53,7 +53,7 @@ lane :android do |options|
 end
 
 lane :android_idp do |options|
-  system('rm -rf ../../tmp*')
+  Dir.chdir('../../')
 
   # IDP App
   idp_template_uri = 'https://github.com/forcedotcom/SalesforceMobileSDK-AuthTemplates/AndroidIDPTemplate'
@@ -169,8 +169,6 @@ end
 # Android Helper Functions
 #
 def base_android_test_setup(options)
-  Dir.chdir('../../')
-
   $password = get_password
   run_type = options[:type]
   UI.user_error!('Please specify run type.') unless(run_type)
@@ -179,7 +177,7 @@ def base_android_test_setup(options)
   package_name = "com.salesforce.#{app_name}"
 
   generate_app('android', run_type, nil, sfdx)
-  path = Dir.glob("tmp*").first.concat("/#{run_type}_androidApp/")
+  path = Dir.glob("tmp*").last.concat("/#{run_type}_androidApp/")
 
   case run_type
     when 'react_native'
