@@ -47,7 +47,7 @@ linux: &linux
 mac: &mac
   working_directory: ~/SalesforceMobileSDK-Package
   macos:
-    xcode: "9.3.0"
+    xcode: "9.4.0"
   shell: /bin/bash --login -eo pipefail
 
 version: 2
@@ -283,6 +283,5 @@ workflows:
                 - master
     jobs:
       - test-android
-      #- test-android-idp
       - test-ios
       - test-ios-idp
