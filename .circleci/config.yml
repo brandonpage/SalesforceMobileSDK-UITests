@@ -29,7 +29,7 @@ aliases:
 
   - &install-ant
     name: Install Ant
-    command: xcrun swift -version && brew install ant
+    command:  brew install ant
 
 linux: &linux
   working_directory: ~/SalesforceMobileSDK-UITest
@@ -276,13 +276,13 @@ workflows:
   weekly-build-all-apps:
     triggers:
       - schedule:
-          cron: "30 19 * * 6"
+          cron: "30 19  * * 6"
           filters:
             branches:
               only:
                 - master
     jobs:
       - test-android
-      - test-android-idp
+      #- test-android-idp
       - test-ios
       - test-ios-idp
