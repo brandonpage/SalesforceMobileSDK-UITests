@@ -9,7 +9,7 @@ aliases:
         libssl-dev \
         libcurl4-gnutls-dev \
         libexpat1-dev \
-        tcl tk \
+        tcl tk \  
         tcl-dev gettext \
         asciidoc \
         docbook2x
@@ -261,6 +261,8 @@ jobs:
           destination: iOS_IDP
       - store_test_results:
           path: test_output/report.junit
+
+
 workflows:
   version: 2
 
@@ -276,7 +278,7 @@ workflows:
   weekly-build-all-apps:
     triggers:
       - schedule:
-          cron: "30 19  * * 6"
+          cron: "30 1 * * 2,3,4,5,6"
           filters:
             branches:
               only:
