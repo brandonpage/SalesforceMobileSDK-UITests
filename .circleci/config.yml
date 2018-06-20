@@ -10,7 +10,7 @@ aliases:
 
   - &downgrade-node-cocoapods
     name: Downgrade Node and Cocoapods
-    command:
+    command:  |
       brew install node@8
       sudo gem install cocoapods -v 1.4
 
