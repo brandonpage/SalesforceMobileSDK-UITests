@@ -4,7 +4,7 @@ aliases:
     command:  |
       git --version
       sudo apt-get install -y software-properties-common
-      sudo add-apt-repository ppa:git-core/ppa
+      sudo add-apt-repository -y ppa:git-core/ppa
       sudo apt-get update
       sudo apt-get install git
       git --version
@@ -14,7 +14,8 @@ aliases:
     command:  |
       brew unlink node
       brew install node@8
-      brew link node@8
+      brew link node@8 --force
+      echo 'export PATH="/usr/local/opt/node@8/bin:$PATH"' >> ~/.bash_profile
       node --version
       gem uninstall cocoapods
       sudo gem install cocoapods -v 1.4
