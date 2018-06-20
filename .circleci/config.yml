@@ -3,23 +3,16 @@ aliases:
     name: Update Git
     command:  |
       git --version
-      sudo apt-get install \
-        build-essential flex bison \
-        libreadline6-dev zlib1g-dev \
-        libssl-dev \
-        libcurl4-gnutls-dev \
-        libexpat1-dev \
-        tcl tk \  
-        tcl-dev gettext \
-        asciidoc \
-        docbook2x
-
-      wget https://www.kernel.org/pub/software/scm/git/git-2.13.0.tar.gz
-      tar -xvzf git-2.13.0.tar.gz
-      cd git-2.13.0
-      sudo ./configure
-      sudo make && sudo make install
+      sudo add-apt-repository ppa:git-core/ppa
+      sudo apt-get update
+      sudo apt-get install git
       git --version
+
+  - &downgrade-node-cocoapods
+    name: Downgrade Node and Cocoapods
+    command:
+      brew install node@8
+      sudo gem install cocoapods -v 1.4
 
   - &setup
     name: Setup
@@ -185,6 +178,7 @@ jobs:
       - checkout
       - run: *setup
       - run: *install-ant
+      - run: *downgrade-node-cocoapods
 
       - run:
           name: Test Native Objective-C App
@@ -248,6 +242,7 @@ jobs:
       - checkout
       - run: *setup
       - run: *install-ant
+      - run: *downgrade-node-cocoapods
       - run:
           name: Test IDP
           command: cd .circleci && fastlane ios_idp type:native
