@@ -54,7 +54,7 @@ linux: &linux
     - GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx2048m -XX:+HeapDumpOnOutOfMemoryError"'
 
 mac: &mac
-  working_directory: ~/SalesforceMobileSDK-Package
+  working_directory: ~/SalesforceMobileSDK-UITest
   macos:
     xcode: "10.2.1"
   shell: /bin/bash --login -eo pipefail
@@ -65,16 +65,8 @@ jobs:
     <<: *linux
     steps:
       - checkout
-      - run:
-          name: Start Emulator
-          command: source .circleci/avd_helper.sh && startAVD
-          background: true
       - run: *upgrade-git
       - run: *setup
-      - run:
-          name: Building all android native templates
-          command:  ./test/test_force.js --exit-on-failure --cli=forcedroid
-          when: always
       - run: *gcloud-auth
       - run: 
           name: Test Native Android

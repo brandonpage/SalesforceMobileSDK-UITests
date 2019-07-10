@@ -7,14 +7,13 @@ fi
 
 if [ -n "$CIRCLECI" ]; then
     sudo npm install -g cordova@8.1.2
-    sudo npm install -g sfdx-cli
+    #sudo npm install -g sfdx-cli
 else
     npm install -g cordova@8.1.2
-    npm install -g sfdx-cli
+    gem install --no-document fastlane
+    #npm install -g sfdx-cli
 fi
 
 cordova telemetry off
-gem install --no-document fastlane
-
 git clone --branch dev --single-branch --depth 1 https://github.com/forcedotcom/SalesforceMobileSDK-Package.git
 cd SalesforceMobileSDK-Package && node ./install.js
