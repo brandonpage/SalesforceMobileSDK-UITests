@@ -261,7 +261,7 @@ def run_android_tests_firebase(test_class, package_name, app_path, addition_ops 
       --results-dir=UITest-Local-${CIRCLE_BUILD_NUM}  \
       --results-history-name=UITest-Local  \
       --timeout 10m  \
-      -—environment-variables class=#{test_class},packageName=#{packageName},password=#{password}")
+      -—environment-variables class=#{test_class},packageName=#{package_name},password=#{password}")
   end
 end
 
@@ -374,7 +374,8 @@ def run_ios_tests(bundle_name, test_scheme, xcargs = nil)
         xcargs: "'TEST_APP_BUNDLE=#{bundle_name}' 'PASSWORD=#{$password}' #{xcargs_string}"
       )
     ensure
-      system("xcrun simctl shutdown #{$sim_name}")
+      # TODO: uncomment!
+      #system("xcrun simctl shutdown #{$sim_name}")
     end
   end
 end
