@@ -26,7 +26,7 @@
  */
 package PageObjects
 
-import android.support.test.uiautomator.UiSelector
+import androidx.test.uiautomator.UiSelector
 import android.util.Log
 import org.junit.Assert
 

@@ -26,7 +26,7 @@
  */
 package PageObjects
 
-import android.support.test.uiautomator.UiSelector
+import androidx.test.uiautomator.UiSelector
 import org.junit.Assert
 
 /**
@@ -39,6 +39,6 @@ class HybridRemoteAppPageObject(private val app: TestApplication) : BasePageObje
         val title = device.findObject(UiSelector().className("android.view.View").descriptionContains("Salesforce Mobile SDK Test"))
         title.waitForExists(timeout)
         Thread.sleep(timeout / 2)
-        Assert.assertEquals("App did not successfully testLogin.", "Salesforce Mobile SDK Test", title.contentDescription)
+        Assert.assertEquals("App did not successfully login.", "Salesforce Mobile SDK Test", title.contentDescription)
     }
 }

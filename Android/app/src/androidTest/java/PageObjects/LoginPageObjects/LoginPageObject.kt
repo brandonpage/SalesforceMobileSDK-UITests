@@ -27,7 +27,7 @@
 package PageObjects
 
 import android.os.Build
-import android.support.test.uiautomator.UiSelector
+import androidx.test.uiautomator.UiSelector
 import android.util.Log
 
 /**

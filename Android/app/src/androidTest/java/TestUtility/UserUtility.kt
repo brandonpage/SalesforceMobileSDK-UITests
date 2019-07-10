@@ -26,7 +26,7 @@
  */
 package TestUtility
 
-import android.support.test.InstrumentationRegistry
+import androidx.test.platform.app.InstrumentationRegistry
 
 /**
  * Created by bpage on 2/28/18.

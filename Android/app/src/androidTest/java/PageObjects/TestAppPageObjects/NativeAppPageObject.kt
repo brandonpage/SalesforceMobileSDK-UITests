@@ -26,7 +26,7 @@
  */
 package PageObjects
 
-import android.support.test.uiautomator.UiSelector
+import androidx.test.uiautomator.UiSelector
 import org.junit.Assert
 
 /**
@@ -39,6 +39,6 @@ class NativeAppPageObject(private val app: TestApplication) : BasePageObject() {
         if (isArm) {
             titleBar.waitForExists(timeout * 10)
         }
-        Assert.assertEquals("App did not successfully testLogin.", app.name, titleBar.text)
+        Assert.assertEquals("App did not successfully login.", app.name, titleBar.text)
     }
 }

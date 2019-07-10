@@ -26,7 +26,7 @@
  */
 package PageObjects
 
-import android.support.test.uiautomator.*
+import androidx.test.uiautomator.*
 import android.util.Log
 
 /**

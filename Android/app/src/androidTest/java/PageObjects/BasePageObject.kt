@@ -27,15 +27,15 @@
 package PageObjects
 
 import android.os.Build
-import android.support.test.InstrumentationRegistry
-import android.support.test.uiautomator.UiDevice
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.uiautomator.UiDevice
 
 /**
  * Created by bpage on 2/24/18.
  */
 open class BasePageObject {
     val device: UiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-    // FIXME Update when min verison increaes past API 23
+    // TODO: Update when min verison increaes past API 23
     val isOldDevice: Boolean = (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M)
     // FIXME Update this when we stop using ARM Emulators
     val isArm = Build.SUPPORTED_ABIS.first().contains("armeabi")

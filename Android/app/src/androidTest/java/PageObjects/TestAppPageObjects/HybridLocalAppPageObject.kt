@@ -26,7 +26,7 @@
  */
 package PageObjects
 
-import android.support.test.uiautomator.UiSelector
+import androidx.test.uiautomator.UiSelector
 import org.junit.Assert
 
 /**
@@ -35,8 +35,9 @@ import org.junit.Assert
 class HybridLocalAppPageObject(private val app: TestApplication) : BasePageObject() {
 
     fun assertAppLoads() {
-        val title = device.findObject(UiSelector().className("android.view.View").descriptionContains("Users"))
+        val title = device.findObject(UiSelector().className("android.view.View").descriptionContains("Contacts"))
         title.waitForExists(timeout)
-        Assert.assertEquals("App did not successfully testLogin.", "Users", title.contentDescription)
+        Assert.assertEquals("App did not successfully login.", "Contacts", title.contentDescription)
+
     }
 }

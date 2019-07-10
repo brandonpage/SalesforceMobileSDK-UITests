@@ -6,10 +6,10 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
 fi
 
 if [ -n "$CIRCLECI" ]; then
-    sudo npm install -g cordova@8.0.0
+    sudo npm install -g cordova@8.1.2
     sudo npm install -g sfdx-cli
 else
-    npm install -g cordova@8.0.0
+    npm install -g cordova@8.1.2
     npm install -g sfdx-cli
 fi
 
