@@ -252,7 +252,7 @@ def run_android_tests_firebase(test_class, package_name, app_path, addition_ops 
     UI.header 'Run Tests'
 
     buildResult = system("./gradlew app:assembleAndroidTest")
-    UI.crash!('Tests failed to build.') unless buildResult
+    UI.error('Tests failed to build.') unless buildResult
     testResult = system("gcloud firebase test android run \
       --project mobile-apps-firebase-test \
       --type instrumentation \
@@ -263,7 +263,7 @@ def run_android_tests_firebase(test_class, package_name, app_path, addition_ops 
       --results-history-name=UITest-Local  \
       --timeout 10m  \
       --environment-variables class=#{test_class},packageName=#{package_name},password=#{$password}")
-      UI.crash!('Tests failed.') unless testResult
+      UI.error('Tests failed.') unless testResult
   end
 end
 
