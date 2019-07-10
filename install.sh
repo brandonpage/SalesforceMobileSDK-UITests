@@ -3,17 +3,13 @@
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     sudo apt-get update
     sudo apt-get install libqt5widgets5
-fi
-
-if [ -n "$CIRCLECI" ]; then
     sudo npm install -g cordova@8.1.2
-    #sudo npm install -g sfdx-cli
+    sudo cordova telemetry off
+    gem install --no-document fastlane
 else
     npm install -g cordova@8.1.2
-    gem install --no-document fastlane
-    #npm install -g sfdx-cli
+    cordova telemetry off
 fi
 
-cordova telemetry off
 git clone --branch dev --single-branch --depth 1 https://github.com/forcedotcom/SalesforceMobileSDK-Package.git
 cd SalesforceMobileSDK-Package && node ./install.js
