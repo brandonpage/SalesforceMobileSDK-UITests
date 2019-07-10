@@ -3,6 +3,7 @@ aliases:
     name: Update Git
     command:  |
       git --version
+      sudo apt-get update
       sudo apt-get install \
         build-essential flex bison \
         libreadline6-dev zlib1g-dev \
@@ -144,7 +145,7 @@ workflows:
   pr-build-all-apps:
     jobs:
       - test-android
-      - test-ios
+      #- test-ios
 
   # Cron are on a timezone 8 hours ahead of PST
   # Build everything on Saturday Afternoon
