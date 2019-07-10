@@ -258,8 +258,8 @@ def run_android_tests_firebase(test_class, package_name, app_path, addition_ops 
       --app #{app_path}/build/outputs/apk/debug/app-debug.apk \
       --test app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk \
       --device model=NexusLowRes,version=27,locale=en,orientation=portrait  \
-      --results-dir=${CURRENT_LIB}-${CIRCLE_BUILD_NUM}  \
-      --results-history-name=${CURRENT_LIB}  \
+      --results-dir=UITest-Local-${CIRCLE_BUILD_NUM}  \
+      --results-history-name=UITest-Local  \
       --timeout 10m  \
       -—environment-variables class=#{test_class},packageName=#{packageName},password=#{password}")
   end
