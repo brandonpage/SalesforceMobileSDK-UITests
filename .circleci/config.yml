@@ -105,6 +105,7 @@ jobs:
       - run:
           name: Run Java Tests
           command: cd .circleci && fastlane android type:native
+          when: always
           no_output_timeout: 900
       - store_artifacts:
           path: Android/app/build/reports/androidTests/connected/*
@@ -114,6 +115,7 @@ jobs:
       - run:
           name: Run Kotlin Tests
           command: cd .circleci && fastlane android type:native_kotlin
+          when: always
           no_output_timeout: 900
       - store_artifacts:
           path: Android/app/build/reports/androidTests/connected/*
@@ -123,6 +125,7 @@ jobs:
       - run:
           name: Run Hybird Local Tests
           command: cd .circleci && fastlane android type:hybrid_local
+          when: always
           no_output_timeout: 900
       - store_artifacts:
           path: Android/app/build/reports/androidTests/connected/*
@@ -132,6 +135,7 @@ jobs:
       - run:
           name: Run Hybrid Remote Tests
           command: cd .circleci && fastlane android type:hybrid_remote
+          when: always
           no_output_timeout: 900
       - store_artifacts:
           path: Android/app/build/reports/androidTests/connected/*
