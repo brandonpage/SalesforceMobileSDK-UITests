@@ -51,11 +51,11 @@ lane :android do |options|
   app_path, package_name = base_android_test_setup(options)
   install_android_app(app_path)
   test_class = 'com.salesforce.mobilesdk.mobilesdkuitest.Login.LoginTests'
-  if $is_ci
-    run_android_tests_firebase(test_class, package_name, app_path)
-  else  
+  #if $is_ci
+  #  run_android_tests_firebase(test_class, package_name, app_path)
+  #else  
     run_android_tests(test_class, package_name)
-  end
+  #end
 end
 
 lane :android_idp do |options|
