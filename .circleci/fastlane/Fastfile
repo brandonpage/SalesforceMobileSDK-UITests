@@ -204,6 +204,7 @@ def base_android_test_setup(options)
 end
 
 def install_android_app(appPath, release = nil)
+  puts "App Path: #{appPath}"
   apkPath = 'debug/app-debug.apk'
   Dir.chdir(appPath) do
     #if release
@@ -211,8 +212,9 @@ def install_android_app(appPath, release = nil)
     #  `./gradlew assembleRelease`
     #  apkPath = 'release/app-release-unsigned.apk'
     #else
-      UI.important 'Building Debug APK'
-      `./gradlew assembleDebug`
+    UI.important 'Building Debug APK'
+    buildResult = system("./gradlew assembleDebug")
+    UI.build_failure!('Tests failed to build.') unless buildResult
     #end
 
     #unless $is_ci
@@ -239,7 +241,7 @@ def run_android_tests(test_class, package_name, addition_ops = nil)
     begin
        result = system("./gradlew #{class_param} #{package_param} #{password_param} #{addition_ops} connectedAndroidTest")
     ensure
-      system("adb uninstall #{package_name}")
+      system("$ANDROID_HOME/platform-tools/adb uninstall #{package_name}")
       UI.test_failure!('Tests failed.') unless(result)
     end
   end
