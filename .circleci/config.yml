@@ -104,7 +104,7 @@ jobs:
             echo 'export ANDROID_SDK_HOME="/usr/local/share/android-sdk"' >> $BASH_ENV
             echo 'export ANDROID_SDK_ROOT="/usr/local/share/android-sdk"' >> $BASH_ENV
             echo 'export QEMU_AUDIO_DRV=none' >> $BASH_ENV
-            echo 'export JAVA_HOME=/Library/Java/Home' >> $BASH_ENV
+            echo 'export JAVA_HOME=/Library/Java/JavaVirtualMachines/adoptopenjdk-8.jre/Contents/Home/' >> $BASH_ENV
       - run:
           name: Install Android sdk
           command: |
@@ -118,11 +118,14 @@ jobs:
           command: |
             cd Android
             ./gradlew androidDependencies
-      - run: avdmanager create avd -n Pixel_2_API_26 -k "system-images;android-26;google_apis;x86" -g google_apis -d "Nexus 5"
+      - run: 
+          name: Create AVD
+          command: avdmanager create avd -n Pixel_2_API_26 -k "system-images;android-26;google_apis;x86" -g google_apis -d "Nexus 5"
       - run:
           name: Run emulator in background
           command: /usr/local/share/android-sdk/tools/emulator @Pixel_2_API_26 -skin 1080x2066 -memory 2048 -noaudio
           background: true
+      - run: *setup
       - run:
           name: Run Tests
           command: cd .circleci && fastlane android type:native
