@@ -59,16 +59,21 @@ mac: &mac
   macos:
     xcode: "10.2.1"
   shell: /bin/bash --login -eo pipefail
+
+mac_android: &mac_android
+  working_directory: ~/SalesforceMobileSDK-UITest
+  macos:
+    xcode: "10.2.1"
+  shell: /bin/bash --login -eo pipefail
   environment:
     - TERM: dumb
     - ADB_INSTALL_TIMEOUT: 15
     - GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx2048m -XX:+HeapDumpOnOutOfMemoryError"'
-    - FASTLANE_SKIP_UPDATE_CHECK: true
 
 version: 2
 jobs:
   test-android:
-    <<: *mac
+    <<: *mac_android
     steps:
       - checkout
       - run:
@@ -220,8 +225,8 @@ workflows:
       #    context: android-api-21
       - test-ios:
           context: ios-max-version
-      - test-ios:
-          context: ios-min-version
+      #- test-ios:
+      #    context: ios-min-version
 
   # Cron are on a timezone 8 hours ahead of PST
   # Build everything on Saturday Afternoon
