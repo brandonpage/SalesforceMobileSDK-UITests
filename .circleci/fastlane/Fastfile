@@ -216,9 +216,9 @@ def install_android_app(appPath, release = nil)
     #end
 
     #unless $is_ci
-    #  UI.important 'Installing App on Emulator'
-    #  result = `adb install -r app/build/outputs/apk/#{apkPath}`.split("\n").last.delete("\r")
-    #  UI.user_error!("APK did not install successfully. \n\nError: #{result}") unless(result.eql? 'Success')
+    UI.important 'Installing App on Emulator'
+    result = `adb install -r app/build/outputs/apk/#{apkPath}`.split("\n").last.delete("\r")
+    UI.build_failure!("APK did not install successfully. \n\nError: #{result}") unless(result.eql? 'Success')
     #end
   end
 end
@@ -240,7 +240,7 @@ def run_android_tests(test_class, package_name, addition_ops = nil)
        result = system("./gradlew #{class_param} #{package_param} #{password_param} #{addition_ops} connectedAndroidTest")
     ensure
       system("adb uninstall #{package_name}")
-      UI.user_error!('Tests failed.') unless(result)
+      UI.test_failure!('Tests failed.') unless(result)
     end
   end
 end
