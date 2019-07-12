@@ -89,6 +89,7 @@ jobs:
       - run:
           name: Install emulator dependencies
           command: (yes | sdkmanager "platform-tools" "platforms;android-26" "extras;intel;Hardware_Accelerated_Execution_Manager" "build-tools;26.0.0" "system-images;android-26;google_apis;x86" "emulator" --verbose) || true
+          #command: (yes | sdkmanager "platform-tools" "platforms;android-${API_VERSION}" "extras;intel;Hardware_Accelerated_Execution_Manager" "build-tools;${API_VERSION}.0.0" "system-images;android-${API_VERSION};google_apis;x86" "emulator" --verbose) || true
       - run:
           name: Download Android Dependencies
           command: |
@@ -97,9 +98,11 @@ jobs:
       - run: 
           name: Create AVD
           command: avdmanager create avd -n Pixel_2_API_26 -k "system-images;android-26;google_apis;x86" -g google_apis -d "Nexus 5"
+          #command: avdmanager create avd -n "${DEVICE}_API_${API_VERSION}" -k "system-images;android-${API_VERSION};google_apis;x86" -g google_apis -d "Nexus 5"
       - run:
           name: Run emulator in background
           command: /usr/local/share/android-sdk/tools/emulator @Pixel_2_API_26 -skin 1080x2066 -memory 2048 -noaudio
+          #command: /usr/local/share/android-sdk/tools/emulator "@${DEVICE}_API_${API_VERSION}" -skin 1080x2066 -memory 2048 -noaudio
           background: true
       - run: *setup
       - run:
@@ -208,7 +211,17 @@ workflows:
   pr-build-all-apps:
     jobs:
       - test-android
-      #- test-ios
+      #    context: android-api-28
+      #- test-android
+      #    context: android-api-25
+      #- test-android
+      #    context: android-api-23
+      #- test-android
+      #    context: android-api-21
+      - test-ios
+          context: ios-max-version
+      - test-ios
+          context: ios-min-version
 
   # Cron are on a timezone 8 hours ahead of PST
   # Build everything on Saturday Afternoon
