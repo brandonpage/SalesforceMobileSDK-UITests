@@ -218,9 +218,9 @@ workflows:
       #    context: android-api-23
       #- test-android
       #    context: android-api-21
-      - test-ios
+      - test-ios:
           context: ios-max-version
-      - test-ios
+      - test-ios:
           context: ios-min-version
 
   # Cron are on a timezone 8 hours ahead of PST
