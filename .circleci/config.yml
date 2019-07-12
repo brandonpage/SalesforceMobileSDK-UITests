@@ -59,41 +59,16 @@ mac: &mac
   macos:
     xcode: "10.2.1"
   shell: /bin/bash --login -eo pipefail
-
-mac_android: &mac_android
-  working_directory: ~/SalesforceMobileSDK-UITest
-  macos:
-    xcode: "10.2.1"
-  shell: /bin/bash --login -eo pipefail
   environment:
     - TERM: dumb
     - ADB_INSTALL_TIMEOUT: 15
     - GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx2048m -XX:+HeapDumpOnOutOfMemoryError"'
+    - FASTLANE_SKIP_UPDATE_CHECK: true
 
 version: 2
 jobs:
-  #test-android:
-  #  <<: *linux
-  #  steps:
-  #    - checkout
-  #    - run: *upgrade-git
-  #    - run: *setup
-  #    - run: *gcloud-auth
-  #    - run: 
-  #        name: Test Native Android
-  #        command: cd .circleci && fastlane android type:native
-  #        when: always
-  #        no_output_timeout: 900
-  #    - run: *get-firebase-results
-  #    - store_artifacts:
-  #        path: firebase/
-  #        when: always
-  #    - store_test_results:
-  #        path: firebase/results
-  #        when: always
-
   test-android:
-    <<: *mac_android
+    <<: *mac
     steps:
       - checkout
       - run:
@@ -128,9 +103,41 @@ jobs:
           background: true
       - run: *setup
       - run:
-          name: Run Tests
+          name: Run Java Tests
           command: cd .circleci && fastlane android type:native
           no_output_timeout: 900
+      - store_artifacts:
+          path: Android/app/build/reports/androidTests/connected/*
+          destination: native_Java
+      - store_test_results:
+          path: Android/app/build/reports/androidTests/connected/com.salesforce.mobilesdk.mobilesdkuitest.Login.html
+      - run:
+          name: Run Kotlin Tests
+          command: cd .circleci && fastlane android type:native_kotlin
+          no_output_timeout: 900
+      - store_artifacts:
+          path: Android/app/build/reports/androidTests/connected/*
+          destination: native_kotlin
+      - store_test_results:
+          path: Android/app/build/reports/androidTests/connected/com.salesforce.mobilesdk.mobilesdkuitest.Login.html
+      - run:
+          name: Run Hybird Local Tests
+          command: cd .circleci && fastlane android type:hybrid_local
+          no_output_timeout: 900
+      - store_artifacts:
+          path: Android/app/build/reports/androidTests/connected/*
+          destination: hybrid_local
+      - store_test_results:
+          path: Android/app/build/reports/androidTests/connected/com.salesforce.mobilesdk.mobilesdkuitest.Login.html
+      - run:
+          name: Run Hybrid Remote Tests
+          command: cd .circleci && fastlane android type:hybrid_remote
+          no_output_timeout: 900
+      - store_artifacts:
+          path: Android/app/build/reports/androidTests/connected/*
+          destination: hybrid_remote
+      - store_test_results:
+          path: Android/app/build/reports/androidTests/connected/com.salesforce.mobilesdk.mobilesdkuitest.Login.html
 
   test-ios:
       <<: *mac
