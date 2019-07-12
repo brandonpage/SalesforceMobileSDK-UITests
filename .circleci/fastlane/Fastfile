@@ -219,6 +219,7 @@ def install_android_app(appPath, release = nil)
 
     #unless $is_ci
     UI.important 'Installing App on Emulator'
+    system("$ANDROID_HOME/platform-tools/adb uninstall #{package_name}")
     result = `$ANDROID_HOME/platform-tools/adb install -r app/build/outputs/apk/#{apkPath}`.split("\n").last.delete("\r")
     UI.build_failure!("APK did not install successfully. \n\nError: #{result}") unless(result.eql? 'Success')
     #end
