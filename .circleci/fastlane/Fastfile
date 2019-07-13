@@ -213,9 +213,9 @@ def install_android_app(appPath, release = nil)
     #  `./gradlew assembleRelease`
     #  apkPath = 'release/app-release-unsigned.apk'
     #else
-    UI.important 'Building Debug APK'
-    buildResult = system("./gradlew assembleDebug")
-    UI.build_failure!('Tests failed to build.') unless buildResult
+    #UI.important 'Building Debug APK'
+    #buildResult = system("./gradlew assembleDebug")
+    #UI.build_failure!('Tests failed to build.') unless buildResult
     #end
 
     #unless $is_ci
