@@ -39,5 +39,5 @@ open class BasePageObject {
     val isOldDevice: Boolean = (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M)
     // FIXME Update this when we stop using ARM Emulators
     val isArm = Build.SUPPORTED_ABIS.first().contains("armeabi")
-    var timeout:Long = if (isArm) 30000 else 5000
+    var timeout:Long = if (isArm) 30000 else 25000
 }
