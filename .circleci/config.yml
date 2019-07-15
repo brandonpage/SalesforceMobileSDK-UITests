@@ -69,6 +69,7 @@ mac_android: &mac_android
     - TERM: dumb
     - ADB_INSTALL_TIMEOUT: 15
     - GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx2048m -XX:+HeapDumpOnOutOfMemoryError"'
+    - JVM_OPTS: -Xmx3200m
 
 version: 2
 jobs:
