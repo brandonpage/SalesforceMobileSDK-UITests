@@ -240,6 +240,7 @@ def run_android_tests(test_class, package_name, addition_ops = nil)
     UI.header 'Run Tests Locally'
     
     begin
+       system("/usr/local/share/android-sdk/platform-tools/adb shell dumpsys window windows | grep -E 'mCurrentFocus|mFocusedApp'")
        result = system("./gradlew #{class_param} #{package_param} #{password_param} #{addition_ops} connectedAndroidTest")
     ensure
       system("$ANDROID_HOME/platform-tools/adb uninstall #{package_name}")
