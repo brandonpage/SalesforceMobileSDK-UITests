@@ -113,22 +113,24 @@ jobs:
       - run: 
           name: Check AVD network status
           command: |
-            adb shell dumpsys telephony.registry
-            adb shell dumpsys connectivity
-            adb shell dumpsys wifi
-            adb shell dumpsys wifi | grep "mNetworkInfo"
-            adb shell ping www.google.com
+            $ANDROID_HOME/platform-tools/adb shell dumpsys telephony.registry
+            $ANDROID_HOME/platform-tools/adb shell dumpsys connectivity
+            $ANDROID_HOME/platform-tools/adb shell dumpsys wifi
+            $ANDROID_HOME/platform-tools/adb shell dumpsys wifi | grep "mNetworkInfo"
+            $ANDROID_HOME/platform-tools/adb shell ping www.google.com
+          when: always
       - run: 
           name: Fix dns
           command: networksetup -setdnsservers Wi-Fi 8.8.8.8
+          when: always
       - run: 
           name: Check AVD network status (again)
           command: |
-            adb shell dumpsys telephony.registry
-            adb shell dumpsys connectivity
-            adb shell dumpsys wifi
-            adb shell dumpsys wifi | grep "mNetworkInfo"
-            adb shell ping www.google.com
+            $ANDROID_HOME/platform-tools/adb shell dumpsys telephony.registry
+            $ANDROID_HOME/platform-tools/adb shell dumpsys connectivity
+            $ANDROID_HOME/platform-tools/adb shell dumpsys wifi
+            $ANDROID_HOME/platform-tools/adb shell dumpsys wifi | grep "mNetworkInfo"
+            $ANDROID_HOME/platform-tools/adb shell ping www.google.com
       - run:
           name: Run Java Tests
           command: cd .circleci && fastlane android type:native
