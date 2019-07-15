@@ -39,6 +39,10 @@ class LoginPageObject : BasePageObject() {
 
     init {
         registerCrashWatcher()
+
+        // Trigger Watcher if necessary
+        device.findObject(UiSelector().className("bogus")).waitForExists(1)
+
         if (isOldDevice) {
             device.findObject(UiSelector().className("android.widget.EditText").index(2)).waitForExists(120000)
         }
@@ -109,7 +113,7 @@ class LoginPageObject : BasePageObject() {
         loginButton.click()
     }
 
-    fun registerCrashWatcher() {
+    private fun registerCrashWatcher() {
         device.registerWatcher("NotResponding") {
             val notRespondingWindow = UiObject(UiSelector().className("com.android.server.am.AppNotRespondingDialog"))
             if (notRespondingWindow.exists()) {
@@ -151,7 +155,7 @@ class LoginPageObject : BasePageObject() {
         }
     }
 
-    fun recover() {
+    private fun recover() {
         Log.d("UITest", "Ui Crash Watcher, recovery attempt")
         val buttonStrings = mutableListOf("Close app", "OK", "Force close", "Wait", "Yes", "Dismiss", "No")
         var button : UiObject

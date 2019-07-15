@@ -113,9 +113,9 @@ jobs:
           command: |
             cd Android
             ./gradlew androidDependencies
-      - run: 
-          name: Reboot AVD
-          command: $ANDROID_HOME/platform-tools/adb reboot
+      #- run: 
+       #   name: Reboot AVD
+        #  command: $ANDROID_HOME/platform-tools/adb reboot
       - run: *setup
       - run:
           name: Run Java Tests
