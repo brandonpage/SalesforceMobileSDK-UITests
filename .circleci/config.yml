@@ -95,11 +95,6 @@ jobs:
           name: Install emulator dependencies
           command: (yes | sdkmanager "platform-tools" "platforms;android-26" "extras;intel;Hardware_Accelerated_Execution_Manager" "build-tools;26.0.0" "system-images;android-26;google_apis;x86" "emulator" --verbose) || true
           #command: (yes | sdkmanager "platform-tools" "platforms;android-${API_VERSION}" "extras;intel;Hardware_Accelerated_Execution_Manager" "build-tools;${API_VERSION}.0.0" "system-images;android-${API_VERSION};google_apis;x86" "emulator" --verbose) || true
-      - run:
-          name: Download Android Dependencies
-          command: |
-            cd Android
-            ./gradlew androidDependencies
       - run: 
           name: Create AVD
           command: avdmanager create avd -n Pixel_2_API_26 -k "system-images;android-26;google_apis;x86" -g google_apis -d "Nexus 5"
@@ -109,6 +104,11 @@ jobs:
           command: /usr/local/share/android-sdk/tools/emulator @Pixel_2_API_26 -skin 1080x2066 -memory 2048 -noaudio
           #command: /usr/local/share/android-sdk/tools/emulator "@${DEVICE}_API_${API_VERSION}" -skin 1080x2066 -memory 2048 -noaudio
           background: true
+      - run:
+          name: Download Android Dependencies
+          command: |
+            cd Android
+            ./gradlew androidDependencies
       - run: *setup
       - run:
           name: Run Java Tests
