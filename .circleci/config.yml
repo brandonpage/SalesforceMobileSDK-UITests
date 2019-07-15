@@ -101,7 +101,7 @@ jobs:
           #command: avdmanager create avd -n "${DEVICE}_API_${API_VERSION}" -k "system-images;android-${API_VERSION};google_apis;x86" -g google_apis -d "Nexus 5"
       - run:
           name: Run emulator in background
-          command: /usr/local/share/android-sdk/tools/emulator @Pixel_2_API_26 -skin 1080x2066 -memory 2048 -noaudio
+          command: /usr/local/share/android-sdk/tools/emulator @Pixel_2_API_26 -skin 1080x2066 -memory 2048 -dns-server 8.8.8.8,8.8.4.4 -noaudio 
           #command: /usr/local/share/android-sdk/tools/emulator "@${DEVICE}_API_${API_VERSION}" -skin 1080x2066 -memory 2048 -noaudio
           background: true
       - run:
@@ -110,9 +110,6 @@ jobs:
             cd Android
             ./gradlew androidDependencies
       - run: *setup
-      - run:
-          name: Fix emulator Internet Access
-          command: $ANDROID_HOME/emulator/emulator -avd Pixel_2_API_26 -dns-server 8.8.8.8,8.8.4.4
       - run:
           name: Run Java Tests
           command: cd .circleci && fastlane android type:native
