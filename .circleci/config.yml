@@ -105,7 +105,7 @@ jobs:
             $ANDROID_HOME/platform-tools/adb start-server
       - run:
           name: Run emulator in background
-          command: /usr/local/share/android-sdk/emulator/emulator @Pixel_2_API_28 -skin 1080x2066 -memory 2048 -noaudio 
+          command: /usr/local/share/android-sdk/emulator/emulator @Pixel_2_API_28 -memory 2048 -noaudio 
           #command: /usr/local/share/android-sdk/emulator/emulator "@${DEVICE}_API_${API_VERSION}" -skin 1080x2066 -memory 2048 -noaudio
           background: true
       - run:
@@ -113,6 +113,9 @@ jobs:
           command: |
             cd Android
             ./gradlew androidDependencies
+      - run: 
+          name: Reboot AVD
+          command: $ANDROID_HOME/platform-tools/adb reboot
       - run: *setup
       - run:
           name: Run Java Tests
