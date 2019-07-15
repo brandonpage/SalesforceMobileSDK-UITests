@@ -98,6 +98,11 @@ jobs:
           name: Create AVD
           command: avdmanager create avd -n Pixel_2_API_26 -k "system-images;android-26;google_apis;x86" -g google_apis -d "Nexus 5"
           #command: avdmanager create avd -n "${DEVICE}_API_${API_VERSION}" -k "system-images;android-${API_VERSION};google_apis;x86" -g google_apis -d "Nexus 5"
+      - run: 
+          name: Restart ADB to fix AVD Network Connection
+          command: |
+            $ANDROID_HOME/platform-tools/adb kill-server
+            $ANDROID_HOME/platform-tools/adb start-server
       - run:
           name: Run emulator in background
           command: /usr/local/share/android-sdk/tools/emulator @Pixel_2_API_26 -skin 1080x2066 -memory 2048 -dns-server 8.8.8.8,8.8.4.4 -noaudio 
@@ -109,28 +114,6 @@ jobs:
             cd Android
             ./gradlew androidDependencies
       - run: *setup
-      - run: 
-          name: Check AVD network status
-          command: |
-            $ANDROID_HOME/platform-tools/adb shell dumpsys telephony.registry
-            $ANDROID_HOME/platform-tools/adb shell dumpsys connectivity
-            $ANDROID_HOME/platform-tools/adb shell dumpsys wifi
-            $ANDROID_HOME/platform-tools/adb shell dumpsys wifi | grep "mNetworkInfo"
-            $ANDROID_HOME/platform-tools/adb shell ping www.google.com
-          when: always
-      - run: 
-          name: Fix dns
-          command: networksetup -setdnsservers Wi-Fi 8.8.8.8
-          when: always
-      - run: 
-          name: Check AVD network status (again)
-          command: |
-            $ANDROID_HOME/platform-tools/adb shell dumpsys telephony.registry
-            $ANDROID_HOME/platform-tools/adb shell dumpsys connectivity
-            $ANDROID_HOME/platform-tools/adb shell dumpsys wifi
-            $ANDROID_HOME/platform-tools/adb shell dumpsys wifi | grep "mNetworkInfo"
-            $ANDROID_HOME/platform-tools/adb shell ping www.google.com
-          when: always
       - run:
           name: Run Java Tests
           command: cd .circleci && fastlane android type:native
