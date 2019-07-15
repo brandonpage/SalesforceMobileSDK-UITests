@@ -111,6 +111,9 @@ jobs:
             ./gradlew androidDependencies
       - run: *setup
       - run:
+          name: Fix emulator Internet Access
+          command: emulator -avd Pixel_2_API_26 -dns-server 8.8.8.8,8.8.4.4
+      - run:
           name: Run Java Tests
           command: cd .circleci && fastlane android type:native
           when: always
