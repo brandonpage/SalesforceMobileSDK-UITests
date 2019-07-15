@@ -110,6 +110,25 @@ jobs:
             cd Android
             ./gradlew androidDependencies
       - run: *setup
+      - run: 
+          name: Check AVD network status
+          command: |
+            adb shell dumpsys telephony.registry
+            adb shell dumpsys connectivity
+            adb shell dumpsys wifi
+            adb shell dumpsys wifi | grep "mNetworkInfo"
+            adb shell ping www.google.com
+      - run: 
+          name: Fix dns
+          command: networksetup -setdnsservers Wi-Fi 8.8.8.8
+      - run: 
+          name: Check AVD network status (again)
+          command: |
+            adb shell dumpsys telephony.registry
+            adb shell dumpsys connectivity
+            adb shell dumpsys wifi
+            adb shell dumpsys wifi | grep "mNetworkInfo"
+            adb shell ping www.google.com
       - run:
           name: Run Java Tests
           command: cd .circleci && fastlane android type:native
