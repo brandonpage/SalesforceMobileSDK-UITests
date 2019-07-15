@@ -77,7 +77,7 @@ lane :android_idp do |options|
   test_class = 'com.salesforce.mobilesdk.mobilesdkuitest.Login.IDPTests'
   idp_package_name = '-Pandroid.testInstrumentationRunnerArguments.idpPackageName=com.salesforce.native_kotlin'
   run_android_tests(test_class, package_name, idp_package_name)
-  system("adb uninstall #{idp_package_name}")
+  system("$ANDROID_HOME/platform-tools/adb uninstall #{idp_package_name}")
 end
 
 
@@ -197,7 +197,7 @@ def base_android_test_setup(options)
   Dir.chdir(path) do
     if run_type == 'react_native'
       system("npm start&")
-      system("adb shell pm grant #{package_name} android.permission.SYSTEM_ALERT_WINDOW")
+      system("$ANDROID_HOME/platform-tools/adb shell pm grant #{package_name} android.permission.SYSTEM_ALERT_WINDOW")
     end
   end
 

@@ -63,7 +63,7 @@ mac: &mac
 mac_android: &mac_android
   working_directory: ~/SalesforceMobileSDK-UITest
   macos:
-    xcode: "9.4.0"
+    xcode: "10.2.1"
   shell: /bin/bash --login -eo pipefail
   environment:
     TERM: dumb
