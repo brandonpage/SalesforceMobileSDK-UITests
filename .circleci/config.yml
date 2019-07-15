@@ -63,11 +63,11 @@ mac: &mac
 mac_android: &mac_android
   working_directory: ~/SalesforceMobileSDK-UITest
   macos:
-      xcode: "9.4.0"
-    shell: /bin/bash --login -eo pipefail
-    environment:
-      TERM: dumb
-      JVM_OPTS: -Xmx3200m
+    xcode: "9.4.0"
+  shell: /bin/bash --login -eo pipefail
+  environment:
+    TERM: dumb
+    JVM_OPTS: -Xmx3200m
 
 version: 2
 jobs:
