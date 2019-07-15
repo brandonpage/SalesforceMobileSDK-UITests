@@ -1,26 +1,4 @@
 aliases:
-  - &upgrade-git
-    name: Update Git
-    command:  |
-      git --version
-      sudo apt-get update
-      sudo apt-get install \
-        build-essential flex bison \
-        libreadline6-dev zlib1g-dev \
-        libssl-dev \
-        libcurl4-gnutls-dev \
-        libexpat1-dev \
-        tcl tk \
-        tcl-dev gettext \
-        asciidoc \
-        docbook2x
-
-      wget https://www.kernel.org/pub/software/scm/git/git-2.13.0.tar.gz
-      tar -xvzf git-2.13.0.tar.gz
-      cd git-2.13.0
-      sudo ./configure
-      sudo make && sudo make install
-
   - &setup
     name: Setup
     command: ./install.sh
@@ -29,21 +7,6 @@ aliases:
   - &install-ant
     name: Install Ant
     command: brew install ant
-
-  - &gcloud-auth
-    name: Authorize gcloud and set config defaults
-    command:  |
-        echo $GCLOUD_SERVICE_KEY | base64 --decode --ignore-garbage > ${HOME}/gcloud-service-key.json
-        gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
-        gcloud --quiet config set project mobile-apps-firebase-test
-        
-  - &get-firebase-results
-    name: Copy test results data
-    command: |
-        mkdir -p firebase/results
-        gsutil -m cp -r -U "`gsutil ls gs://test-lab-w87i9sz6q175u-kwp8ium6js0zw/UITest-Local-${CIRCLE_BUILD_NUM} | tail -1`*" ./firebase/
-        mv firebase/test_result_1.xml firebase/results
-    when: always
 
 linux: &linux
   working_directory: ~/SalesforceMobileSDK-UITest
@@ -69,7 +32,7 @@ mac_android: &mac_android
     TERM: dumb
     JVM_OPTS: -Xmx3200m
 
-version: 2
+version: 2.1
 jobs:
   test-android:
     <<: *mac_android
