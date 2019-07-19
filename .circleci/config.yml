@@ -62,7 +62,7 @@ jobs:
           command: (yes | sdkmanager "platform-tools" "platforms;android-<< parameters.API_LEVEL >>" "extras;intel;Hardware_Accelerated_Execution_Manager" "build-tools;<< parameters.API_LEVEL >>.0.0" "system-images;android-<< parameters.API_LEVEL >>;google_apis;x86" "emulator" --verbose) || true
       - run: 
           name: Create AVD
-          command: avdmanager create avd -n AVD -k "system-images;android-<< parameters.API_LEVEL >>;google_apis;x86"
+          command: avdmanager create avd -n AVD -k "system-images;android-<< parameters.API_LEVEL >>;google_apis;x86" -d "Nexus 5"
       - run: 
           name: Restart ADB to fix AVD Network Connection
           command: |
@@ -195,10 +195,10 @@ workflows:
       - test-android:
           API_LEVEL: 28
       - test-ios:
-          device: "iPhoneXR"
+          device: "iPhone XR"
           ios_version: "12.2"
       - test-ios:
-          device: "iPhoneX"
+          device: "iPhone X"
           ios_version: "11.4"
 
   # Cron are on a timezone 8 hours ahead of PST
