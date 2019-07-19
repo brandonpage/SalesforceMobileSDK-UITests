@@ -36,6 +36,10 @@ version: 2.1
 jobs:
   test-android:
     <<: *mac_android
+    parameters:
+      API_LEVEL: 
+        type: integer
+        default: 28
     steps:
       - checkout
       - run:
@@ -54,13 +58,11 @@ jobs:
             HOMEBREW_NO_AUTO_UPDATE=1 brew cask install android-sdk
             HOMEBREW_NO_AUTO_UPDATE=1 brew cask install adoptopenjdk/openjdk/adoptopenjdk8
       - run:
-          name: Install emulator dependencies
-          command: (yes | sdkmanager "platform-tools" "platforms;android-26" "extras;intel;Hardware_Accelerated_Execution_Manager" "build-tools;26.0.0" "system-images;android-26;google_apis;x86" "emulator" --verbose) || true
-          #command: (yes | sdkmanager "platform-tools" "platforms;android-${API_VERSION}" "extras;intel;Hardware_Accelerated_Execution_Manager" "build-tools;${API_VERSION}.0.0" "system-images;android-${API_VERSION};google_apis;x86" "emulator" --verbose) || true
+          name: Install Android API << parameters.API_LEVEL >> emulator dependencies
+          command: (yes | sdkmanager "platform-tools" "platforms;android-<< parameters.API_LEVEL >>" "extras;intel;Hardware_Accelerated_Execution_Manager" "build-tools;<< parameters.API_LEVEL >>.0.0" "system-images;android-<< parameters.API_LEVEL >>;google_apis;x86" "emulator" --verbose) || true
       - run: 
           name: Create AVD
-          command: avdmanager create avd -n Pixel_2_API_26 -k "system-images;android-26;google_apis;x86" -g google_apis -d "Nexus 5"
-          #command: avdmanager create avd -n "${DEVICE}_API_${API_VERSION}" -k "system-images;android-${API_VERSION};google_apis;x86" -g google_apis -d "Nexus 5"
+          command: avdmanager create avd -n AVD -k "system-images;android-<< parameters.API_LEVEL >>;google_apis;x86"
       - run: 
           name: Restart ADB to fix AVD Network Connection
           command: |
@@ -68,8 +70,7 @@ jobs:
             $ANDROID_HOME/platform-tools/adb start-server
       - run:
           name: Run emulator in background
-          command: /usr/local/share/android-sdk/emulator/emulator @Pixel_2_API_26 -memory 2048 -noaudio 
-          #command: /usr/local/share/android-sdk/emulator/emulator "@${DEVICE}_API_${API_VERSION}" -skin 1080x2066 -memory 2048 -noaudio
+          command: /usr/local/share/android-sdk/emulator/emulator AVD >> -memory 2048 -noaudio 
           background: true
       - run:
           name: Download Android Dependencies
@@ -120,13 +121,18 @@ jobs:
 
   test-ios:
       <<: *mac
+      parameters:
+        ios_version: 
+            type: string
+        device:
+            type: string
       steps:
         - checkout
         - run: *setup
         - run: *install-ant
         - run:
             name: Test Native Objective-C App
-            command: cd .circleci && fastlane ios type:native
+            command: cd .circleci && fastlane ios type:native device:<< parameters.device >> ios:<< parameters.ios_version >>
             when: always
             no_output_timeout: 900
         - store_artifacts:
@@ -139,7 +145,7 @@ jobs:
             path: test_output/report.junit
         - run:
             name: Test Native Swift App
-            command: xcrun swift -version && cd .circleci && fastlane ios type:native_swift
+            command: xcrun swift -version && cd .circleci && fastlane ios type:native_swift device:<< parameters.device >> ios:<< parameters.ios_version >>
             when: always
             no_output_timeout: 900
         - store_artifacts:
@@ -152,7 +158,7 @@ jobs:
             path: test_output/report.junit
         - run:
             name: Test Hybrid Local App
-            command: cd .circleci && fastlane ios type:hybrid_local
+            command: cd .circleci && fastlane ios type:hybrid_local device:<< parameters.device >> ios:<< parameters.ios_version >>
             when: always
             no_output_timeout: 900
         - store_artifacts:
@@ -165,7 +171,7 @@ jobs:
             path: test_output/report.junit
         - run:
             name: Test Hyrbid Remote App
-            command: cd .circleci && fastlane ios type:hybrid_remote
+            command: cd .circleci && fastlane ios type:hybrid_remote device:<< parameters.device >> ios:<< parameters.ios_version >>
             when: always
             no_output_timeout: 900
         - store_artifacts:
@@ -183,17 +189,9 @@ workflows:
   pr-build-all-apps:
     jobs:
       - test-android
-      #    context: android-api-28
-      #- test-android
-      #    context: android-api-25
-      #- test-android
-      #    context: android-api-23
-      #- test-android
-      #    context: android-api-21
-      #- test-ios:
-      #    context: ios-max-version
-      #- test-ios:
-      #    context: ios-min-version
+      - test-ios:
+          device: "iPhoneXR"
+          ios_version: "12.2"
 
   # Cron are on a timezone 8 hours ahead of PST
   # Build everything on Saturday Afternoon
@@ -206,5 +204,15 @@ workflows:
               only:
                 - master
     jobs:
-      - test-android
-      - test-ios
+      - test-android:
+          API_LEVEL: 23
+      - test-android:
+          API_LEVEL: 26
+      - test-android:
+          API_LEVEL: 28
+      - test-ios:
+          device: "iPhoneXR"
+          ios_version: "12.2"
+      - test-ios:
+          device: "iPhoneX"
+          ios_version: "11.4"

@@ -311,8 +311,7 @@ def base_ios_test_setup(options)
   end
 
   if ios
-    ios.slice!(0, 3)
-    ios.gsub!('.', '-')
+    ios.gsub!(/[.]/, '-')
   else
     ios = '12-2'
   end
