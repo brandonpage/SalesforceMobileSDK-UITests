@@ -188,22 +188,6 @@ workflows:
   version: 2
   pr-build-all-apps:
     jobs:
-      - test-android
-      - test-ios:
-          device: "iPhoneXR"
-          ios_version: "12.2"
-
-  # Cron are on a timezone 8 hours ahead of PST
-  # Build everything on Saturday Afternoon
-  weekly-build-all-apps:
-    triggers:
-      - schedule:
-          cron: "30 19 * * 6"
-          filters:
-            branches:
-              only:
-                - master
-    jobs:
       - test-android:
           API_LEVEL: 23
       - test-android:
@@ -216,3 +200,27 @@ workflows:
       - test-ios:
           device: "iPhoneX"
           ios_version: "11.4"
+
+  # Cron are on a timezone 8 hours ahead of PST
+  # Build everything on Saturday Afternoon
+#  weekly-build-all-apps:
+#    triggers:
+#      - schedule:
+#          cron: "30 19 * * 6"
+#          filters:
+#            branches:
+#              only:
+#                - master
+#    jobs:
+#      - test-android:
+#          API_LEVEL: 23
+#      - test-android:
+#          API_LEVEL: 26
+#      - test-android:
+#          API_LEVEL: 28
+#      - test-ios:
+#          device: "iPhoneXR"
+#          ios_version: "12.2"
+#      - test-ios:
+#          device: "iPhoneX"
+#          ios_version: "11.4"
