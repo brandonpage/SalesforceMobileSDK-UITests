@@ -70,7 +70,7 @@ jobs:
             $ANDROID_HOME/platform-tools/adb start-server
       - run:
           name: Run emulator in background
-          command: /usr/local/share/android-sdk/emulator/emulator @AVD >> -memory 2048 -noaudio 
+          command: /usr/local/share/android-sdk/emulator/emulator @AVD -memory 2048 -noaudio 
           background: true
       - run:
           name: Download Android Dependencies
