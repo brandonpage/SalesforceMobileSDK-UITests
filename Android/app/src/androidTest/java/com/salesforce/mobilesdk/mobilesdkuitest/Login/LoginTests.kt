@@ -59,7 +59,7 @@ class LoginTests {
         loginPage.setPassword(password)
         loginPage.tapLogin()
         AuthorizationPageObject().tapAllow()
-        Thread.sleep(timeout)
+        Thread.sleep(timeout * 3)
 
         when (app.type) {
             AppType.NATIVE_JAVA, AppType.NATIVE_KOTLIN ->

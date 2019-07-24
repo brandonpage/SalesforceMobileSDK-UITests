@@ -34,7 +34,7 @@ mac_android: &mac_android
 
 version: 2.1
 jobs:
-  test-android:
+  setup-android:
     <<: *mac_android
     parameters:
       API_LEVEL: 
@@ -61,7 +61,7 @@ jobs:
           name: Install Android API << parameters.API_LEVEL >> emulator dependencies
           command: (yes | sdkmanager "platform-tools" "platforms;android-<< parameters.API_LEVEL >>" "extras;intel;Hardware_Accelerated_Execution_Manager" "build-tools;<< parameters.API_LEVEL >>.0.0" "system-images;android-<< parameters.API_LEVEL >>;google_apis;x86" "emulator" --verbose) || true
       - run: 
-          name: Create AVD
+          name: Create Android API << parameters.API_LEVEL >> emulator
           command: avdmanager create avd -n AVD -k "system-images;android-<< parameters.API_LEVEL >>;google_apis;x86" -d "Nexus 5"
       - run: 
           name: Restart ADB to fix AVD Network Connection
@@ -69,49 +69,36 @@ jobs:
             $ANDROID_HOME/platform-tools/adb kill-server
             $ANDROID_HOME/platform-tools/adb start-server
       - run:
-          name: Run emulator in background
-          command: /usr/local/share/android-sdk/emulator/emulator @AVD -memory 2048 -noaudio 
-          background: true
-      - run:
           name: Download Android Dependencies
           command: |
             cd Android
             ./gradlew androidDependencies
       - run: *setup
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./**
+
+  test-android:
+    <<: *mac_android
+    parameters:
+      app_type: 
+        type: string
+        default: "native"
+    steps:
+      - attach_workspace:
+          at: ~/SalesforceMobileSDK-UITests
+      - run:
+          name: Run emulator in background
+          command: /usr/local/share/android-sdk/emulator/emulator @AVD -memory 2048 -noaudio 
+          background: true
       - run:
           name: Run Java Tests
-          command: cd .circleci && fastlane android type:native
+          command: cd .circleci && fastlane android type:<< parameters.app_type >>
           when: always
       - store_artifacts:
           path: Android/app/build/reports/androidTests/connected/*
-          destination: native_Java
-      - store_test_results:
-          path: Android/app/build/reports/androidTests/connected/com.salesforce.mobilesdk.mobilesdkuitest.Login.html
-      - run:
-          name: Run Kotlin Tests
-          command: cd .circleci && fastlane android type:native_kotlin
-          when: always
-      - store_artifacts:
-          path: Android/app/build/reports/androidTests/connected/*
-          destination: native_kotlin
-      - store_test_results:
-          path: Android/app/build/reports/androidTests/connected/com.salesforce.mobilesdk.mobilesdkuitest.Login.html
-      - run:
-          name: Run Hybird Local Tests
-          command: cd .circleci && fastlane android type:hybrid_local
-          when: always
-      - store_artifacts:
-          path: Android/app/build/reports/androidTests/connected/*
-          destination: hybrid_local
-      - store_test_results:
-          path: Android/app/build/reports/androidTests/connected/com.salesforce.mobilesdk.mobilesdkuitest.Login.html
-      - run:
-          name: Run Hybrid Remote Tests
-          command: cd .circleci && fastlane android type:hybrid_remote
-          when: always
-      - store_artifacts:
-          path: Android/app/build/reports/androidTests/connected/*
-          destination: hybrid_remote
+          destination: << parameters.app_type >>
       - store_test_results:
           path: Android/app/build/reports/androidTests/connected/com.salesforce.mobilesdk.mobilesdkuitest.Login.html
 
@@ -180,20 +167,42 @@ workflows:
   version: 2
   pr-build-all-apps:
     jobs:
-      - test-android:
-          API_LEVEL: 21
-      - test-android:
-          API_LEVEL: 23
-      - test-android:
-          API_LEVEL: 26
-      - test-android:
+      - setup-android:
           API_LEVEL: 28
-      - test-ios:
-          device: "iPhone XR"
-          ios_version: "12.2"
-      - test-ios:
-          device: "iPhone X"
-          ios_version: "11.4"
+      - test-android:
+          app_type: "native"
+          requires:
+            - setup-android
+      - test-android:
+          app_type: "native_kotlin"
+          requires:
+            - setup-android
+      - test-android:
+          app_type: "hybrid_local"
+          requires:
+            - setup-android
+      - test-android:
+          app_type: "hybrid_remote"
+          requires:
+            - setup-android
+  
+  
+  
+  
+  #    - test-android:
+  #        API_LEVEL: 21
+  #    - test-android:
+  #        API_LEVEL: 23
+  #    - test-android:
+  #        API_LEVEL: 26
+  #    - test-android:
+  #        API_LEVEL: 28
+  #    - test-ios:
+  #        device: "iPhone XR"
+  #        ios_version: "12.2"
+  #    - test-ios:
+  #        device: "iPhone X"
+  #        ios_version: "11.4"
 
   # Cron are on a timezone 8 hours ahead of PST
   # Build everything on Saturday Afternoon
