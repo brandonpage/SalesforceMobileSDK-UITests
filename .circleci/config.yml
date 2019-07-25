@@ -86,6 +86,11 @@ jobs:
           name: Run emulator in background
           command: /usr/local/share/android-sdk/emulator/emulator @AVD -memory 2048 -noaudio 
           background: true
+      - run: 
+          name:  Install Cordova 
+          command: |
+            npm install -g cordova@8.1.2
+            cordova telemetry off
       - run:
           name: Run << parameters.app_type >> API << parameters.api_level >> Tests
           command: cd .circleci && fastlane android type:<< parameters.app_type >>
