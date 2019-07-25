@@ -38,26 +38,6 @@ jobs:
     <<: *mac_android
     steps:
       - checkout
-      - run:
-          name: Setup environment variables
-          command: |
-            echo 'export PATH="$PATH:/usr/local/opt/node@8/bin:${HOME}/.yarn/bin:${HOME}/${CIRCLE_PROJECT_REPONAME}/node_modules/.bin:/usr/local/share/android-sdk/tools/bin"' >> $BASH_ENV
-            echo 'export ANDROID_HOME="/usr/local/share/android-sdk"' >> $BASH_ENV
-            echo 'export ANDROID_SDK_HOME="/usr/local/share/android-sdk"' >> $BASH_ENV
-            echo 'export ANDROID_SDK_ROOT="/usr/local/share/android-sdk"' >> $BASH_ENV
-            echo 'export QEMU_AUDIO_DRV=none' >> $BASH_ENV
-            echo 'export JAVA_HOME=/Library/Java/JavaVirtualMachines/adoptopenjdk-8.jdk/Contents/Home' >> $BASH_ENV
-      - run:
-          name: Install Android sdk
-          command: |
-            HOMEBREW_NO_AUTO_UPDATE=1 brew tap homebrew/cask
-            HOMEBREW_NO_AUTO_UPDATE=1 brew cask install android-sdk
-            HOMEBREW_NO_AUTO_UPDATE=1 brew cask install adoptopenjdk/openjdk/adoptopenjdk8
-      - run:
-          name: Download Android Dependencies
-          command: |
-            cd Android
-            ./gradlew androidDependencies
       - run: *setup
       - persist_to_workspace:
           root: .
@@ -107,7 +87,7 @@ jobs:
           command: /usr/local/share/android-sdk/emulator/emulator @AVD -memory 2048 -noaudio 
           background: true
       - run:
-          name: Run Java Tests
+          name: Run << parameters.app_type >> API << parameters.api_level >> Tests
           command: cd .circleci && fastlane android type:<< parameters.app_type >>
           when: always
       - store_artifacts:
