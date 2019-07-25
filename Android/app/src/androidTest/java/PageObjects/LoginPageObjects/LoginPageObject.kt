@@ -38,13 +38,8 @@ import androidx.test.uiautomator.UiObjectNotFoundException
 class LoginPageObject : BasePageObject() {
 
     init {
-        registerCrashWatcher()
-
-        // Trigger Watcher if necessary
-        device.findObject(UiSelector().className("bogus")).waitForExists(1)
-
         if (isOldDevice) {
-            device.findObject(UiSelector().className("android.widget.EditText").index(2)).waitForExists(120000)
+            findOnPage(UiSelector().className("android.widget.EditText").index(2)).waitForExists(120000)
         }
     }
 
@@ -52,13 +47,13 @@ class LoginPageObject : BasePageObject() {
         val usernameField = if (isOldDevice) {
             // FIXME Update when min verison increaes past API 22
             if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1) {
-                device.findObject(UiSelector().className("android.widget.EditText").index(2))
+                findOnPage(UiSelector().className("android.widget.EditText").index(2))
             } else {
-                device.findObject(UiSelector().className("android.widget.EditText").descriptionContains("Username"))
+                findOnPage(UiSelector().className("android.widget.EditText").descriptionContains("Username"))
             }
         }
         else {
-            device.findObject(UiSelector().resourceId("username"))
+            findOnPage(UiSelector().resourceId("username"))
         }
 
         Log.i("uia", "Waiting for username filed to be present.")
@@ -76,10 +71,10 @@ class LoginPageObject : BasePageObject() {
         // FIXME Update when min verison increaes past API 22
         val index = if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1) 4 else 3
         val passwordField = if (isOldDevice) {
-            device.findObject(UiSelector().className("android.widget.EditText").index(index))
+            findOnPage(UiSelector().className("android.widget.EditText").index(index))
         }
         else {
-            device.findObject(UiSelector().resourceId("password"))
+            findOnPage(UiSelector().resourceId("password"))
         }
         Log.i("uia", "Waiting for password filed to be present.")
         assert(passwordField.waitForExists(timeout))
@@ -98,10 +93,10 @@ class LoginPageObject : BasePageObject() {
 
     fun tapLogin() {
         val loginButton = if (isOldDevice) {
-            device.findObject(UiSelector().className("android.widget.Button").index(0))
+            findOnPage(UiSelector().className("android.widget.Button").index(0))
         }
         else {
-            device.findObject(UiSelector().resourceId("Login"))
+            findOnPage(UiSelector().resourceId("Login"))
         }
 
         if (isOldDevice) {
@@ -111,67 +106,5 @@ class LoginPageObject : BasePageObject() {
         }
         assert(loginButton.waitForExists(timeout * 2))
         loginButton.click()
-    }
-
-    private fun registerCrashWatcher() {
-        device.registerWatcher("NotResponding") {
-            val notRespondingWindow = UiObject(UiSelector().className("com.android.server.am.AppNotRespondingDialog"))
-            if (notRespondingWindow.exists()) {
-                Log.d("UITest", "Ui Crash Watcher, found AppNotRespondingDialog")
-                recover()
-                true
-            }
-            false
-        }
-
-        device.registerWatcher("NotResponding2") {
-            val notRespondingWindow = UiObject(UiSelector().packageName("android").textContains("isn't responding"))
-            if (notRespondingWindow.exists()) {
-                Log.d("UITest", "Ui Crash Watcher, found App isn't responding dialog")
-                recover()
-                true
-            }
-            false
-        }
-
-        device.registerWatcher("Crash") {
-            val notRespondingWindow = UiObject(UiSelector().className("com.android.server.am.AppErrorDialog"))
-            if (notRespondingWindow.exists()) {
-                Log.d("UITest", "Ui Crash Watcher, found app error dialog")
-                recover()
-                true
-            }
-            false
-        }
-
-        device.registerWatcher("Crash2") {
-            val notRespondingWindow = UiObject(UiSelector().packageName("android").textContains("has stopped"))
-            if (notRespondingWindow.exists()) {
-                Log.d("UITest", "Ui Crash Watcher, found app has stopped dialog")
-                recover()
-                true
-            }
-            false
-        }
-    }
-
-    private fun recover() {
-        Log.d("UITest", "Ui Crash Watcher, recovery attempt")
-        val buttonStrings = mutableListOf("Close app", "OK", "Force close", "Wait", "Yes", "Dismiss", "No")
-        var button : UiObject
-        for (buttonString in buttonStrings) {
-            button = device.findObject(UiSelector().text(buttonString).enabled(true))
-
-            if (button != null && button.exists()) {
-                Log.d("UITest", "Ui Crash Watcher, found button: $buttonString")
-                try {
-                    button.waitForExists(timeout)
-                    button.click()
-                    return
-                } catch (e : UiObjectNotFoundException) {
-                    Log.d("UITest", "Ui Crash Watcher, crash tapping button: $buttonString")
-                }
-            }
-        }
     }
 }

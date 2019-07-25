@@ -27,8 +27,12 @@
 package PageObjects
 
 import android.os.Build
+import android.util.Log
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
+import androidx.test.uiautomator.UiObject
+import androidx.test.uiautomator.UiObjectNotFoundException
+import androidx.test.uiautomator.UiSelector
 
 /**
  * Created by bpage on 2/24/18.
@@ -40,4 +44,77 @@ open class BasePageObject {
     // FIXME Update this when we stop using ARM Emulators
     val isArm = Build.SUPPORTED_ABIS.first().contains("armeabi")
     var timeout:Long = if (isArm) 30000 else 5000
+
+    init {
+        registerCrashWatcher()
+    }
+
+    fun findOnPage(selector: UiSelector): UiObject {
+        // Trigger Watcher if necessary
+        device.findObject(UiSelector().className("bogus")).waitForExists(1)
+
+        return device.findObject(selector)
+    }
+
+    private fun registerCrashWatcher() {
+        device.registerWatcher("NotResponding") {
+            val notRespondingWindow = UiObject(UiSelector().className("com.android.server.am.AppNotRespondingDialog"))
+            if (notRespondingWindow.exists()) {
+                Log.d("UITest", "Ui Crash Watcher, found AppNotRespondingDialog")
+                recover()
+                true
+            }
+            false
+        }
+
+        device.registerWatcher("NotResponding2") {
+            val notRespondingWindow = UiObject(UiSelector().packageName("android").textContains("isn't responding"))
+            if (notRespondingWindow.exists()) {
+                Log.d("UITest", "Ui Crash Watcher, found App isn't responding dialog")
+                recover()
+                true
+            }
+            false
+        }
+
+        device.registerWatcher("Crash") {
+            val notRespondingWindow = UiObject(UiSelector().className("com.android.server.am.AppErrorDialog"))
+            if (notRespondingWindow.exists()) {
+                Log.d("UITest", "Ui Crash Watcher, found app error dialog")
+                recover()
+                true
+            }
+            false
+        }
+
+        device.registerWatcher("Crash2") {
+            val notRespondingWindow = UiObject(UiSelector().packageName("android").textContains("has stopped"))
+            if (notRespondingWindow.exists()) {
+                Log.d("UITest", "Ui Crash Watcher, found app has stopped dialog")
+                recover()
+                true
+            }
+            false
+        }
+    }
+
+    private fun recover() {
+        Log.d("UITest", "Ui Crash Watcher, recovery attempt")
+        val buttonStrings = mutableListOf("Close app", "OK", "Force close", "Wait", "Yes", "Dismiss", "No")
+        var button : UiObject
+        for (buttonString in buttonStrings) {
+            button = device.findObject(UiSelector().text(buttonString).enabled(true))
+
+            if (button != null && button.exists()) {
+                Log.d("UITest", "Ui Crash Watcher, found button: $buttonString")
+                try {
+                    button.waitForExists(timeout)
+                    button.click()
+                    return
+                } catch (e : UiObjectNotFoundException) {
+                    Log.d("UITest", "Ui Crash Watcher, crash tapping button: $buttonString")
+                }
+            }
+        }
+    }
 }

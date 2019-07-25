@@ -35,9 +35,8 @@ import org.junit.Assert
 class HybridLocalAppPageObject(private val app: TestApplication) : BasePageObject() {
 
     fun assertAppLoads() {
-        val title = device.findObject(UiSelector().className("android.view.View").descriptionContains("Contacts"))
+        val title = findOnPage(UiSelector().className("android.view.View").descriptionContains("Contacts"))
         title.waitForExists(timeout)
         Assert.assertEquals("App did not successfully login.", "Contacts", title.contentDescription)
-
     }
 }

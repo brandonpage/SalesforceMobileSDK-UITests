@@ -44,10 +44,10 @@ class AuthorizationPageObject : BasePageObject() {
 
     fun tapAllow() {
         val allowButton = if (isOldDevice) {
-            device.findObject(UiSelector().className("android.widget.Button").index(0))
+            findOnPage(UiSelector().className("android.widget.Button").index(0))
         }
         else {
-            device.findObject(UiSelector().resourceId("oaapprove"))
+            findOnPage(UiSelector().resourceId("oaapprove"))
         }
 
         Log.i("uia", "Waiting for allow button to be present.")
