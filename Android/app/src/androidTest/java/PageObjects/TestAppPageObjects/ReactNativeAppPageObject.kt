@@ -24,11 +24,12 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package PageObjects
+package pageobjects.testapppageobjects
 
 import androidx.test.uiautomator.UiSelector
 import android.util.Log
 import org.junit.Assert
+import pageobjects.BasePageObject
 
 /**
  * Created by bpage on 3/6/18.

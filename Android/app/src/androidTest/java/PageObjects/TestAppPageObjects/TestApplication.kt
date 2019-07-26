@@ -24,12 +24,13 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package PageObjects
+package pageobjects.testapppageobjects
 
 import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.core.app.ApplicationProvider
 import android.content.Intent
+import pageobjects.AppType
 
 /**
  * Created by bpage on 2/21/18.

@@ -24,16 +24,17 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.salesforce.mobilesdk.mobilesdkuitest.Login
+package com.salesforce.mobilesdk.mobilesdkuitest.login
 
-import PageObjects.*
-import TestUtility.*
+import pageobjects.*
+import testutility.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.uiautomator.UiDevice
-import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.runner.RunWith
 import org.junit.Before
 import org.junit.Test
+import pageobjects.loginpageobjects.LoginPageObject
+import pageobjects.loginpageobjects.AuthorizationPageObject
+import pageobjects.testapppageobjects.*
 
 /**
  * Created by bpage on 2/2/18.
@@ -42,8 +43,6 @@ import org.junit.Test
 class LoginTests {
     var app = TestApplication()
     var userUtil = UserUtility()
-    private var device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-    var timeout:Long = 10000
     var username = userUtil.username
     var password = userUtil.password
 
@@ -59,7 +58,6 @@ class LoginTests {
         loginPage.setPassword(password)
         loginPage.tapLogin()
         AuthorizationPageObject().tapAllow()
-        Thread.sleep(timeout * 3)
 
         when (app.type) {
             AppType.NATIVE_JAVA, AppType.NATIVE_KOTLIN ->

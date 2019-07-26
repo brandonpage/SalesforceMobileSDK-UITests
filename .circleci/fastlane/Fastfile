@@ -49,14 +49,15 @@ lane :android do |options|
   Dir.chdir('../../')
 
   app_path, package_name = base_android_test_setup(options)
-  system("$ANDROID_HOME/platform-tools/adb uninstall #{package_name}")
-  install_android_app(app_path)
-  test_class = 'com.salesforce.mobilesdk.mobilesdkuitest.Login.LoginTests'
-  #if $is_ci
-  #  run_android_tests_firebase(test_class, package_name, app_path)
-  #else  
+  
+  test_class = 'com.salesforce.mobilesdk.mobilesdkuitest.login.LoginTests'
+  if $is_ci
+    run_android_tests_firebase(test_class, package_name, app_path)
+  else
+    system("$ANDROID_HOME/platform-tools/adb uninstall #{package_name}")
+    install_android_app(app_path)  
     run_android_tests(test_class, package_name)
-  #end
+  end
 end
 
 lane :android_idp do |options|
@@ -74,7 +75,7 @@ lane :android_idp do |options|
   enable_android_sp(app_path)
   install_android_app(app_path)
 
-  test_class = 'com.salesforce.mobilesdk.mobilesdkuitest.Login.IDPTests'
+  test_class = 'com.salesforce.mobilesdk.mobilesdkuitest.login.IDPTests'
   idp_package_name = '-Pandroid.testInstrumentationRunnerArguments.idpPackageName=com.salesforce.native_kotlin'
   run_android_tests(test_class, package_name, idp_package_name)
   system("$ANDROID_HOME/platform-tools/adb uninstall #{idp_package_name}")
@@ -208,21 +209,9 @@ def install_android_app(appPath, release = nil)
   puts "App Path: #{appPath}"
   apkPath = 'debug/app-debug.apk'
   Dir.chdir(appPath) do
-    #if release
-    #  UI.important 'Building Release APK'
-    #  `./gradlew assembleRelease`
-    #  apkPath = 'release/app-release-unsigned.apk'
-    #else
-    #UI.important 'Building Debug APK'
-    #buildResult = system("./gradlew assembleDebug")
-    #UI.build_failure!('Tests failed to build.') unless buildResult
-    #end
-
-    #unless $is_ci
     UI.important 'Installing App on Emulator'
     result = `$ANDROID_HOME/platform-tools/adb install -r app/build/outputs/apk/#{apkPath}`.split("\n").last.delete("\r")
     UI.build_failure!("APK did not install successfully. \n\nError: #{result}") unless(result.eql? 'Success')
-    #end
   end
 end
 
@@ -250,22 +239,32 @@ def run_android_tests(test_class, package_name, addition_ops = nil)
 end
 
 def run_android_tests_firebase(test_class, package_name, app_path, addition_ops = nil)
-  puts "app path: #{app_path}"
+  # Get app type for categorizing test results
+  app_type = package_name.split('.').last
+  if app_type == 'native_java'
+    app_type = 'native'
+  end
 
   Dir.chdir('./Android/') do
-    UI.header 'Run Tests'
+    # Work around issue of Firebase requiring app and tests to come from the same project
+    modified_souce_code('app/build.gradle', 'com.salesforce.mobilesdk.mobilesdkuitest', package_name)
 
+    UI.message 'Compile Tests'
     buildResult = system("./gradlew app:assembleAndroidTest")
-    UI.build_failure!('Tests failed to build.') unless buildResult
+    UI.build_failure!('Tests failed to build.') unless buildResult    
+    
+    UI.header 'Run Tests'
     testResult = system("gcloud firebase test android run \
       --project mobile-apps-firebase-test \
       --type instrumentation \
       --app ../#{app_path}app/build/outputs/apk/debug/app-debug.apk \
       --test app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk \
+      --device model=NexusLowRes,version=28,locale=en,orientation=portrait  \
       --device model=NexusLowRes,version=27,locale=en,orientation=portrait  \
-      --results-dir=UITest-Local-${CIRCLE_BUILD_NUM}  \
-      --results-history-name=UITest-Local  \
-      --timeout 10m  \
+      --device model=NexusLowRes,version=25,locale=en,orientation=portrait  \
+      --device model=NexusLowRes,version=23,locale=en,orientation=portrait  \
+      --results-dir=UITest-#{app_type}-#{ENV['CIRCLE_BUILD_NUM']}  \
+      --results-history-name=UITest-#{app_type}  \
       --environment-variables class=#{test_class},packageName=#{package_name},password=#{$password}")
       UI.test_failure!('Tests failed.') unless testResult
   end
@@ -379,8 +378,7 @@ def run_ios_tests(bundle_name, test_scheme, xcargs = nil)
         xcargs: "'TEST_APP_BUNDLE=#{bundle_name}' 'PASSWORD=#{$password}' #{xcargs_string}"
       )
     ensure
-      # TODO: uncomment!
-      #system("xcrun simctl shutdown #{$sim_name}")
+      system("xcrun simctl shutdown #{$sim_name}")
     end
   end
 end

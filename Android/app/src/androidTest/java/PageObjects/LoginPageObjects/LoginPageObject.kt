@@ -24,13 +24,14 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package PageObjects
+package pageobjects.loginpageobjects
 
 import android.os.Build
 import androidx.test.uiautomator.UiSelector
 import android.util.Log
 import androidx.test.uiautomator.UiObject
 import androidx.test.uiautomator.UiObjectNotFoundException
+import pageobjects.BasePageObject
 
 /**
  * Created by bpage on 2/21/18.
@@ -38,10 +39,10 @@ import androidx.test.uiautomator.UiObjectNotFoundException
 class LoginPageObject : BasePageObject() {
 
     init {
-        registerCrashWatcher()
+        //registerCrashWatcher()
 
         // Trigger Watcher if necessary
-        device.findObject(UiSelector().className("bogus")).waitForExists(1)
+        //device.findObject(UiSelector().className("bogus")).waitForExists(1)
 
         if (isOldDevice) {
             device.findObject(UiSelector().className("android.widget.EditText").index(2)).waitForExists(120000)

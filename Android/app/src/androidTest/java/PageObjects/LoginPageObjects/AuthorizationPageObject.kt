@@ -24,10 +24,11 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package PageObjects
+package pageobjects.loginpageobjects
 
 import androidx.test.uiautomator.*
 import android.util.Log
+import pageobjects.BasePageObject
 
 /**
  * Created by bpage on 2/23/18.
@@ -36,7 +37,7 @@ import android.util.Log
 class AuthorizationPageObject : BasePageObject() {
 
     init {
-        if (isArm) {
+        if (isArm or isOldDevice) {
             Log.i("uia", "Sleeping a while to let auth page load.")
             Thread.sleep(timeout)
         }

@@ -24,7 +24,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package PageObjects
+package pageobjects
 
 /**
  * Created by bpage on 2/25/18.
