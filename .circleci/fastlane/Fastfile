@@ -247,7 +247,7 @@ def run_android_tests_firebase(test_class, package_name, app_path, addition_ops 
 
   Dir.chdir('./Android/') do
     # Work around issue of Firebase requiring app and tests to come from the same project
-    modified_souce_code('app/build.gradle', 'com.salesforce.mobilesdk.mobilesdkuitest', package_name)
+    modify_source('app/build.gradle', 'com.salesforce.mobilesdk.mobilesdkuitest', package_name)
 
     UI.message 'Compile Tests'
     buildResult = system("./gradlew app:assembleAndroidTest")
