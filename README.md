@@ -6,14 +6,14 @@ This repo contains tests designed to validate the functionality of apps created 
 1.  `install.sh`
 2.  From the `.circleci` directory execute: `fastlane <os> type:<AppType>`
        
-       ex: `fastlane android type:native` or `fastlane ios type:react_native`
+       ex: `fastlane android type:native_kotlin` or `fastlane ios type:hybrid_local`
 
        
 ----------
       
-Additional options: `sfdx:<true/false>`, `skipAppRemoval:<true/false>`.
+Additional options: `sfdx:<true/false>`, `rerun:<true/false>`.
 
-iOS exclusive options: `device:<"iPhone X"/iPhone-7/etc>`, `ios:<0.3/11-1/etc>`.
+iOS exclusive options: `device:<"iPhone X"/iPhone-7/etc>`, `ios:<11.4/11-4/etc>`.
        
 ##### Adding New Tests
 Info about test suites and tests only applicable to one app type coming soon.  

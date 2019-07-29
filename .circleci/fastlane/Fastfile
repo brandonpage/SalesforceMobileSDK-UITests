@@ -150,7 +150,8 @@ def run_android_tests_firebase(test_class, package_name, app_path, addition_ops 
       --results-dir=UITest-#{app_type}  \
       --results-history-name=UITest-#{app_type}  \
       --results-dir=UITest-#{app_type}-#{ENV['CIRCLE_BUILD_NUM']}  \
-      --environment-variables class=#{test_class},packageName=#{package_name},password=#{$password}")
+      --environment-variables class=#{test_class},packageName=#{package_name},password=#{$password}  \
+      --no-performance-metrics --no-auto-google-login")
       UI.test_failure!('Tests failed.') unless testResult
   end
 end
@@ -159,7 +160,6 @@ end
 # iOS Helper Functions
 #
 def base_ios_test_setup(options)
-  system('rm -rf ../../tmp*')
   system('rm -rf ../../test_output/')
 
   $password = get_password

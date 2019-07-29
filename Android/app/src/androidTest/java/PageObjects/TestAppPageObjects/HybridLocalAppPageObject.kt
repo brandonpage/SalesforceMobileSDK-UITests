@@ -37,14 +37,14 @@ import pageobjects.BasePageObject
 class HybridLocalAppPageObject(private val app: TestApplication) : BasePageObject() {
 
     fun assertAppLoads() {
+        Thread.sleep(timeout * 2)
         // TODO: Update when min version increases to API 28
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O_MR1) {
-            val title = device.findObject(UiSelector().className("android.view.View").descriptionContains("Contacts"))
-            title.waitForExists(timeout)
-            Assert.assertEquals("App did not successfully login.", "Contacts", title.contentDescription)
+        val title = if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O_MR1) {
+            device.findObject(UiSelector().className("android.view.View").descriptionContains("Contacts"))
         } else {
-            val title = device.findObject(UiSelector().className("android.view.View").text("Contacts"))
-            Assert.assertTrue("App did not successfully login.", title.exists())
+            device.findObject(UiSelector().className("android.view.View").text("Contacts"))
         }
+
+        Assert.assertTrue("App did not successfully login.", title.exists())
     }
 }
