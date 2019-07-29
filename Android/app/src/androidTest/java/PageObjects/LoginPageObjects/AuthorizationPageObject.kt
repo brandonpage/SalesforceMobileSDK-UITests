@@ -61,9 +61,6 @@ class AuthorizationPageObject : BasePageObject() {
         Log.i("uia", "Scrolling webview.")
         webview2.scroll(Direction.DOWN, 0.5f)
         allowButton.click()
-
-        if (isOldDevice) {
-            Thread.sleep(timeout)
-        }
+        Thread.sleep(timeout * 2)
     }
 }

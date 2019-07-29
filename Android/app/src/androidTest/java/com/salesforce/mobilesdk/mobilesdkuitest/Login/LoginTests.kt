@@ -41,10 +41,10 @@ import pageobjects.testapppageobjects.*
  */
 @RunWith(AndroidJUnit4::class)
 class LoginTests {
-    var app = TestApplication()
-    var userUtil = UserUtility()
-    var username = userUtil.username
-    var password = userUtil.password
+    private var app = TestApplication()
+    private var userUtil = UserUtility()
+    private var username = userUtil.username
+    private var password = userUtil.password
 
     @Before
     fun setupTestApp() {

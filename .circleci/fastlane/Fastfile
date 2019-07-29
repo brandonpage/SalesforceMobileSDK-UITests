@@ -1,48 +1,12 @@
 $is_ci = ENV.has_key? 'CIRCLECI'
 $password
-$comment = '// '
 $sim_name = 'testsim'
-
-$default_consumer_key = '3MVG9Iu66FKeHhINkB1l7xt7kR8czFcCTUhgoA8Ol2Ltf1eYHOU4SqQRSEitYFDUpqRWcoQ2.dBv_a1Dyu5xa'
-$default_redirect_uri = 'testsfdc:///mobilesdk/detect/oauth/done'
-$idp_consumer_key = '3MVG9CEn_O3jvv0wTqRT0Le6tmymO4sCqHXdzsPsaK9Lll6dTjwd19wRDK4l6mK9zftwIZDpMD72Lp3qDlUEb'
-$idp_redirect_uri = 'mobilesdk://idp'
-$sp_consumer_key = '3MVG9CEn_O3jvv0wTqRT0Le6tm_o8ls39jF8hMAsMM_ev_8Q5CbKTXiJB8PpBiOTG95petRm2X6j5rGVEKNHI'
-$sp_redirect_uri = 'mobilesdksp://sp'
 
 lane :ios do |options|
   path, bundle_name = base_ios_test_setup(options)
 
   install_ios_app(path)
   run_ios_tests(bundle_name, 'LoginTests', nil)
-end
-
-lane :ios_idp do |options|
-  path, bundle_name = base_ios_test_setup(options)
-
-  # Setup SP App
-  enable_ios_sp(path)
-  enable_ios_logout(path)
-  install_ios_app(path)
-
-  # Setup IDP App
-  template_url = 'https://github.com/forcedotcom/SalesforceMobileSDK-Templates/iOSIDPTemplate'
-  Dir.chdir('../../') do
-    generate_app('ios', nil,  template_url)
-    idp_path = Dir.glob("tmp*").sort.last.concat('/App_native_swift_ios/')
-    change_connected_app(idp_path, 'App_native_swift_ios', $idp_consumer_key, $idp_redirect_uri)
-
-    project_name = idp_path.split('/').last
-    plist_path = File.expand_path(idp_path + '/' + project_name + '/Info.plist')
-    value = [{'CFBundleURLSchemes' => [$idp_redirect_uri.split(':').first]}]
-    set_info_plist_value(path: plist_path, key: 'CFBundleURLTypes', value: value)
-
-    project_path = File.expand_path(idp_path + project_name + '.xcodeproj')
-    update_app_identifier(xcodeproj: project_path, plist_path: plist_path, app_identifier: 'com.salesforce.idp')
-    install_ios_app(idp_path)
-  end
-
-  run_ios_tests(bundle_name, 'IDPTests', nil)
 end
 
 lane :android do |options|
@@ -59,29 +23,6 @@ lane :android do |options|
     run_android_tests(test_class, package_name)
   end
 end
-
-lane :android_idp do |options|
-  Dir.chdir('../../')
-
-  # IDP App
-  idp_template_uri = 'https://github.com/forcedotcom/SalesforceMobileSDK-Templates/AndroidIDPTemplate'
-  generate_app('android', nil, idp_template_uri, nil)
-  idp_path = Dir.glob("tmp*").sort.last.concat('/App_native_kotlin_android/')
-  change_connected_app(idp_path,'App_native_kotlin_android', $idp_consumer_key, $idp_redirect_uri)
-  install_android_app(idp_path)
-
-  # SP App
-  app_path, package_name = base_android_test_setup(options)
-  enable_android_sp(app_path)
-  install_android_app(app_path)
-
-  test_class = 'com.salesforce.mobilesdk.mobilesdkuitest.login.IDPTests'
-  idp_package_name = '-Pandroid.testInstrumentationRunnerArguments.idpPackageName=com.salesforce.native_kotlin'
-  run_android_tests(test_class, package_name, idp_package_name)
-  system("$ANDROID_HOME/platform-tools/adb uninstall #{idp_package_name}")
-end
-
-
 
 #
 # Generic Reusable Helper Functions
@@ -120,56 +61,8 @@ def generate_app(os, type = nil, template = nil, sfdx = nil)
     generate_command.concat(' --use-sfdx')
   end
 
-  #result = silence_output { system(generate_command) }
-  result = system(generate_command)
+  result = silence_output { system(generate_command) }
   UI.user_error!('Test app was not successfully created.') unless(result)
-end
-
-def modify_source(source_path, old_code, new_code)
-  modified_souce_code = File.read(source_path).sub(old_code, new_code)
-  File.open(source_path, 'w') { |file| file.puts modified_souce_code }
-end
-
-# You only need to pass the existing consumer key and redirect uri if they are not the default
-def change_connected_app(app_path, app_name, consumer_key, redirect_uri, old_key = nil, old_uri = nil)
-  old_key = $default_consumer_key unless old_key
-  old_uri = $default_redirect_uri unless old_uri
-
-  # Determine iOS/Android
-  if app_path.include? 'android'
-    boot_config_path = app_path + 'app/res/values/bootconfig.xml'
-    modify_source(boot_config_path, old_key, consumer_key)
-    modify_source(boot_config_path, old_uri, redirect_uri)
-  else
-    case app_name
-      when 'App_native_ios'
-        source_path = app_path + app_name + '/AppDelegate.m'
-      when 'App_native_swift_ios'
-        source_path = app_path + app_name + '/AppDelegate.swift'
-      # TODO:
-      # hybrid local/remote + react
-    end
-
-    modify_source(source_path, old_key, consumer_key)
-    modify_source(source_path, old_uri, redirect_uri)
-  end
-end
-
-def silence_output
-  begin
-    stderr, stdout = $stderr.clone, $stdout.clone
-    $stderr.reopen(File.new('/dev/null', 'w'))
-    $stdout.reopen(File.new('/dev/null', 'w'))
-
-    yield
-  rescue Exception => e
-    $stdout.reopen(stdout)
-    $stderr.reopen(stderr)
-    raise e
-  ensure
-    $stdout.reopen(stdout)
-    $stderr.reopen(stderr)
-  end
 end
 
 #
@@ -180,14 +73,13 @@ def base_android_test_setup(options)
   run_type = options[:type]
   UI.user_error!('Please specify run type.') unless(run_type)
   sfdx = options[:sfdx]
-  skipRemoveApp = options[:skipRemoveApp]
+  rerun = options[:rerun]
   app_name = (run_type == 'native') ? 'native_java' : run_type
   package_name = "com.salesforce.#{app_name}"
 
-  generate_app('android', run_type, nil, sfdx)
+  generate_app('android', run_type, nil, sfdx) unless rerun
   path = Dir.glob("tmp*").last.concat("/App_#{run_type}_android/")
 
-  puts "PATH: #{path}"
   case run_type
     when 'react_native'
       path.concat('android/')
@@ -221,10 +113,6 @@ def run_android_tests(test_class, package_name, addition_ops = nil)
   password_param = "-Pandroid.testInstrumentationRunnerArguments.password=#{$password}"
   addition_ops = '' unless addition_ops
 
-  puts "test_class: #{test_class}"
-  puts "package_name: #{package_name}"
-  
-
   Dir.chdir('./Android/') do
     UI.header 'Run Tests Locally'
     
@@ -241,14 +129,8 @@ end
 def run_android_tests_firebase(test_class, package_name, app_path, addition_ops = nil)
   # Get app type for categorizing test results
   app_type = package_name.split('.').last
-  if app_type == 'native_java'
-    app_type = 'native'
-  end
 
   Dir.chdir('./Android/') do
-    # Work around issue of Firebase requiring app and tests to come from the same project
-    modify_source('app/build.gradle', 'com.salesforce.mobilesdk.mobilesdkuitest', package_name)
-
     UI.message 'Compile Tests'
     buildResult = system("./gradlew app:assembleAndroidTest")
     UI.build_failure!('Tests failed to build.') unless buildResult    
@@ -257,33 +139,19 @@ def run_android_tests_firebase(test_class, package_name, app_path, addition_ops 
     testResult = system("gcloud firebase test android run \
       --project mobile-apps-firebase-test \
       --type instrumentation \
-      --app ../#{app_path}app/build/outputs/apk/debug/app-debug.apk \
-      --test app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk \
+      --app=../#{app_path}app/build/outputs/apk/debug/app-debug.apk \
+      --test=app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk \
       --device model=NexusLowRes,version=28,locale=en,orientation=portrait  \
       --device model=NexusLowRes,version=27,locale=en,orientation=portrait  \
+      --device model=NexusLowRes,version=26,locale=en,orientation=portrait  \
       --device model=NexusLowRes,version=25,locale=en,orientation=portrait  \
+      --device model=NexusLowRes,version=24,locale=en,orientation=portrait  \
       --device model=NexusLowRes,version=23,locale=en,orientation=portrait  \
-      --results-dir=UITest-#{app_type}-#{ENV['CIRCLE_BUILD_NUM']}  \
+      --results-dir=UITest-#{app_type}  \
       --results-history-name=UITest-#{app_type}  \
+      --results-dir=UITest-#{app_type}-#{ENV['CIRCLE_BUILD_NUM']}  \
       --environment-variables class=#{test_class},packageName=#{package_name},password=#{$password}")
       UI.test_failure!('Tests failed.') unless testResult
-  end
-end
-
-# This is only setup to run against native java app
-def enable_android_sp(app_path)
-  app_name = 'native_java'
-  idp_commnet = '// SmartSyncSDKManager.getInstance().setIDPAppURIScheme(idpAppURIScheme);'
-  idp_code = 'SmartSyncSDKManager.getInstance().setIDPAppURIScheme("com.salesforce.native_kotlin://authenticator");'
-
-  source_extention = (app_name.eql? 'native_kotlin') ? 'kt' : 'java'
-  source_path = app_path + "app/src/com/salesforce/#{app_name}/MainApplication.#{source_extention}"
-  modify_source(source_path, idp_commnet, idp_code)
-  change_connected_app(app_path, app_name, $sp_consumer_key, $sp_redirect_uri)
-
-  Dir.chdir(app_path) do
-    UI.important 'Building App after Source Modifications'
-    `./gradlew assembleDebug`
   end
 end
 
@@ -298,9 +166,9 @@ def base_ios_test_setup(options)
   run_type = options[:type]
   UI.user_error!('Please specify run type.') unless(run_type)
   sfdx = options[:sfdx]
-  skipRemoveApp = options[:skipRemoveApp]
   device = options[:device]
   ios = options[:ios]
+  rerun = options[:rerun]
   xcode_path = '/Applications/Xcode.app/Contents/Developer/Applications/Simulator.app'
 
   if device
@@ -310,7 +178,7 @@ def base_ios_test_setup(options)
   end
 
   if ios
-    ios.gsub!(/[.]/, '-')
+    ios.gsub!('.', '-')
   else
     ios = '12-2'
   end
@@ -320,7 +188,7 @@ def base_ios_test_setup(options)
   sim_id = `xcrun simctl create #{$sim_name} com.apple.CoreSimulator.SimDeviceType.#{device} com.apple.CoreSimulator.SimRuntime.iOS-#{ios}`.delete("\n")
 
   Dir.chdir('../../') do
-    generate_app('ios', run_type, nil, sfdx)
+    generate_app('ios', run_type, nil, sfdx) unless rerun
     app_name = "App_#{run_type}_ios"
     path = Dir.glob("tmp*").first.concat("/#{app_name}/")
 
@@ -383,26 +251,19 @@ def run_ios_tests(bundle_name, test_scheme, xcargs = nil)
   end
 end
 
-def enable_ios_sp(app_path)
-  app_name = app_path.split('/').last
-  enable_idp_comment = '//Uncomment the following line in order to enable/force the use of advanced authentication flow.'
-  enable_idp = "[SalesforceSDKManager sharedManager].idpAppURIScheme = @\"#{$idp_redirect_uri.split(':').first}\";"
-  handle_response = 'return [[SFUserAccountManager sharedInstance] handleAdvancedAuthenticationResponse:url options:options];'
+def silence_output
+  begin
+    stderr, stdout = $stderr.clone, $stdout.clone
+    $stderr.reopen(File.new('/dev/null', 'w'))
+    $stdout.reopen(File.new('/dev/null', 'w'))
 
-  sourcePath = app_path + app_name + '/AppDelegate.m'
-  modify_source(sourcePath, enable_idp_comment, enable_idp)
-  modify_source(sourcePath, $comment + handle_response, handle_response)
-  change_connected_app(app_path, app_name, $sp_consumer_key, $sp_redirect_uri)
-
-  plist_path = File.expand_path(app_path + app_name + '/Info.plist')
-  value = [{'CFBundleURLSchemes' => [$sp_redirect_uri.split(':').first]}]
-  set_info_plist_value(path: plist_path, key: 'CFBundleURLTypes', value: value)
-end
-
-def enable_ios_logout(app_path)
-  logout_code = 'NSArray *args = [[NSProcessInfo processInfo] arguments]; if (args != nil) { for (NSString *arg in args) { if ([arg  isEqual: @"logout"]) { [[SFUserAccountManager sharedInstance] logout]; } } }'
-  comment = '//Uncomment the code below to see how you can customize the color, textcolor, font and   fontsize of the navigation bar'
-
-  app_name = app_path.split('/').last
-  modify_source( app_path + app_name + '/AppDelegate.m', comment, logout_code)
+    yield
+  rescue Exception => e
+    $stdout.reopen(stdout)
+    $stderr.reopen(stderr)
+    raise e
+  ensure
+    $stdout.reopen(stdout)
+    $stderr.reopen(stderr)
+  end
 end

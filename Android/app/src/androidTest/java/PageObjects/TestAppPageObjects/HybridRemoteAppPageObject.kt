@@ -26,6 +26,7 @@
  */
 package pageobjects.testapppageobjects
 
+import android.os.Build
 import androidx.test.uiautomator.UiSelector
 import org.junit.Assert
 import pageobjects.BasePageObject
@@ -37,9 +38,16 @@ class HybridRemoteAppPageObject(private val app: TestApplication) : BasePageObje
 
     fun assertAppLoads() {
         Thread.sleep(timeout)
-        val title = device.findObject(UiSelector().className("android.view.View").descriptionContains("Salesforce Mobile SDK Test"))
-        title.waitForExists(timeout)
-        Thread.sleep(timeout / 2)
-        Assert.assertEquals("App did not successfully login.", "Salesforce Mobile SDK Test", title.contentDescription)
+
+        // TODO: Update when min version increases to API 28
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O_MR1) {
+            val title = device.findObject(UiSelector().className("android.view.View").descriptionContains("Salesforce Mobile SDK Test"))
+            title.waitForExists(timeout)
+            Thread.sleep(timeout / 2)
+            Assert.assertEquals("App did not successfully login.", "Salesforce Mobile SDK Test", title.contentDescription)
+        } else {
+            val title = device.findObject(UiSelector().className("android.view.View").text("Salesforce Mobile SDK Test"))
+            Assert.assertTrue("App did not successfully login.", title.exists())
+        }
     }
 }

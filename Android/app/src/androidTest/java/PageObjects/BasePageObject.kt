@@ -35,9 +35,9 @@ import androidx.test.uiautomator.UiDevice
  */
 open class BasePageObject {
     val device: UiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-    // TODO: Update when min verison increaes past API 23
+    // TODO: Update when min version increases to API 24
     val isOldDevice: Boolean = (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M)
-    // FIXME Update this when we stop using ARM Emulators
+    // TODO: Update this when we stop using ARM Emulators
     val isArm = Build.SUPPORTED_ABIS.first().contains("armeabi")
     var timeout:Long = if (isArm) 30000 else 5000
 }

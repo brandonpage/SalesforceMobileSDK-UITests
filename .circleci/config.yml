@@ -158,10 +158,10 @@ workflows:
       - test-android:
           app_type: "hybrid_remote"
       - test-ios:
-          device: "iPhoneXR"
+          device: "iPhone XR"
           ios_version: "12.2"
       - test-ios:
-          device: "iPhoneX"
+          device: "iPhone X"
           ios_version: "11.4"
 
   # Cron are on a timezone 8 hours ahead of PST
@@ -182,8 +182,8 @@ workflows:
 #      - test-android:
 #          API_LEVEL: 28
 #      - test-ios:
-#          device: "iPhoneXR"
+#          device: "iPhone XR"
 #          ios_version: "12.2"
 #      - test-ios:
-#          device: "iPhoneX"
+#          device: "iPhone X"
 #          ios_version: "11.4"
