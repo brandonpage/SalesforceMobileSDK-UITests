@@ -44,7 +44,7 @@ class HybridRemoteAppPageObject(private val app: TestApplication) : BasePageObje
         } else {
             device.findObject(UiSelector().className("android.view.View").text("Salesforce Mobile SDK Test"))
         }
-
+        title.waitForExists(timeout * 5)
         Assert.assertTrue("App did not successfully login.", title.exists())
     }
 }

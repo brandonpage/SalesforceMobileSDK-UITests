@@ -44,7 +44,7 @@ class HybridLocalAppPageObject(private val app: TestApplication) : BasePageObjec
         } else {
             device.findObject(UiSelector().className("android.view.View").text("Contacts"))
         }
-
+        title.waitForExists(timeout * 5)
         Assert.assertTrue("App did not successfully login.", title.exists())
     }
 }
