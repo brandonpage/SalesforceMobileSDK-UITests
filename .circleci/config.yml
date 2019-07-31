@@ -181,7 +181,7 @@ workflows:
           name: "iOS - Min"
           e: 
             name: mac
-            xcode: "1.2.1"
+            xcode: "10.2.1"
           device: "iPhone X"
           ios_version: *min-ios
 
