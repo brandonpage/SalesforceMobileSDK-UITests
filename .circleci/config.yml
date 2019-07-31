@@ -178,12 +178,12 @@ workflows:
           name: "Hybrid Remote (Android)"
           app_type: "hybrid_remote"
       - test-ios:
-          name: *latest-ios iOS
+          name: iOS - Latest
           e: mac
           device: "iPhone XR"
           ios_version: *latest-ios
       - test-ios:
-          name: *min-ios iOS
+          name: iOS - Min
           e: 
             name: mac
             xcode: "10.2.1"
