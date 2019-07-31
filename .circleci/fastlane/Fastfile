@@ -128,6 +128,7 @@ end
 def run_android_tests_firebase(test_class, package_name, app_path, addition_ops = nil)
   # Get app type for categorizing test results
   app_type = package_name.split('.').last
+  bucket = (app_type == "native_java") ? "native" : app_type
 
   Dir.chdir('./Android/') do
     UI.message 'Compile Tests'
@@ -148,7 +149,7 @@ def run_android_tests_firebase(test_class, package_name, app_path, addition_ops 
       --device model=NexusLowRes,version=23,locale=en,orientation=portrait  \
       --results-dir=UITest-#{app_type}  \
       --results-history-name=UITest-#{app_type}  \
-      --results-dir=UITest-#{app_type}-#{ENV['CIRCLE_BUILD_NUM']}  \
+      --results-dir=UITest-#{bucket}-#{ENV['CIRCLE_BUILD_NUM']}  \
       --environment-variables class=#{test_class},packageName=#{package_name},password=#{$password},firebase=true   \
       --no-performance-metrics --no-auto-google-login")
       UI.test_failure!('Tests failed.') unless testResult
@@ -222,7 +223,9 @@ def install_ios_app(app_path, release = nil)
   app_name = app_path.split('/').grep(/ios/).first
   Dir.chdir(app_path) do
     UI.important 'Build for Simulator'
-    silence_output { system("xcodebuild build -scheme #{app_name} -workspace #{app_name}.xcworkspace -sdk iphonesimulator -derivedDataPath ./DerivedData") }
+    #TODO: RESTORE THIS
+    #silence_output { system("xcodebuild build -scheme #{app_name} -workspace #{app_name}.xcworkspace -sdk iphonesimulator -derivedDataPath ./DerivedData") }
+    system("xcodebuild build -scheme #{app_name} -workspace #{app_name}.xcworkspace -sdk iphonesimulator -derivedDataPath ./DerivedData")
 
     UI.important 'Installing App on Simulator'
     system("xcrun simctl install booted ./DerivedData/Build/Products/Debug-iphonesimulator/#{app_name}.app")

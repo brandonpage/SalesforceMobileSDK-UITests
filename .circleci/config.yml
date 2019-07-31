@@ -45,8 +45,13 @@ aliases:
     name: Copy test results data
     command: |
         mkdir -p firebase/results
-        gsutil -m cp -r -U "`gsutil ls gs://test-lab-w87i9sz6q175u-kwp8ium6js0zw/UITest-<< parameters.app_type >>-${CIRCLE_BUILD_NUM} | tail -1`*" ./firebase/
-        mv firebase/test_result_1.xml firebase/results
+        gsutil -m cp -r gs://test-lab-w87i9sz6q175u-kwp8ium6js0zw/UITest-<< parameters.app_type >>-${CIRCLE_BUILD_NUM} .
+
+        COUNT=0
+        for result in $(find firebase/ -name 'test_result*')
+        do
+            mv $result "firebase/results/result$COUNT.xml" && ((COUNT++))
+        done
     when: always
 
 executors:
@@ -87,7 +92,7 @@ jobs:
           no_output_timeout: 1200
       - run: *get-firebase-results
       - store_artifacts:
-          path: firebase/
+          path: firebase/UITest-<< parameters.app_type >>-${CIRCLE_BUILD_NUM}
           when: always
       - store_test_results:
           path: firebase/results
@@ -173,12 +178,12 @@ workflows:
           name: "Hybrid Remote (Android)"
           app_type: "hybrid_remote"
       - test-ios:
-          name:  "iOS - Latest"
+          name:  iOS *latest-ios
           e: mac
           device: "iPhone XR"
           ios_version: *latest-ios
       - test-ios:
-          name: "iOS - Min"
+          name: iOS *min-ios
           e: 
             name: mac
             xcode: "10.2.1"
