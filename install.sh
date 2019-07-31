@@ -10,7 +10,7 @@ else
     npm install -g cordova@8.1.2
     cordova telemetry off
 
-    sudo gem uninstall cocoapods
+    echo y | sudo gem uninstall cocoapods
     sudo gem install cocoapods -v 1.6.0
 fi
 
