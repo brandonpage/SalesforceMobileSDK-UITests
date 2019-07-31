@@ -39,12 +39,13 @@ class HybridLocalAppPageObject(private val app: TestApplication) : BasePageObjec
     fun assertAppLoads() {
         Thread.sleep(timeout * 2)
         // TODO: Update when min version increases to API 28
-        val title = if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O_MR1) {
-            device.findObject(UiSelector().className("android.view.View").descriptionContains("Contacts"))
-        } else {
+        val title = if (!hasOldWebview or (Build.VERSION.SDK_INT > Build.VERSION_CODES.O_MR1)) {
             device.findObject(UiSelector().className("android.view.View").text("Contacts"))
+        } else {
+            device.findObject(UiSelector().className("android.view.View").descriptionContains("Contacts"))
         }
-        title.waitForExists(timeout * 5)
-        Assert.assertTrue("App did not successfully login.", title.exists())
+
+        title.waitForExists(timeout * 15)
+        Assert.assertTrue("App did not successfully testLogin.", title.exists())
     }
 }

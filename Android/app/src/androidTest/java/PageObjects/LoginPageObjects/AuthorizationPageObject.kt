@@ -36,15 +36,8 @@ import pageobjects.BasePageObject
 
 class AuthorizationPageObject : BasePageObject() {
 
-    init {
-        if (isArm or isOldDevice) {
-            Log.i("uia", "Sleeping a while to let auth page load.")
-            Thread.sleep(timeout)
-        }
-    }
-
     fun tapAllow() {
-        val allowButton = if (isOldDevice) {
+        val allowButton = if (hasOldWebview) {
             device.findObject(UiSelector().className("android.widget.Button").index(0))
         }
         else {
@@ -53,14 +46,10 @@ class AuthorizationPageObject : BasePageObject() {
 
         Log.i("uia", "Waiting for allow button to be present.")
         assert(allowButton.waitForExists(timeout * 5))
-        if (isArm) {
-            Thread.sleep(timeout)
-        }
 
         val webview2 = device.wait(Until.findObject(By.clazz("android.webkit.WebView")), timeout)
         Log.i("uia", "Scrolling webview.")
         webview2.scroll(Direction.DOWN, 0.5f)
         allowButton.click()
-        Thread.sleep(timeout * 2)
     }
 }
