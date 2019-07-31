@@ -60,10 +60,8 @@ def generate_app(os, type = nil, template = nil, sfdx = nil)
   if sfdx
     generate_command.concat(' --use-sfdx')
   end
-
-  #TODO: FIX THIS
-  #result = silence_output { system(generate_command) }
-  system(generate_command)
+  
+  result = silence_output { system(generate_command) }
   UI.user_error!('Test app was not successfully created.') unless(result)
 end
 
@@ -225,10 +223,8 @@ def install_ios_app(app_path, release = nil)
   app_name = app_path.split('/').grep(/ios/).first
   Dir.chdir(app_path) do
     UI.important 'Build for Simulator'
-    #TODO: RESTORE THIS
-    #silence_output { system("xcodebuild build -scheme #{app_name} -workspace #{app_name}.xcworkspace -sdk iphonesimulator -derivedDataPath ./DerivedData") }
-    system("xcodebuild build -scheme #{app_name} -workspace #{app_name}.xcworkspace -sdk iphonesimulator -derivedDataPath ./DerivedData")
-
+    silence_output { system("xcodebuild build -scheme #{app_name} -workspace #{app_name}.xcworkspace -sdk iphonesimulator -derivedDataPath ./DerivedData") }
+    
     UI.important 'Installing App on Simulator'
     system("xcrun simctl install booted ./DerivedData/Build/Products/Debug-iphonesimulator/#{app_name}.app")
   end
