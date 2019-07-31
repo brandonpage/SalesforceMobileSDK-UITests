@@ -1,4 +1,9 @@
 aliases:
+  - &latest-ios
+    "12.4"
+  - &min-ios
+    "11.4"
+
   - &upgrade-git
     name: Update Git
     command:  |
@@ -44,24 +49,28 @@ aliases:
         mv firebase/test_result_1.xml firebase/results
     when: always
 
-linux: &linux
-  working_directory: ~/SalesforceMobileSDK-UITests
-  docker:
-    - image: circleci/android:api-28-node
-  environment:
-    - TERM: "dumb"
-    - GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx2048m -XX:+HeapDumpOnOutOfMemoryError"'
-
-mac: &mac
-  working_directory: ~/SalesforceMobileSDK-UITests
-  macos:
-    xcode: "10.2.1"
-  shell: /bin/bash --login -eo pipefail
+executors:
+    linux:
+        working_directory: ~/SalesforceMobileSDK-UITests
+        docker:
+            - image: circleci/android:api-28-node
+        environment:
+            - TERM: "dumb"
+            - GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx2048m -XX:+HeapDumpOnOutOfMemoryError"'
+    mac:
+        parameters:
+            xcode:
+                type: string
+                default: "10.3.0"
+        working_directory: ~/SalesforceMobileSDK-UITests
+        macos:
+            xcode: << parameters.xcode >>
+        shell: /bin/bash --login -eo pipefail
 
 version: 2.1
 jobs:
   test-android:
-    <<: *linux
+    executor: linux
     parameters:
       app_type: 
         type: string
@@ -85,12 +94,14 @@ jobs:
           when: always
 
   test-ios:
-      <<: *mac
+      executor: << parameters.e >>
       parameters:
         ios_version: 
             type: string
         device:
             type: string
+        e:
+            type: executor
       steps:
         - checkout
         - run: *setup
@@ -147,23 +158,32 @@ jobs:
 
 
 workflows:
-  version: 2
   pr-build-all-apps:
     jobs:
       - test-android:
+          name: "Java"
           app_type: "native"
       - test-android:
+          name: "Kotlin"
           app_type: "native_kotlin"
       - test-android:
+          name: "Hybrid Local (Android)"
           app_type: "hybrid_local"
       - test-android:
+          name: "Hybrid Remote (Android)"
           app_type: "hybrid_remote"
       - test-ios:
+          name:  "iOS - Latest"
+          e: mac
           device: "iPhone XR"
-          ios_version: "12.2"
+          ios_version: *latest-ios
       - test-ios:
+          name: "iOS - Min"
+          e: 
+            name: mac
+            xcode: "1.2.1"
           device: "iPhone X"
-          ios_version: "11.4"
+          ios_version: *min-ios
 
   # Cron are on a timezone 8 hours ahead of PST
   # Build everything on Saturday Afternoon
