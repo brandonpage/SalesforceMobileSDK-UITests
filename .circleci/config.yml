@@ -46,19 +46,11 @@ aliases:
     command: |
         mkdir -p firebase/results
         gsutil -m cp -r gs://test-lab-w87i9sz6q175u-kwp8ium6js0zw/UITest-<< parameters.app_type >>-${CIRCLE_BUILD_NUM} ./firebase/ || true
-    when: always
 
-  - &parse-firebase-results
-    name: Parse test results data
-    command: |
         count=0
         for result in $(find ./firebase/ -name 'test_result*'); do
-            echo $result
-            mv $result "./firebase/results/result${count}.xml" || true
-            (( count++ )) || true 
+            mv $result "./firebase/results/result${count}.xml" && (( count++ )) || true 
         done
-
-        ls ./firebase/results/
     when: always
 
 executors:
@@ -98,9 +90,8 @@ jobs:
           command: cd .circleci && fastlane android type:<< parameters.app_type >>
           when: always
       - run: *get-firebase-results
-      - run: *parse-firebase-results
       - store_artifacts:
-          path: firebase/UITest-<< parameters.app_type >>-${CIRCLE_BUILD_NUM}
+          path: firebase
           when: always
       - store_test_results:
           path: firebase/results
