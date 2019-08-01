@@ -59,7 +59,7 @@ aliases:
         count=0
         for result in $(find ./firebase/ -name 'test_result*'); do
             echo $result
-            mv $result "./firebase/results/result${count}.xml"
+            mv $result "./firebase/results/result${count}.xml" || true
             ((count++))
         done
 
