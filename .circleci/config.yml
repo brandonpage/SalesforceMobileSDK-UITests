@@ -58,7 +58,9 @@ aliases:
         
         COUNT=0
         for result in $(find ./firebase/ -name 'test_result*'); do
-            mv $result "./firebase/results/result$COUNT.xml" && ((COUNT++))
+            echo $result
+            mv $result "./firebase/results/result$COUNT.xml"
+            ((COUNT++))
         done
 
         ls ./firebase/results/
@@ -163,11 +165,11 @@ workflows:
     #  - test-android:
     #      name: "Hybrid Remote (Android)"
     #      app_type: "hybrid_remote"
-      - test-ios:
-          name: iOS - Latest
-          e: mac
-          device: "iPhone XR"
-          ios_version: *latest-ios
+    #  - test-ios:
+    #      name: iOS - Latest
+    #      e: mac
+    #      device: "iPhone XR"
+    #      ios_version: *latest-ios
     #  - test-ios:
     #      name: iOS - Min
     #      e: 
