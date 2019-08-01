@@ -1,6 +1,6 @@
 aliases:
   - &latest-ios
-    "12.4"
+    "12.2"
   - &min-ios
     "11.4"
 
@@ -153,7 +153,9 @@ workflows:
           app_type: "hybrid_remote"
       - test-ios:
           name: iOS - Latest
-          e: mac
+          e: 
+            name: mac
+            xcode: "10.2.1"
           device: "iPhone XR"
           ios_version: *latest-ios
       - test-ios:
