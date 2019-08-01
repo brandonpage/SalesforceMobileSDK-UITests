@@ -56,11 +56,11 @@ aliases:
         pwd
         ls ./firebase/
         
-        COUNT=0
+        count=0
         for result in $(find ./firebase/ -name 'test_result*'); do
             echo $result
-            mv $result "./firebase/results/result$COUNT.xml"
-            ((COUNT++))
+            mv $result "./firebase/results/result${count}.xml"
+            ((count++))
         done
 
         ls ./firebase/results/
