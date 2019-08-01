@@ -232,8 +232,9 @@ end
 def run_ios_tests(bundle_name, test_scheme, xcargs = nil)
   xcargs_string = ''
   xcargs.each { |arg| xcargs_string += "'#{arg}' " } unless xcargs.nil?
-  app_type = bundle_name.split('.').last[4..-5]
-
+  app_type = bundle_name.split('.').last
+  app_type = (app_type.start_with?('App_')) ? app_type[4..-5] : app_type
+  
   Dir.chdir('../../iOS/') do
     destination = "#{$sim_name} (" + `instruments -s devices | grep #{$sim_name} | awk -F"[()]" '{print $2}'`.delete("\n") + ")"
     begin
