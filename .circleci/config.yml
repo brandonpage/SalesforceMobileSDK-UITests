@@ -45,7 +45,7 @@ aliases:
     name: Copy test results data
     command: |
         mkdir -p firebase/results
-        gsutil -m cp -r gs://test-lab-w87i9sz6q175u-kwp8ium6js0zw/UßITest-<< parameters.app_type >>-${CIRCLE_BUILD_NUM} ./firebase/ || true
+        gsutil -m cp -r gs://test-lab-w87i9sz6q175u-kwp8ium6js0zw/UITest-<< parameters.app_type >>-${CIRCLE_BUILD_NUM} ./firebase/ || true
     when: always
 
   - &parse-firebase-results
