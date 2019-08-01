@@ -160,11 +160,10 @@ end
 # iOS Helper Functions
 #
 def base_ios_test_setup(options)
-  system('rm -rf ../../test_output/')
-
   $password = get_password
   run_type = options[:type]
   UI.user_error!('Please specify run type.') unless(run_type)
+  system("rm -rf ../../test_output/#{run_type}")
   sfdx = options[:sfdx]
   device = options[:device]
   ios = options[:ios]
@@ -233,6 +232,7 @@ end
 def run_ios_tests(bundle_name, test_scheme, xcargs = nil)
   xcargs_string = ''
   xcargs.each { |arg| xcargs_string += "'#{arg}' " } unless xcargs.nil?
+  app_type = bundle_name.split('.').last[4..-5]
 
   Dir.chdir('../../iOS/') do
     destination = "#{$sim_name} (" + `instruments -s devices | grep #{$sim_name} | awk -F"[()]" '{print $2}'`.delete("\n") + ")"
@@ -241,7 +241,7 @@ def run_ios_tests(bundle_name, test_scheme, xcargs = nil)
         project: 'iOS/SalesforceMobileSDK-UITest.xcodeproj',
         scheme: test_scheme,
         device: destination,
-        output_directory: 'test_output',
+        output_directory: "test_output/#{app_type}",
         clean: true,
         xcargs: "'TEST_APP_BUNDLE=#{bundle_name}' 'PASSWORD=#{$password}' #{xcargs_string}"
       )
