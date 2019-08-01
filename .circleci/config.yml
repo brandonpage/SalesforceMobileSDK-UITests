@@ -51,10 +51,17 @@ aliases:
   - &parse-firebase-results
     name: Parse test results data
     command: |
+        set -e 
+
+        pwd
+        ls ./firebase/
+        
         COUNT=0
-        for result in $(find firebase/ -name 'test_result*'); do
-            mv $result "firebase/results/result$COUNT.xml" && ((COUNT++))
+        for result in $(find ./firebase/ -name 'test_result*'); do
+            mv $result "./firebase/results/result$COUNT.xml" && ((COUNT++))
         done
+
+        ls ./firebase/results/
     when: always
 
 executors:
@@ -144,30 +151,30 @@ jobs:
 workflows:
   pr-build-all-apps:
     jobs:
-      - test-android:
-          name: "Java"
-          app_type: "native"
+    #  - test-android:
+    #      name: "Java"
+    #      app_type: "native"
       - test-android:
           name: "Kotlin"
           app_type: "native_kotlin"
-      - test-android:
-          name: "Hybrid Local (Android)"
-          app_type: "hybrid_local"
-      - test-android:
-          name: "Hybrid Remote (Android)"
-          app_type: "hybrid_remote"
+    #  - test-android:
+    #      name: "Hybrid Local (Android)"
+    #      app_type: "hybrid_local"
+    #  - test-android:
+    #      name: "Hybrid Remote (Android)"
+    #      app_type: "hybrid_remote"
       - test-ios:
           name: iOS - Latest
           e: mac
           device: "iPhone XR"
           ios_version: *latest-ios
-      - test-ios:
-          name: iOS - Min
-          e: 
-            name: mac
-            xcode: "10.2.1"
-          device: "iPhone X"
-          ios_version: *min-ios
+    #  - test-ios:
+    #      name: iOS - Min
+    #      e: 
+    #        name: mac
+    #        xcode: "10.2.1"
+    #      device: "iPhone X"
+    #      ios_version: *min-ios
 
   # Cron are on a timezone 8 hours ahead of PST
   # Build everything on Saturday Afternoon
