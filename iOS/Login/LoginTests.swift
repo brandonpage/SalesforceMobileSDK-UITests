@@ -74,9 +74,8 @@ class LoginTests: XCTestCase {
             waitForExpectations(timeout: timeout, handler: nil)
             XCTAssert(title.exists, appLoadError)
         case .reactNative:
-            print(app.otherElements)
             let titleElement = app.otherElements.matching(identifier: sampleAppTitle).staticTexts[sampleAppTitle]
-            XCTAssert(titleElement.waitForExistence(timeout: timeout), appLoadError)
+            XCTAssert(titleElement.waitForExistence(timeout: timeout * 2), appLoadError)
         }
     }
 }
