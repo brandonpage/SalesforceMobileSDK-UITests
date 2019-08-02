@@ -130,6 +130,10 @@ jobs:
             name: Install Ant
             command: HOMEBREW_NO_AUTO_UPDATE=1 brew install ant
         - run:
+            name: Test React Native App
+            command: cd .circleci && fastlane ios type:react_native device:"<< parameters.device >>" ios:"<< parameters.ios_version >>"
+            when: always
+        - run:
             name: Test Native Objective-C App
             command: cd .circleci && fastlane ios type:native device:"<< parameters.device >>" ios:"<< parameters.ios_version >>"
             when: always
@@ -143,7 +147,7 @@ jobs:
             command: cd .circleci && fastlane ios type:hybrid_local device:"<< parameters.device >>" ios:"<< parameters.ios_version >>"
             when: always
         - run:
-            name: Test Hyrbid Remote App
+            name: Test Hybrid Remote App
             command: cd .circleci && fastlane ios type:hybrid_remote device:"<< parameters.device >>" ios:"<< parameters.ios_version >>"
             when: always
         - store_artifacts:
