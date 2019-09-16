@@ -9,7 +9,6 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
 else
     npm install -g cordova@8.1.2
     cordova telemetry off
-    sudo gem install cocoapods
     sudo npm install plist
 fi
 
