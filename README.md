@@ -9,7 +9,7 @@ This repo contains tests designed to validate the functionality of apps created 
        ex: `fastlane android type:native_kotlin` or `fastlane ios type:hybrid_local`
 
       
-Additional options: `sfdx:<true/false>`, `rerun:<true/false>`.
+Additional options: `passcode:<true/false>`, `adv_auth:<true/false>`, `sfdx:<true/false>`, `rerun:<true/false>`.
 
 ----------
 
