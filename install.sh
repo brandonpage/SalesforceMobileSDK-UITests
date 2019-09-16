@@ -10,6 +10,7 @@ else
     npm install -g cordova@8.1.2
     cordova telemetry off
     sudo gem install cocoapods
+    sudo gem cleanup cocoapods
     sudo npm install plist
 fi
 

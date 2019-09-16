@@ -50,9 +50,9 @@ aliases:
         name: iOS 12
         e:
           name: mac
-          xcode: "10.2.1"
+          xcode: "10.3.0"
         device: "iPhone XR"
-        ios_version: "12.2"
+        ios_version: "12.4"
     - test-ios:
         name: iOS 11
         e: 
@@ -101,9 +101,9 @@ aliases:
         name: "iOS 12 SFDX"
         e:
           name: mac
-          xcode: "10.2.1"
+          xcode: "10.3.0"
         device: "iPhone XR"
-        ios_version: "12.2"
+        ios_version: "12.4"
         sfdx: true
     - test-ios:
         name: "iOS 11 SFDX"
