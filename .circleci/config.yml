@@ -39,13 +39,13 @@ aliases:
         name: "Passcode"
         app_type: "native"
         passcode: true
-    # - test-ios:
-    #     name: "iOS 13"
-    #     e:
-    #       name: mac
-    #       xcode: "11.0.0"
-    #     device: "iPhone XR"
-    #     ios_version: "13.0"    
+    - test-ios:
+        name: "iOS 13"
+        e:
+          name: mac
+          xcode: "11.0.0"
+        device: "iPhone XR"
+        ios_version: "13.0"    
     - test-ios:
         name: iOS 12
         e:
@@ -89,14 +89,14 @@ aliases:
         template: true
         sfdx: true
         e: android-react-native
-    # - test-ios:
-    #     name: "iOS 13 SFDX"
-    #     e:
-    #       name: mac
-    #       xcode: "11.0.0"
-    #     device: "iPhone XR"
-    #     ios_version: "13.0"
-    #     sfdx: true
+    - test-ios:
+        name: "iOS 13 SFDX"
+        e:
+          name: mac
+          xcode: "11.0.0"
+        device: "iPhone XR"
+        ios_version: "13.0"
+        sfdx: true
     - test-ios:
         name: "iOS 12 SFDX"
         e:
