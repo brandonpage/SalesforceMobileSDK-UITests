@@ -64,18 +64,20 @@ class PasscodeTests {
         val passcodeScreen = PasscodePageObject(app)
 
         // TODO: Remove this when min version increases to API 24
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
-            Thread.sleep(8000)
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+            Assert.assertEquals("Passcode initial state incorrect.", "Passcode is 5 alphanumeric characters long.", passcodeScreen.getPasscode())
         }
 
         Assert.assertEquals("Passcode title incorrect.", "Passcode", passcodeScreen.getTitleText())
         Assert.assertEquals("Passcode create instructions incorrect.", "Create a passcode", passcodeScreen.getText())
-        Assert.assertEquals("Passcode initial state incorrect.", "Passcode is 5 alphanumeric characters long.", passcodeScreen.getPasscode())
         Assert.assertFalse("Logout button should not be shown.", passcodeScreen.isLogutButtonVisible())
 
         //Type some of the passcode
         passcodeScreen.enterPasscode("123")
-        Assert.assertEquals("Passcode entered incorrect.", 3, passcodeScreen.getTypedLength())
+        // TODO: Remove this when min version increases to API 24
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+            Assert.assertEquals("Passcode entered incorrect.", 3, passcodeScreen.getTypedLength())
+        }
 
         // Finish entering passcode
         passcodeScreen.enterPasscode("12345")
