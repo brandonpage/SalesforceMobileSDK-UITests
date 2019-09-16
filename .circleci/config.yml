@@ -7,7 +7,7 @@ aliases:
 
   - &setup
     name: Setup
-    command: sudo ./install.sh
+    command: ./install.sh
     when: always
   
   - &all-jobs
