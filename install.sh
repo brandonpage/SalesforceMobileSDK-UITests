@@ -14,9 +14,5 @@ else
     sudo npm install plist
 fi
 
-if [[ -z "$CIRCLECI" ]]; then
-    sudo chown -R distiller node_modules/
-fi
-
 git clone --branch dev --single-branch --depth 1 https://github.com/forcedotcom/SalesforceMobileSDK-Package.git
 cd SalesforceMobileSDK-Package && sudo node ./install.js

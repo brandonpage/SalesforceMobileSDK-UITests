@@ -63,21 +63,14 @@ class PasscodeTests {
         AuthorizationPageObject().tapAllow()
         val passcodeScreen = PasscodePageObject(app)
 
-        // TODO: Remove this when min version increases to API 24
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
-            Assert.assertEquals("Passcode initial state incorrect.", "Passcode is 5 alphanumeric characters long.", passcodeScreen.getPasscode())
-        }
-
+        Assert.assertEquals("Passcode initial state incorrect.", "Passcode is 5 alphanumeric characters long.", passcodeScreen.getPasscode())
         Assert.assertEquals("Passcode title incorrect.", "Passcode", passcodeScreen.getTitleText())
         Assert.assertEquals("Passcode create instructions incorrect.", "Create a passcode", passcodeScreen.getText())
         Assert.assertFalse("Logout button should not be shown.", passcodeScreen.isLogutButtonVisible())
 
         //Type some of the passcode
         passcodeScreen.enterPasscode("123")
-        // TODO: Remove this when min version increases to API 24
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
-            Assert.assertEquals("Passcode entered incorrect.", 3, passcodeScreen.getTypedLength())
-        }
+        Assert.assertEquals("Passcode entered incorrect.", 3, passcodeScreen.getTypedLength())
 
         // Finish entering passcode
         passcodeScreen.enterPasscode("12345")
@@ -87,6 +80,7 @@ class PasscodeTests {
         // Verify Passcode
         passcodeScreen.enterPasscode("12345")
 
+        // Verify App loads
         when (app.type) {
             AppType.NATIVE, AppType.NATIVE_KOTLIN ->
                 NativeAppPageObject(app).assertAppLoads()

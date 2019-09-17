@@ -7,7 +7,9 @@ aliases:
 
   - &setup
     name: Setup
-    command: ./install.sh
+    command:  |
+      mkdir node_modules
+      ./install.sh
     when: always
   
   - &all-jobs
