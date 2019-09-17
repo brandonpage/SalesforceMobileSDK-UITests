@@ -5,11 +5,17 @@ aliases:
   - &SmartSyncExplorerReactNative
     https://github.com/forcedotcom/SalesforceMobileSDK-Templates/SmartSyncExplorerReactNative\#dev
 
-  - &setup
+  - &mac_setup
     name: Setup
     command:  |
       mkdir node_modules
+      sudo chown -R distiller: node_modules/
       ./install.sh
+    when: always
+
+  - &setup
+    name: Setup
+    command: ./install.sh
     when: always
   
   - &all-jobs
@@ -210,7 +216,7 @@ jobs:
           condition: << parameters.template >>
           steps:
             - run:
-                name: Test Android Template Test
+                name: Test << parameters.app_type >> Android Template
                 command: cd .circleci && fastlane android template:<< parameters.app_type >> sfdx:"<< parameters.sfdx >>"
                 when: always
       - unless:
@@ -252,7 +258,7 @@ jobs:
           type: executor
       steps:
         - checkout
-        - run: *setup
+        - run: *mac_setup
         - when:
             condition: << parameters.sfdx >>
             steps:
