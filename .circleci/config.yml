@@ -19,41 +19,41 @@ aliases:
     when: always
   
   - &all-jobs
-    - test-android:
-        name: "Java"
-        app_type: "native"
-    - test-android:
-        name: "Kotlin"
-        app_type: "native_kotlin"
-    - test-android:
-        name: "Hybrid Local (Android)"
-        app_type: "hybrid_local"
-    - test-android:
-        name: "Hybrid Remote (Android)"
-        app_type: "hybrid_remote"
-    - test-android:
-        name: "React Native (Android)"
-        app_type: "react_native"
-        e: android-react-native
-    - test-android:
-        name: "SmartSyncExplorerReactNative (Android)"
-        app_type: *SmartSyncExplorerReactNative
-        template: true 
-        e: android-react-native
-    - test-android:
-        name: "Advanced Auth"
-        app_type: "native"
-    - test-android:
-        name: "Passcode"
-        app_type: "native"
-        passcode: true
-    - test-ios:
-        name: "iOS 13"
-        e:
-          name: mac
-          xcode: "11.0.0"
-        device: "iPhone XR"
-        ios_version: "13.0"    
+    # - test-android:
+    #     name: "Java"
+    #     app_type: "native"
+    # - test-android:
+    #     name: "Kotlin"
+    #     app_type: "native_kotlin"
+    # - test-android:
+    #     name: "Hybrid Local (Android)"
+    #     app_type: "hybrid_local"
+    # - test-android:
+    #     name: "Hybrid Remote (Android)"
+    #     app_type: "hybrid_remote"
+    # - test-android:
+    #     name: "React Native (Android)"
+    #     app_type: "react_native"
+    #     e: android-react-native
+    # - test-android:
+    #     name: "SmartSyncExplorerReactNative (Android)"
+    #     app_type: *SmartSyncExplorerReactNative
+    #     template: true 
+    #     e: android-react-native
+    # - test-android:
+    #     name: "Advanced Auth"
+    #     app_type: "native"
+    # - test-android:
+    #     name: "Passcode"
+    #     app_type: "native"
+    #     passcode: true
+    # - test-ios:
+    #     name: "iOS 13"
+    #     e:
+    #       name: mac
+    #       xcode: "11.0.0"
+    #     device: "iPhone XR"
+    #     ios_version: "13.0"    
     - test-ios:
         name: iOS 12
         e:
@@ -70,41 +70,41 @@ aliases:
         ios_version: "11.4"
 
   - &all-jobs-sfdx
-    - test-android:
-        name: "Java SFDX"
-        app_type: "native"
-        sfdx: true
-    - test-android:
-        name: "Kotlin SFDX"
-        app_type: "native_kotlin"
-        sfdx: true
-    - test-android:
-        name: "Hybrid Local (Android) SFDX"
-        app_type: "hybrid_local"
-        sfdx: true
-    - test-android:
-        name: "Hybrid Remote (Android) SFDX"
-        app_type: "hybrid_remote"
-        sfdx: true
-    - test-android:
-        name: "React Native (Android) SFDX"
-        app_type: "react_native"
-        sfdx: true
-        e: android-react-native
-    - test-android:
-        name: "SmartSyncExplorerReactNative (Android) SFDX"
-        app_type: *SmartSyncExplorerReactNative
-        template: true
-        sfdx: true
-        e: android-react-native
-    - test-ios:
-        name: "iOS 13 SFDX"
-        e:
-          name: mac
-          xcode: "11.0.0"
-        device: "iPhone XR"
-        ios_version: "13.0"
-        sfdx: true
+    # - test-android:
+    #     name: "Java SFDX"
+    #     app_type: "native"
+    #     sfdx: true
+    # - test-android:
+    #     name: "Kotlin SFDX"
+    #     app_type: "native_kotlin"
+    #     sfdx: true
+    # - test-android:
+    #     name: "Hybrid Local (Android) SFDX"
+    #     app_type: "hybrid_local"
+    #     sfdx: true
+    # - test-android:
+    #     name: "Hybrid Remote (Android) SFDX"
+    #     app_type: "hybrid_remote"
+    #     sfdx: true
+    # - test-android:
+    #     name: "React Native (Android) SFDX"
+    #     app_type: "react_native"
+    #     sfdx: true
+    #     e: android-react-native
+    # - test-android:
+    #     name: "SmartSyncExplorerReactNative (Android) SFDX"
+    #     app_type: *SmartSyncExplorerReactNative
+    #     template: true
+    #     sfdx: true
+    #     e: android-react-native
+    # - test-ios:
+    #     name: "iOS 13 SFDX"
+    #     e:
+    #       name: mac
+    #       xcode: "11.0.0"
+    #     device: "iPhone XR"
+    #     ios_version: "13.0"
+    #     sfdx: true
     - test-ios:
         name: "iOS 12 SFDX"
         e:
@@ -265,14 +265,14 @@ jobs:
               - run:
                   name: Install SFDX
                   command: npm install -g sfdx-cli
-        - run:
-            name: Test Native Objective-C App
-            command: cd .circleci && fastlane ios type:native device:"<< parameters.device >>" ios:"<< parameters.ios_version >>" sfdx:"<< parameters.sfdx >>"
-            when: always
-        - run:
-            name: Test Native Swift App
-            command: xcrun swift -version && cd .circleci && fastlane ios type:native_swift device:"<< parameters.device >>" ios:"<< parameters.ios_version >>" sfdx:"<< parameters.sfdx >>"
-            when: always
+        # - run:
+        #     name: Test Native Objective-C App
+        #     command: cd .circleci && fastlane ios type:native device:"<< parameters.device >>" ios:"<< parameters.ios_version >>" sfdx:"<< parameters.sfdx >>"
+        #     when: always
+        # - run:
+        #     name: Test Native Swift App
+        #     command: xcrun swift -version && cd .circleci && fastlane ios type:native_swift device:"<< parameters.device >>" ios:"<< parameters.ios_version >>" sfdx:"<< parameters.sfdx >>"
+        #     when: always
         - run:
             name: Test Hybrid Local App
             command: cd .circleci && fastlane ios type:hybrid_local device:"<< parameters.device >>" ios:"<< parameters.ios_version >>" sfdx:"<< parameters.sfdx >>"

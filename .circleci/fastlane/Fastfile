@@ -242,7 +242,7 @@ def base_ios_test_setup(options)
 
   Dir.chdir('../../') do
     generate_app('ios', run_type, template, sfdx) unless rerun
-    app_path = Dir.glob("tmp*").first.concat("/#{app_name}/")
+    app_path = Dir.glob("tmp*").last.concat("/#{app_name}/")
 
     if app_name.include?('hybrid')
       app_path.concat('platforms/ios/')
