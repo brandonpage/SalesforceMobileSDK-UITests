@@ -44,7 +44,7 @@
 		A3045A26203E23580028F46F /* PageObjects */ = {
 			isa = PBXGroup;
 			children = (
-				A32B5134232B2826004D0549 /* New Group */,
+				A32B5134232B2826004D0549 /* PasscodePageObjects */,
 				A3F06183206DCA2D00ADA1DD /* LoginPageObjects */,
 				A38B56D82049CE00008D53A2 /* AppType.swift */,
 				A3045A27203E241B0028F46F /* TestApplication.swift */,
@@ -52,12 +52,12 @@
 			path = PageObjects;
 			sourceTree = "<group>";
 		};
-		A32B5134232B2826004D0549 /* New Group */ = {
+		A32B5134232B2826004D0549 /* PasscodePageObjects */ = {
 			isa = PBXGroup;
 			children = (
 				A32B5135232B2869004D0549 /* PasscodePageObject.swift */,
 			);
-			path = "New Group";
+			path = PasscodePageObjects;
 			sourceTree = "<group>";
 		};
 		A34A746A202281AC00846B32 = {

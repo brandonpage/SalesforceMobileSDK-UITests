@@ -211,7 +211,7 @@ def base_ios_test_setup(options)
   adv_auth = options[:adv_auth]
   UI.user_error!('Please specify either passcode or adv_auth.') if(passcode and adv_auth)
   rerun = options[:rerun]
-  xcode_path = '/Applications/Xcode.app/Contents/Developer/Applications/Simulator.app'
+  xcode_path = `xcode-select -p`.delete("\n").concat('/Applications/Simulator.app')
   xcargs = []
 
   if template 
@@ -232,7 +232,7 @@ def base_ios_test_setup(options)
   if ios
     ios.gsub!('.', '-')
   else
-    ios = '13-0'
+    ios = '13-1'
   end
 
   system("xcrun simctl delete #{$sim_name}") or true

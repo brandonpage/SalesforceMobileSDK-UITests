@@ -90,7 +90,7 @@ class LoginTests: XCTestCase {
             let titleElement = app.otherElements.matching(identifier: sampleAppTitle).staticTexts[sampleAppTitle]
             XCTAssert(titleElement.waitForExistence(timeout: timeout), appLoadError)
         case .mobileSyncSwift:
-            let title = app.navigationBars["MobileSync Explorer"].otherElements["MobileSync Explorer"]
+            let title = app.navigationBars["MobileSync Explorer"].staticTexts["MobileSync Explorer"]
             XCTAssert(title.waitForExistence(timeout: timeout), appLoadError)
             
             // Check MobileSync Works
