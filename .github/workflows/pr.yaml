@@ -30,6 +30,8 @@ jobs:
       if: ${{ matrix.app_type == 'hybrid_local' }}
       run: npm install -g @salesforce/cli
     - name: Test ${{ matrix.app_type }} Android
+      env:
+        CI_USER_PASSWORD: ${{ secrets.CI_USER_PASSWORD }}
       run: cd .github && fastlane android type:${{ matrix.app_type }}
     - name: Copy test results data
       run: |
