@@ -6,6 +6,10 @@ on: [pull_request]
 
 jobs:
   test-android:
+    # Permissions requried for GCloud Auth
+    permissions:
+      contents: 'read'
+      id-token: 'write'
     runs-on: ubuntu-latest
     container:
         image: fabernovel/android:api-34-gcloud-snapshot
