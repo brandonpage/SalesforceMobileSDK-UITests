@@ -4,7 +4,7 @@ if [[ "$OSTYPE" != "linux-gnu" ]]; then
     npm install plist
 fi
 
-sudo npm install -g cordova
+npm install -g cordova
 cordova telemetry off
 npm install -g typescript
 

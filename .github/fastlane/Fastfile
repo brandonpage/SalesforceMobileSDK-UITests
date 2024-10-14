@@ -164,7 +164,8 @@ def generate_app(os, type = nil, template = nil, sfdx = nil)
   if sfdx
     generate_command.concat(' --use-sfdx')
   end
-  
+
+  generate_command.concat(' --verbose')
   result = system(generate_command)
   if result 
     UI.important 'Test App Generated'
