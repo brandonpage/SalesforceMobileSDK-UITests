@@ -28,11 +28,9 @@ jobs:
     #   with:
     #     project_id: "${{ secrets.PROJECT_ID }}"
     #     workload_identity_provider: "${{ secrets.WORKLOAD_IDENTITY_POOL_ID }}"
-    - name: Authorize gcloud and set config defaults
-      run: |
-        echo ${{ secrets.GCLOUD_SERVICE_KEY }} | base64 --decode --ignore-garbage > ${HOME}/gcloud-service-key.json
-        gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
-        gcloud --quiet config set project ${{ secrets.PROJECT_ID }}
+    - uses: 'google-github-actions/auth@v2'
+      with:
+        credentials_json: '${{ secrets.GCLOUD_SERVICE_KEY }}'
     - name: Install SF CLI 
       if: ${{ matrix.app_type == 'hybrid_local' }}
       run: npm install -g @salesforce/cli
