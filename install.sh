@@ -1,10 +1,6 @@
 #!/usr/bin/env bash
 
-if [[ "$OSTYPE" == "linux-gnu" ]]; then
-    apt-get update
-    # sudo apt-get install libqt5widgets5
-    # sudo apt install ninja-build
-else
+if [[ "$OSTYPE" != "linux-gnu" ]]; then
     gem install cocoapods
     npm install plist
     gem install --no-document fastlane

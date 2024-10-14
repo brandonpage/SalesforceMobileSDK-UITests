@@ -24,15 +24,30 @@ jobs:
         node-version: '22'
     - name: Setup
       run: ./install.sh
-    - uses: 'google-github-actions/auth@v2'
-      with:
-        project_id: "${{ secrets.PROJECT_ID }}"
-        workload_identity_provider: "${{ secrets.WORKLOAD_IDENTITY_POOL_ID }}"
+    # - uses: 'google-github-actions/auth@v2'
+    #   with:
+    #     project_id: "${{ secrets.PROJECT_ID }}"
+    #     workload_identity_provider: "${{ secrets.WORKLOAD_IDENTITY_POOL_ID }}"
+    - name: Authorize gcloud and set config defaults
+      run: |
+        echo ${{ secrets.GCLOUD_SERVICE_KEY }} | base64 --decode --ignore-garbage > ${HOME}/gcloud-service-key.json
+        gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
+        gcloud --quiet config set project ${{ secrets.PROJECT_ID }}
     - name: Install SF CLI 
       if: ${{ matrix.app_type == 'hybrid_local' }}
       run: npm install -g @salesforce/cli
     - name: Test ${{ matrix.app_type }} Android
       run: cd .github && fastlane android type:${{ matrix.app_type }}
+    - name: Copy test results data
+      run: |
+        mkdir -p firebase/results
+        gsutil -m cp -r gs://test-lab-w87i9sz6q175u-kwp8ium6js0zw/UITest-<< parameters.app_type >>-${{ github.run_id }} ./firebase/ || true
+
+        count=0
+        for result in $(find ./firebase/ -name 'test_result*'); do
+            mv $result "./firebase/results/result${count}.xml" && (( count++ )) || true 
+        done
+      if: always()
     - uses: actions/upload-artifact@v4.1.0
       with:
         path: |
