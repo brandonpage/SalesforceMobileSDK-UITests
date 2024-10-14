@@ -3,8 +3,9 @@
 if [[ "$OSTYPE" != "linux-gnu" ]]; then
     gem install cocoapods
     npm install plist
-    gem install --no-document fastlane
 fi
+
+# gem install --no-document fastlane
 
 npm install -g cordova
 cordova telemetry off

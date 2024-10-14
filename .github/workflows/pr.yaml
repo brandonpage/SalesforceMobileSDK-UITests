@@ -7,21 +7,16 @@ on: [pull_request]
 jobs:
   test-android:
     # Permissions requried for GCloud Auth
-    permissions:
-      contents: 'read'
-      id-token: 'write'
+    # permissions:
+    #   contents: 'read'
+    #   id-token: 'write'
     runs-on: ubuntu-latest
-    container:
-        image: fabernovel/android:api-34-gcloud-snapshot
     strategy:
       fail-fast: false
       matrix:
         app_type: [native, hybrid_local]
     steps:
     - uses: actions/checkout@v4.1.0
-    - uses: actions/setup-node@v4
-      with:
-        node-version: '22'
     - name: Setup
       run: ./install.sh
     # - uses: 'google-github-actions/auth@v2'
