@@ -17,9 +17,6 @@ jobs:
         app_type: [native, hybrid_local, react_native]
     steps:
     - uses: actions/checkout@v4.1.0
-    - uses: actions/setup-node@v4
-      with:
-        node-version: '22'
     - name: Setup
       run: ./install.sh
     # - uses: 'google-github-actions/auth@v2'
@@ -59,14 +56,14 @@ jobs:
     strategy:
         fail-fast: false
         matrix:
-          app_type: [native] # native, hybrid_local, react_native]
+          app_type: [native, hybrid_local, react_native]
     steps:
       - uses: actions/checkout@v4.1.0
       - name: Setup
         run: ./install.sh
-    #   - name: Install SF CLI 
-    #     if: ${{ matrix.app_type == 'hybrid_local' }}
-    #     run: npm install -g @salesforce/cli
+      - name: Install SF CLI 
+        if: ${{ matrix.app_type == 'hybrid_local' }}
+        run: npm install -g @salesforce/cli
       - name: Test ${{ matrix.app_type }} iOS
         env:
           CI_USER_PASSWORD: ${{ secrets.CI_USER_PASSWORD }}
