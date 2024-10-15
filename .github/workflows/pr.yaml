@@ -21,6 +21,8 @@ jobs:
       with:
         distribution: 'temurin'
         java-version: '17'
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
     - name: Setup
       run: ./install.sh
     # - uses: 'google-github-actions/auth@v2'
@@ -48,7 +50,7 @@ jobs:
     strategy:
         fail-fast: false
         matrix:
-          app_type: [hybrid_local] #[native, hybrid_local, react_native]
+          app_type: [react_native] #[native, hybrid_local, react_native]
           ios: [16.4, 17.5, 18.1]
     steps:
       - uses: actions/checkout@v4.1.0
