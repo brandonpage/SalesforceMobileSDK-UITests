@@ -16,7 +16,7 @@ $android_login_activity = '<activity android:name="com.salesforce.androidsdk.ui.
 #
 # Default iOS Device info
 #
-$default_device = 'iPhone-SE-3rd-generation'
+$default_device = 'iPhone-14'
 $default_ios = '17-5'
 
 #
@@ -165,7 +165,6 @@ def generate_app(os, type = nil, template = nil, sfdx = nil)
     generate_command.concat(' --use-sfdx')
   end
 
-  generate_command.concat(' --verbose')
   result = system(generate_command)
   if result 
     UI.important 'Test App Generated'

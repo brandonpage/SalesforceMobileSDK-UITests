@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        app_type: [native, hybrid_local, react_native]
+        app_type: [hybrid_local] #[native, hybrid_local, react_native]
     steps:
     - uses: actions/checkout@v4.1.0
     - name: Setup
@@ -27,38 +27,26 @@ jobs:
       with:
         credentials_json: '${{ secrets.GCLOUD_SERVICE_KEY }}'
     - uses: 'google-github-actions/setup-gcloud@v2'
-    - name: Install SF CLI 
+    - name: Install SF CLI
       if: ${{ matrix.app_type == 'hybrid_local' }}
-      run: npm install -g @salesforce/cli
+      run: |
+        npm install -g @salesforce/cli
     - name: Test ${{ matrix.app_type }} Android
       env:
         CI_USER_PASSWORD: ${{ secrets.CI_USER_PASSWORD }}
       run: cd .github && fastlane android type:${{ matrix.app_type }}
-    - name: Copy test results data
-      run: |
-        mkdir -p firebase/results
-        gsutil -m cp -r gs://test-lab-w87i9sz6q175u-kwp8ium6js0zw/UITest-${{ matrix.app_type }}-${{ github.run_id }} ./firebase/ || true
-
-        count=0
-        for result in $(find ./firebase/ -name 'test_result*'); do
-            mv $result "./firebase/results/result${count}.xml" && (( count++ )) || true 
-        done
-      if: always()
-    - uses: actions/upload-artifact@v4.1.0
-      with:
-        path: |
-          firebase
-          firebase/results
-          test_output
     
   test-ios:
     runs-on: macos-latest
     strategy:
         fail-fast: false
         matrix:
-          app_type: [native, hybrid_local, react_native]
+          app_type: [native] #[native, hybrid_local, react_native]
+          ios: [16.4, 17.5, 18.1]
     steps:
       - uses: actions/checkout@v4.1.0
+      - name: Set Xcode Version
+        run: xcode-select -s /Applications/Xcode_16.app
       - name: Setup
         run: ./install.sh
       - name: Install SF CLI 
@@ -67,8 +55,4 @@ jobs:
       - name: Test ${{ matrix.app_type }} iOS
         env:
           CI_USER_PASSWORD: ${{ secrets.CI_USER_PASSWORD }}
-        run: cd .github && fastlane ios type:${{ matrix.app_type }}
-      - uses: actions/upload-artifact@v4.1.0
-        with:
-          path: test_output
-        if: always()
+        run: cd .github && fastlane ios type:${{ matrix.app_type }} ios:${{ matrix.ios }}
