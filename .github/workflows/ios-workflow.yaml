@@ -11,7 +11,7 @@ on:
 
 jobs:
   test-ios:
-    runs-on: macos-latest
+    runs-on: macos-14
     steps:
       - uses: actions/checkout@v4.1.0
       - name: Set Xcode Version
