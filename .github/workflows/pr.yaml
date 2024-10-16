@@ -44,13 +44,22 @@ jobs:
         CI_USER_PASSWORD: ${{ secrets.CI_USER_PASSWORD }}
       run: cd .github && fastlane android type:${{ matrix.app_type }}
 
+  # iOS and xcode version matching found here: https://github.com/actions/runner-images/blob/main/images/macos/macos-14-Readme.md
   ios-pr:
     strategy:
       fail-fast: false
       matrix:
         app_type: [native] #[native, hybrid_local, react_native] 
-        ios: [18.1] #[16.4, 17.5, 18.1]      
+        ios: [16.4, 17.5, 18.1]      
+        include:
+          - ios: 16.4
+            xcode: 14.3.1
+          - ios: 17.5
+            xcode: 15.4
+          - ios: 18.1
+            xcode: 16.1_beta_2
     uses: ./.github/workflows/ios-workflow.yaml
     with:
         app_type: ${{ matrix.app_type }}
         ios: ${{ matrix.ios }}
+        xcode: ${{ matrix.xcode }}
