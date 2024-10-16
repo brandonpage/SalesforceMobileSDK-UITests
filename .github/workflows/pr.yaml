@@ -6,33 +6,60 @@ on: [pull_request]
 
 jobs:
   test-android:
+    # Permissions requried for GCloud Auth
+    # permissions:
+    #   contents: 'read'
+    #   id-token: 'write'
     runs-on: ubuntu-latest
-    container:
-        image: fabernovel/android:api-34-gcloud-snapshot
     strategy:
+      fail-fast: false
       matrix:
-        app_type: [native, hybrid_local]
+        app_type: [hybrid_remote] #[native, hybrid_local, react_native]
     steps:
     - uses: actions/checkout@v4.1.0
-    - uses: actions/setup-node@v4
+    - uses: actions/setup-java@v4
       with:
-        node-version: '22'
+        distribution: 'temurin'
+        java-version: '17'
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+    - uses: gradle/actions/setup-gradle@v4
+      with:
+        gradle-version: 8.4
     - name: Setup
       run: ./install.sh
+    # - uses: 'google-github-actions/auth@v2'
+    #   with:
+    #     project_id: "${{ secrets.PROJECT_ID }}"
+    #     workload_identity_provider: "${{ secrets.WORKLOAD_IDENTITY_POOL_ID }}"
     - uses: 'google-github-actions/auth@v2'
       with:
-        project_id: "${PROJECT_ID}"
-        workload_identity_provider: "${WORKLOAD_IDENTITY_POOL_ID}"
-    - name: Install SF CLI 
-      if: ${{ matrix.app_type == 'hybrid_local' }}
+        credentials_json: '${{ secrets.GCLOUD_SERVICE_KEY }}'
+    - uses: 'google-github-actions/setup-gcloud@v2'
+    - name: Install SF CLI
+    #   if: ${{ matrix.app_type == 'hybrid_local' }}
       run: npm install -g @salesforce/cli
     - name: Test ${{ matrix.app_type }} Android
+      env:
+        CI_USER_PASSWORD: ${{ secrets.CI_USER_PASSWORD }}
       run: cd .github && fastlane android type:${{ matrix.app_type }}
-    - uses: actions/upload-artifact@v4.1.0
-      with:
-        path: |
-          firebase
-          firebase/results
-          test_output
-    
-    
+
+  # iOS and xcode version matching found here: https://github.com/actions/runner-images/blob/main/images/macos/macos-14-Readme.md
+  ios-pr:
+    strategy:
+      fail-fast: false
+      matrix:
+        app_type: [native] #[native, hybrid_local, react_native] 
+        ios: [16.4, 17.5, 18.1]      
+        include:
+          - ios: 16.4
+            xcode: 14.3.1
+          - ios: 17.5
+            xcode: 15.4
+          - ios: 18.1
+            xcode: 16.1_beta_2
+    uses: ./.github/workflows/ios-workflow.yaml
+    with:
+        app_type: ${{ matrix.app_type }}
+        ios: ${{ matrix.ios }}
+        xcode: ${{ matrix.xcode }}

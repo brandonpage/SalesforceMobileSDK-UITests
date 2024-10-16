@@ -1,13 +1,7 @@
 #!/usr/bin/env bash
 
-if [[ "$OSTYPE" == "linux-gnu" ]]; then
-    sudo apt-get update
-    # sudo apt-get install libqt5widgets5
-    # sudo apt install ninja-build
-else
-    gem install cocoapods
+if [[ "$OSTYPE" != "linux-gnu" ]]; then
     npm install plist
-    gem install --no-document fastlane
 fi
 
 npm install -g cordova
