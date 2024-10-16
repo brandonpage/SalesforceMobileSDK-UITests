@@ -3,7 +3,7 @@ require 'xcodeproj'
 $is_ci = ENV.has_key? 'GITHUB_WORKFLOW'
 $password
 $sim_name = 'testsim'
-$simulator_path = '/Applications/Xcode.app/Contents/Developer/Applications/Simulator.app'
+$simulator_path = '/Applications/Xcode_16.app/Contents/Developer/Applications/Simulator.app'
 $default_consumer_key = '3MVG98dostKihXN53TYStBIiS8FC2a3tE3XhGId0hQ37iQjF0xe4fxMSb2mFaWZn9e3GiLs1q67TNlyRji.Xw'
 $default_redirect_uri = 'testsfdc:///mobilesdk/detect/oauth/done'
 $adv_auth_consumer_key = '3MVG9CEn_O3jvv0wTqRT0Le6tmyfUanAsJ6rWLQniOaec1Ks6YBBYFaJSfMREVJdPeRxTneqgoSxdswYvb9vP'
@@ -17,7 +17,7 @@ $android_login_activity = '<activity android:name="com.salesforce.androidsdk.ui.
 # Default iOS Device info
 #
 $default_device = 'iPhone-14'
-$default_ios = '17-5'
+$default_ios = '18-1'
 
 #
 # Defualt Android Firebase Info
@@ -123,7 +123,7 @@ def get_password(native_login = false)
   end
   
   # Crash if not set for CI
-  UI.crash!('Error: Password should be set in CircleCI Environment Variables.') if $is_ci
+  UI.crash!('Error: Password should be set in Github Environment Variables.') if $is_ci
 
   # Let user recover for local run
   UI.important 'Error: CI User Password not set!!!'
@@ -409,7 +409,7 @@ def start_emulator(device, ios)
   # Start Simulator
   system("xcrun simctl boot #{sim_id}")
   # Wait for Simulator to boot
-  sleep(3)
+  sleep(10)
   system("open #{$simulator_path} --args -CurrentDeviceUDID #{sim_id}")
 end
 
