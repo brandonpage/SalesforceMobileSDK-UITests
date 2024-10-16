@@ -34,7 +34,7 @@ jobs:
         credentials_json: '${{ secrets.GCLOUD_SERVICE_KEY }}'
     - uses: 'google-github-actions/setup-gcloud@v2'
     - name: Install SF CLI
-      if: ${{ matrix.app_type == 'hybrid_local' }}
+    #   if: ${{ matrix.app_type == 'hybrid_local' }}
       run: npm install -g @salesforce/cli
     - name: Test ${{ matrix.app_type }} Android
       env:
@@ -43,6 +43,7 @@ jobs:
 
   ios-pr:
     strategy:
+      fail-fast: false
       matrix:
         app_type: [native, hybrid_local, react_native] 
         ios: [16.4, 17.5, 18.1]      
