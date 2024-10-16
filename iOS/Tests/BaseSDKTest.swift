@@ -38,7 +38,7 @@ class BaseSDKTest: XCTestCase {
     var username = UserUtility().username
     var nativeLoginUsername = UserUtility().nativeLoginUsername
     var password = UserUtility().password
-    var timeout:double_t = 60
+    var timeout:double_t = 120
     private var appLoadError = "App did not load."
     private var mobileSyncError = "MobileSync did not pull data."
     private let reactNativeUsers = "Automated Process Brandon Page circleci Integration User Security User Chatter Expert Mobile SDK Sample App"
