@@ -103,5 +103,4 @@ jobs:
           group_reports: false
           annotate_only: true
           include_passed: true
-          skip_success_summary: true
           report_paths: 'firebase/**test_results_merged.xml'
