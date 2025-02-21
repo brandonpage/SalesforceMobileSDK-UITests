@@ -81,7 +81,7 @@ jobs:
         if: success() || failure()
         run: |
           mkdir -p firebase/results
-          gsutil -m cp -r gs://test-lab-w87i9sz6q175u-kwp8ium6js0zw/UITest-<< parameters.app_type >>-${{ github.run_number }} ./firebase/ || true
+          gsutil -m cp -r gs://test-lab-w87i9sz6q175u-kwp8ium6js0zw/UITest-${{ inputs.app_type }}-${{ github.run_number }} ./firebase/ || true
 
           count=0
           for result in $(find ./firebase/ -name 'test_result*'); do
