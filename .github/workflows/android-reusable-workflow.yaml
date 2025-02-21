@@ -82,8 +82,8 @@ jobs:
         continue-on-error: true
         if: success() || failure()
         run: |
-          mkdir -p firebase/results
-          gsutil -m cp -r gs://test-lab-w87i9sz6q175u-kwp8ium6js0zw/${GCLOUD_RESULTS_DIR} ./firebase/ || true
+          #mkdir -p firebase/results
+          gsutil -m cp -r gs://test-lab-w87i9sz6q175u-kwp8ium6js0zw/${GCLOUD_RESULTS_DIR} ./ || true
 
           # count=0
           # for result in $(find ./firebase/ -name 'test_result*'); do
@@ -103,4 +103,4 @@ jobs:
           group_reports: false
           include_passed: true
           skip_annotations: true
-          report_paths: 'firebase/**test_results_merged.xml'
+          report_paths: '${GCLOUD_RESULTS_DIR}/**test_results_merged.xml'
