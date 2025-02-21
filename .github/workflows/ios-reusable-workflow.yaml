@@ -40,6 +40,8 @@ jobs:
     runs-on: ${{ inputs.macos }}
     env:
       FASTLANE_SKIP_UPDATE_CHECK: "true"
+      CI_USER_PASSWORD: ${{ secrets.CI_USER_PASSWORD }}
+      CI_USER_NATIVE_PASSWORD: ${{ secrets.CI_USER_NATIVE_PASSWORD }}
     steps:
       - uses: actions/checkout@v4
         if: ${{ inputs.is_pr }}
