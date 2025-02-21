@@ -98,7 +98,7 @@ lane :test_carthage do |options|
     project.save
 
     UI.important('Build Project')
-    results = silence_output(true) { system('xcodebuild build -scheme CarthageTest -sdk iphonesimulator -derivedDataPath ./DerivedData') }
+    results = system('xcodebuild build -scheme CarthageTest -sdk iphonesimulator -derivedDataPath ./DerivedData  | xcbeautify')
     UI.build_failure!('Failed to build app.') unless results
 
     UI.important('Installing App on Simulator')
@@ -416,7 +416,7 @@ end
 def install_ios_app(app_info, release = nil)
   Dir.chdir('../../' + app_info.app_path) do
     UI.important 'Build for Simulator'
-    silence_output { system("xcodebuild build -scheme #{app_info.app_name} -workspace #{app_info.app_name}.xcworkspace -sdk iphonesimulator -derivedDataPath ./DerivedData -quiet") }
+    system("xcodebuild build -scheme #{app_info.app_name} -workspace #{app_info.app_name}.xcworkspace -sdk iphonesimulator -derivedDataPath ./DerivedData -quiet  | xcbeautify")
 
     # xcodebuild's derivedDataPath is nondeterministic.
     build_path = ''
@@ -446,6 +446,7 @@ def run_ios_tests(test_scheme, bundle_name, xcargs)
         device: destination,
         output_directory: "test_output/#{app_type}",
         clean: true,
+        xcodebuild_formatter: "xcbeautify -q --is-ci",
         xcargs: "'TEST_APP_BUNDLE=#{bundle_name}' 'PASSWORD=#{$password}' #{xcargs_string}"
       )
     ensure
