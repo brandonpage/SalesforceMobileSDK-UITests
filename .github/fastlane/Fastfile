@@ -167,9 +167,9 @@ def generate_app(os, type = nil, template = nil, sfdx = nil)
   
   result = silence_output { system(generate_command) }
   if result 
-    UI.important 'Test App Generated'
+    UI.important 'Test App Generated Successfully!'
   else
-    UI.user_error!('Test app was not successfully created.')
+    UI.user_error!('Test app was NOT successfully created.')
   end
 end
 
@@ -313,7 +313,7 @@ def run_android_tests_firebase(test_class, app_info)
       --test=app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk \
       #{devices}
       --results-history-name=UITest-#{app_info.app_name} \
-      --results-dir=UITest-#{app_info.app_name}-#{ENV['GITHUB__NUM']} \
+      --results-dir=UITest-#{app_info.app_name}-#{ENV['GITHUB_RUN_NUM']} \
       --environment-variables class=#{test_class},packageName=#{app_info.package_name},password=#{$password},firebase=true#{optional_vars} \
       --no-performance-metrics --no-auto-google-login --num-flaky-test-attempts=2")
       UI.test_failure!('Tests failed.') unless testResult
@@ -417,12 +417,15 @@ def install_ios_app(app_info, release = nil)
   Dir.chdir('../../' + app_info.app_path) do
     UI.important 'Build for Simulator'
     
-    workspace_or_project = "-project #{app_info.app_name}.xcodeproj"
     if File.exist?("#{app_info.app_name}.xcworkspace")
+      UI.important "Using #{app_info.app_name}.xcworkspace"
       workspace_or_project = "-workspace #{app_info.app_name}.xcworkspace"
+    else
+      UI.important "No xcworkspace found, Using #{app_info.app_name}.xcodeproj"
+      workspace_or_project = "-project #{app_info.app_name}.xcodeproj"
     end
 
-    system("xcodebuild build -scheme #{app_info.app_name} #{workspace_or_project} -sdk iphonesimulator -derivedDataPath ./DerivedData -quiet  | xcbeautify")
+    system("xcodebuild build -scheme #{app_info.app_name} #{workspace_or_project} -sdk iphonesimulator -derivedDataPath ./DerivedData | xcbeautify")
 
     # xcodebuild's derivedDataPath is nondeterministic.
     build_path = ''
@@ -434,7 +437,8 @@ def install_ios_app(app_info, release = nil)
       UI.build_failure!("#{app_info.app_name}.app could not be found.")
     end
     UI.important 'Installing App on Simulator'
-    silence_output { system("xcrun simctl install booted #{build_path}/Products/Debug-iphonesimulator/#{app_info.app_name}.app") }
+    result = silence_output { system("xcrun simctl install booted #{build_path}/Products/Debug-iphonesimulator/#{app_info.app_name}.app") }
+    UI.build_failure!('Failed to install app on simulator.') unless result
   end
 end
 
