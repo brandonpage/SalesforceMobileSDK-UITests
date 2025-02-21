@@ -47,7 +47,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        app_type:  [native, native_kotlin, hybrid_local, hybrid_remote, react_native, MobileSyncExplorerReactNative, MobileSyncExplorerSwift, iOSNativeLoginTemplate]
+        app_type:  [native, native_swift, hybrid_local, hybrid_remote, react_native, MobileSyncExplorerReactNative, MobileSyncExplorerSwift, iOSNativeLoginTemplate]
         ios: ["18.2", "17.4"]
         include:
             - ios: "18.2"
