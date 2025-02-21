@@ -128,9 +128,9 @@ def get_password(native_login = false)
   # Let user recover for local run
   UI.important 'Error: CI User Password not set!!!'
   if native_login 
-    UI.important 'For future use please execute: export CI_USER_NATIVE_PASSWORD=<password>'
+    UI.important 'To avoid this on future runs execute: export CI_USER_NATIVE_PASSWORD=<password>'
   else
-    UI.important 'For future use please execute: export CI_USER_PASSWORD=<password>'
+    UI.important 'To avoid this on future runs execute: export CI_USER_PASSWORD=<password>'
   end
   UI.important 'CI User Password can be found here: https://salesforce.quip.com/RmK0A8aSX3Cc'
   return prompt(text: 'To recover now, enter the password for CI User:')
