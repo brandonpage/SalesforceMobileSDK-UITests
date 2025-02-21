@@ -2,8 +2,8 @@ on:
   workflow_call:
     inputs:
       app_type:
-        required: true
         type: string
+        default: native
       template:
         type: boolean
         default: false
@@ -97,4 +97,4 @@ jobs:
           flaky_summary: true
           fail_on_failure: true
           detailed_summary: true
-          report_paths: 'firebase/results'
+          report_paths: 'firebase/results/**.xml'
