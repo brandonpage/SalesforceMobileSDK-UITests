@@ -53,7 +53,7 @@ jobs:
   #   secrets: inherit
 
   android-base:
-    name: ${{ matrix.app_type }} Android adv_auth:${{ matrix.adv_auth }} complex_hybrid:${{ matrix.complex_hybrid }}
+    name: ${{ matrix.app_type }} Android
     strategy:
       fail-fast: false
       matrix:
@@ -98,8 +98,7 @@ jobs:
     secrets: inherit
     
   ios-build-all:
-    if: success() || failure()
-    name: ${{ matrix.app_type }} iOS ${{ matrix.ios }} adv_auth:${{ matrix.adv_auth }} complex_hybrid:${{ matrix.complex_hybrid }}
+    name: ${{ matrix.app_type }} iOS ${{ matrix.ios }}
     strategy:
       fail-fast: false
       matrix:

@@ -416,7 +416,13 @@ end
 def install_ios_app(app_info, release = nil)
   Dir.chdir('../../' + app_info.app_path) do
     UI.important 'Build for Simulator'
-    system("xcodebuild build -scheme #{app_info.app_name} -workspace #{app_info.app_name}.xcworkspace -sdk iphonesimulator -derivedDataPath ./DerivedData -quiet  | xcbeautify")
+    
+    workspace_or_project = "-project #{app_info.app_name}.xcodeproj"
+    if File.exist?("#{app_info.app_name}.xcworkspace")
+      workspace_or_project = "-workspace #{app_info.app_name}.xcworkspace"
+    end
+
+    system("xcodebuild build -scheme #{app_info.app_name} #{workspace_or_project} -sdk iphonesimulator -derivedDataPath ./DerivedData -quiet  | xcbeautify")
 
     # xcodebuild's derivedDataPath is nondeterministic.
     build_path = ''
