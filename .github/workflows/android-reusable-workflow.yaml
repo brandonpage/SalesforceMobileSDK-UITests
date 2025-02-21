@@ -26,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       FASTLANE_SKIP_UPDATE_CHECK: "true"
-      GITHUB_RUN_NUM: ${{ github.run_number }}
+      GCLOUD_RESULTS_DIR: "UITest-${{ inputs.app_type }}-sfdx:${{ inputs.sfdx }}-adv_auth:${{ inputs.adv_auth }}-complex_hybrid:${{ inputs.complex_hybrid }}-build:${{ github.run_number }}"
       CI_USER_PASSWORD: ${{ secrets.CI_USER_PASSWORD }}
       CI_USER_NATIVE_PASSWORD: ${{ secrets.CI_USER_NATIVE_PASSWORD }}
     steps:
@@ -81,7 +81,7 @@ jobs:
         if: success() || failure()
         run: |
           mkdir -p firebase/results
-          gsutil -m cp -r gs://test-lab-w87i9sz6q175u-kwp8ium6js0zw/UITest-${{ inputs.app_type }}-${{ github.run_number }} ./firebase/ || true
+          gsutil -m cp -r gs://test-lab-w87i9sz6q175u-kwp8ium6js0zw/${GCLOUD_RESULTS_DIR} ./firebase/ || true
 
           count=0
           for result in $(find ./firebase/ -name 'test_result*'); do
