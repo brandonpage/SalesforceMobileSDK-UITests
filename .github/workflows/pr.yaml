@@ -87,6 +87,7 @@ jobs:
     with:
       app_type: native
       adv_auth: true
+    secrets: inherit
 
   android-complex-hybrid:
     name: Android Complex Hybrid
@@ -94,6 +95,7 @@ jobs:
     with:
       app_type: hybrid_local
       complex_hybrid: true
+    secrets: inherit
     
   ios-build-all:
     if: success() || failure()
@@ -151,6 +153,7 @@ jobs:
       adv_auth: true
       ios: ${{ matrix.ios }}
       xcode: ${{ matrix.xcode }}
+    secrets: inherit
 
   ios-complex-hybrid:
     name: ios ${{ matrix.ios }} Complex Hybrid
@@ -169,3 +172,4 @@ jobs:
       complex_hybrid: true
       ios: ${{ matrix.ios }}
       xcode: ${{ matrix.xcode }}
+    secrets: inherit
