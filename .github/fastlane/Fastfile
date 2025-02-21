@@ -165,7 +165,7 @@ def generate_app(os, type = nil, template = nil, sfdx = nil)
     generate_command.concat(' --use-sfdx')
   end
   
-  result = system(generate_command)
+  result = silence_output { system(generate_command) }
   if result 
     UI.important 'Test App Generated'
   else
@@ -554,7 +554,7 @@ def setup_adv_auth(app_info)
     modify_source(manifest_path, '/mobilesdk/detect/oauth/done', path)
 
     # Change connection
-    modify_source(servers_path, 'login', 'msdk-dev-ed.my')
+    modify_source(servers_path, 'login', 'msdk-enhanced-dev-ed.my')
   else
     plist_path = app_info.app_path + app_info.app_name 
     case app_info.app_name
@@ -566,7 +566,7 @@ def setup_adv_auth(app_info)
 
     plist = Plist.parse_xml(plist_path)
     plist["CFBundleURLTypes"] = [{"CFBundleURLName" => scheme}, {"CFBundleURLSchemes" => [scheme]}] 
-    plist["SFDCOAuthLoginHost"] = "msdk-dev-ed.my.salesforce.com"
+    plist["SFDCOAuthLoginHost"] = "msdk-enhanced-dev-ed.my.salesforce.com"
     File.open(plist_path, 'w') { |file| file.puts plist.to_plist } 
   end
 

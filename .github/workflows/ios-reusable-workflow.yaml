@@ -2,8 +2,8 @@ on:
   workflow_call:
     inputs:
       app_type:
-        required: true
         type: string
+        default: native
       template:
         type: boolean
         default: false
@@ -21,16 +21,13 @@ on:
         default: false
       ios: 
         type: string
-        required: false
         default: "18.2"
       xcode:
+        type: string
         default: "16.2"
-        required: false
-        type: string
       macos:
-        default: macos-15
-        required: false
         type: string
+        default: macos-15
       device:
         type: string
         default: "iPhone-SE-3rd-generation"
@@ -66,16 +63,16 @@ jobs:
             TYPE="template"
           fi
 
-          cd .github && fastlane ios ${TYPE}:${{ inputs.app_type }} adv_auth:${{ inputs.adv_auth }} sfdx:${{ inputs.sfdx }}
+          cd .github && fastlane ios ${TYPE}:${{ inputs.app_type }} adv_auth:${{ inputs.adv_auth }} sfdx:${{ inputs.sfdx }} device:${{ inputs.device }}
       - name: Build Complex Hybrid Account Editor ${{ inputs.ios }} and Test Login
         continue-on-error: true
         if: ${{ inputs.complex_hybrid }} 
         env:
           GITHUB_RUN_NUM: ${{ github.run_number }}
-        run: cd .github && fastlane ios type:hybrid_local complexHybrid:accounteditor sfdx:${{ inputs.sfdx }}
+        run: cd .github && fastlane ios type:hybrid_local complexHybrid:accounteditor sfdx:${{ inputs.sfdx }} device:${{ inputs.device }}
       - name: Build Complex Hybrid Mobile Sync Explorer ${{ inputs.ios }} and Test Login
         continue-on-error: true
         if: ${{ inputs.complex_hybrid }}
         env:
           GITHUB_RUN_NUM: ${{ github.run_number }}
-        run: cd .github && fastlane ios type:hybrid_local complexHybrid:mobilesyncexplorer sfdx:${{ inputs.sfdx }}
+        run: cd .github && fastlane ios type:hybrid_local complexHybrid:mobilesyncexplorer sfdx:${{ inputs.sfdx }} device:${{ inputs.device }}
