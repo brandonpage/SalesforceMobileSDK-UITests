@@ -4,6 +4,10 @@
 if [ "$(uname)" == "Darwin" ]; then
     gem install cocoapods
     npm install plist
+
+    if [[ ! -z ${GITHUB_WORKFLOW} ]]; then
+        brew install xcbeautify
+    fi
 fi
 
 # Hybrid
