@@ -39,6 +39,11 @@ class LoginPageObject : BasePageObject() {
         val usernameField = device.findObject(UiSelector().resourceId("username"))
 
         Log.i("uia", "Waiting for username filed to be present.")
+        // TODO: Remove this when API 35 WebView is performant in Test Lab.
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.VANILLA_ICE_CREAM){
+            Thread.sleep(timeout * 2)
+        }
+
         assert(usernameField.waitForExists(timeout * 10))
         usernameField.setText(name)
     }
