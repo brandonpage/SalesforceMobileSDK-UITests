@@ -62,16 +62,16 @@ jobs:
             TYPE="template"
           fi
 
-          cd .github && fastlane ios ${TYPE}:${{ inputs.app_type }} adv_auth:${{ inputs.adv_auth }} sfdx:${{ inputs.sfdx }} device:${{ inputs.device }}
+          cd .github && fastlane ios ${TYPE}:${{ inputs.app_type }} ios:${{ inputs.ios }} adv_auth:${{ inputs.adv_auth }} sfdx:${{ inputs.sfdx }} device:${{ inputs.device }}
       - name: Build Complex Hybrid Account Editor ${{ inputs.ios }} and Test Login
         continue-on-error: true
         if: ${{ inputs.complex_hybrid }} 
         env:
           GITHUB_RUN_NUM: ${{ github.run_number }}
-        run: cd .github && fastlane ios type:hybrid_local complexHybrid:accounteditor sfdx:${{ inputs.sfdx }} device:${{ inputs.device }}
+        run: cd .github && fastlane ios type:hybrid_local complexHybrid:accounteditor ios:${{ inputs.ios }} sfdx:${{ inputs.sfdx }} device:${{ inputs.device }}
       - name: Build Complex Hybrid Mobile Sync Explorer ${{ inputs.ios }} and Test Login
         continue-on-error: true
         if: ${{ inputs.complex_hybrid }}
         env:
           GITHUB_RUN_NUM: ${{ github.run_number }}
-        run: cd .github && fastlane ios type:hybrid_local complexHybrid:mobilesyncexplorer sfdx:${{ inputs.sfdx }} device:${{ inputs.device }}
+        run: cd .github && fastlane ios type:hybrid_local complexHybrid:mobilesyncexplorer ios:${{ inputs.ios }} sfdx:${{ inputs.sfdx }} device:${{ inputs.device }}
