@@ -86,7 +86,7 @@ jobs:
           gsutil -m cp -r gs://test-lab-w87i9sz6q175u-kwp8ium6js0zw/${GCLOUD_RESULTS_DIR} ./firebase/ || true
 
           for result in $(find ./firebase/ -name '*test_results_merged*'); do
-            mv $result "./firebase/results/" || true 
+            mv $result ./firebase/results/ || true 
           done    
       - name: Test Report
         uses: mikepenz/action-junit-report@v5.4.0-b01
@@ -102,4 +102,4 @@ jobs:
           group_reports: false
           include_passed: true
           skip_annotations: true
-          report_paths: 'firebase/resuls/**.xml'
+          report_paths: 'firebase/results/**.xml'
