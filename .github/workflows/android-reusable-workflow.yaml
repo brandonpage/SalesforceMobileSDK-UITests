@@ -102,4 +102,5 @@ jobs:
           group_reports: false
           include_passed: true
           skip_annotations: true
+          skip_success_summary: true
           report_paths: 'firebase/results/**.xml'

@@ -26,8 +26,10 @@
  */
 package pageobjects.loginpageobjects
 
+import android.os.Build
 import androidx.test.uiautomator.UiSelector
 import android.util.Log
+import androidx.test.uiautomator.UiObject
 import pageobjects.BasePageObject
 
 /**
@@ -36,20 +38,22 @@ import pageobjects.BasePageObject
 class LoginPageObject : BasePageObject() {
 
     fun setUsername(name: String) {
-        val usernameField = device.findObject(UiSelector().resourceId("username"))
+        val usernameField = getObject(
+            resourceId = "username",
+            backup = UiSelector().className(editTextClass).index(0),
+        )
 
         Log.i("uia", "Waiting for username filed to be present.")
-        // TODO: Remove this when API 35 WebView is performant in Test Lab.
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.VANILLA_ICE_CREAM){
-            Thread.sleep(timeout * 2)
-        }
-
         assert(usernameField.waitForExists(timeout * 10))
         usernameField.setText(name)
     }
 
     fun setPassword(password: String) {
-        val passwordField = device.findObject(UiSelector().resourceId("password"))
+        val passwordField = getObject(
+            resourceId = "password",
+            backup = UiSelector().className(editTextClass).index(2),
+        )
+
         Log.i("uia", "Waiting for password filed to be present.")
         assert(passwordField.waitForExists(timeout * 5))
         passwordField.setText(password)
@@ -57,8 +61,24 @@ class LoginPageObject : BasePageObject() {
 
     fun tapLogin() {
         Thread.sleep(timeout / 2)
-        val loginButton = device.findObject(UiSelector().resourceId("Login"))
+        val loginButton = getObject(
+            resourceId = "Login",
+            backup = UiSelector().textMatches("Log In"),
+        )
+
         assert(loginButton.waitForExists(timeout * 5))
         loginButton.click()
+    }
+
+
+    // TODO: Remove this when the Android 15 resource-id issue is resolved.
+    private fun getObject(resourceId: String, backup: UiSelector): UiObject {
+        return device.findObject(
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                backup
+            } else {
+                UiSelector().resourceId(resourceId)
+            }
+        )
     }
 }
