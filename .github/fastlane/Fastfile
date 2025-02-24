@@ -165,7 +165,7 @@ def generate_app(os, type = nil, template = nil, sfdx = nil)
     generate_command.concat(' --use-sfdx')
   end
   
-  result = silence_output { system(generate_command) }
+  result = system(generate_command)
   if result 
     UI.important 'Test App Generated Successfully!'
   else
@@ -449,6 +449,7 @@ def run_ios_tests(test_scheme, bundle_name, xcargs)
 
   Dir.chdir('../../iOS/') do
     destination = "#{$sim_name} (" + `xcrun xctrace list devices 2>&1 | grep #{$sim_name} | awk -F"[()]" '{print $2}'`.delete("\n") + ")"
+    UI.important "Device: #{destination}"
     begin
       scan(
         project: 'iOS/SalesforceMobileSDK-UITest.xcodeproj',
