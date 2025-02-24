@@ -31,6 +31,7 @@ import androidx.test.uiautomator.UiSelector
 import android.util.Log
 import androidx.test.uiautomator.UiObject
 import pageobjects.BasePageObject
+import pageobjects.testapppageobjects.TestApplication
 
 /**
  * Created by bpage on 2/21/18.
@@ -74,10 +75,10 @@ class LoginPageObject : BasePageObject() {
     // TODO: Remove this when the Android 15 resource-id issue is resolved.
     private fun getObject(resourceId: String, backup: UiSelector): UiObject {
         return device.findObject(
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                backup
-            } else {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
                 UiSelector().resourceId(resourceId)
+            } else {
+                backup
             }
         )
     }
