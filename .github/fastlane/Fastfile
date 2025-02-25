@@ -98,7 +98,7 @@ lane :test_carthage do |options|
     project.save
 
     UI.important('Build Project')
-    results = system('xcodebuild build -scheme CarthageTest -sdk iphonesimulator -derivedDataPath ./DerivedData  | xcbeautify')
+    results = xcbeautify_xcodebuild("-scheme CarthageTest")
     UI.build_failure!('Failed to build app.') unless results
 
     UI.important('Installing App on Simulator')
@@ -401,7 +401,7 @@ def start_emulator(device, ios)
   ios.concat('-0') unless ios.include?('-')
 
   loop do
-    break unless system("xcrun simctl delete #{$sim_name}")
+    break unless system("xcrun simctl delete #{$sim_name} > /dev/null 2>&1")
   end
   UI.important "Creating test device: #{device}, ios: #{ios}." 
   sim_id = `xcrun simctl create #{$sim_name} com.apple.CoreSimulator.SimDeviceType.#{device} com.apple.CoreSimulator.SimRuntime.iOS-#{ios}`.delete("\n")
@@ -425,7 +425,7 @@ def install_ios_app(app_info, release = nil)
       workspace_or_project = "-project #{app_info.app_name}.xcodeproj"
     end
 
-    system("xcodebuild build -scheme #{app_info.app_name} #{workspace_or_project} -sdk iphonesimulator -derivedDataPath ./DerivedData | xcbeautify")
+    xcbeautify_xcodebuild("-scheme #{app_info.app_name} #{workspace_or_project}")
 
     # xcodebuild's derivedDataPath is nondeterministic.
     build_path = ''
@@ -457,7 +457,7 @@ def run_ios_tests(test_scheme, bundle_name, xcargs)
         device: destination,
         output_directory: "test_output/#{app_type}",
         clean: true,
-        xcodebuild_formatter: "xcbeautify -q --is-ci",
+        xcodebuild_formatter: "xcbeautify -q --is-ci --renderer github-actions",
         xcargs: "'TEST_APP_BUNDLE=#{bundle_name}' 'PASSWORD=#{$password}' #{xcargs_string}"
       )
     ensure
@@ -640,6 +640,10 @@ def setup_native_login(app_info, is_android = true)
     modify_source(source_path, "let redirectUri = \"your-redirect-uri\"", "let redirectUri = \"#{$native_login_redirect_uri}\"")
     modify_source(source_path, "let loginUrl = \"your-community-url\"", "let loginUrl = \"#{$native_login_url}\"")
   end
+end
+
+def xcbeautify_xcodebuild(args)
+  system("set -o pipefail && xcodebuild build #{args} -sdk iphonesimulator -derivedDataPath ./DerivedData | xcbeautify --renderer github-actions")
 end
 
 # Generic Helpers
