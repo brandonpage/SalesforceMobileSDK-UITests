@@ -1,8 +1,8 @@
 name: Build and Test All Apps
 
 on: 
-  schedule:
-    - cron: "0 6 * * 0"  # cron is UTC, this translates to 10 PM PST Saturday.
+  # schedule:
+    # - cron: "0 6 * * 0"  # cron is UTC, this translates to 10 PM PST Saturday.
   # This lets us trigger the workflow from a browser.
   workflow_dispatch:
 
@@ -45,11 +45,15 @@ jobs:
     secrets: inherit
 
   android-complex-hybrid:
-    name: Android Complex Hybrid
+    name: Complex Hybrid ${{ matrix.hybrid_type }} Android
+    strategy:
+      fail-fast: false
+      matrix:
+        hybrid_type: ["accounteditor", "mobilesyncexplorer"]
     uses: ./.github/workflows/android-reusable-workflow.yaml
     with:
       app_type: hybrid_local
-      complex_hybrid: true
+      complex_hybrid: ${{ matrix.hybrid_type }}
     secrets: inherit
     
   ios-build-all:
@@ -91,7 +95,7 @@ jobs:
     secrets: inherit
 
   ios-adv-auth:
-    name: iOS ${{ matrix.ios }} Adv Auth
+    name: Adv Auth iOS ${{ matrix.ios }}
     strategy:
       fail-fast: false
       matrix:
@@ -110,7 +114,27 @@ jobs:
     secrets: inherit
 
   ios-complex-hybrid:
-    name: ios ${{ matrix.ios }} Complex Hybrid
+    name: Complex Hybrid ${{ matrix.hybrid_type }} iOS ${{ matrix.ios }}
+    strategy:
+      fail-fast: false
+      matrix:
+        hybrid_type: ["accounteditor", "mobilesyncexplorer"]
+        ios: ["18.2", "17.5"]
+        include:
+          - ios: "18.2"
+            xcode: "16.2"
+          - ios: "17.5"
+            xcode: "15.4"
+    uses: ./.github/workflows/ios-reusable-workflow.yaml
+    with:
+      app_type: hybrid_local
+      complex_hybrid: ${{ matrix.hybrid_type }}
+      ios: ${{ matrix.ios }}
+      xcode: ${{ matrix.xcode }}
+    secrets: inherit
+
+  carthage:
+    name: Carthage iOS ${{ matrix.ios }}
     strategy:
       fail-fast: false
       matrix:
@@ -122,8 +146,7 @@ jobs:
             xcode: "15.4"
     uses: ./.github/workflows/ios-reusable-workflow.yaml
     with:
-      app_type: hybrid_local
-      complex_hybrid: true
+      carthage: true
       ios: ${{ matrix.ios }}
       xcode: ${{ matrix.xcode }}
     secrets: inherit
