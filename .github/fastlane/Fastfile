@@ -195,6 +195,10 @@ def base_android_test_setup(options)
   rerun = options[:rerun]
   complexHybrid = options[:complexHybrid]
 
+  if complexHybrid and complexHybrid.strip.empty?
+    complexHybrid = nil
+  end
+
   if template 
     templateName = template.split('/').last.split('#').first
     templateName.gsub!(/(?<=[[:lower:]])[[:upper:]]+/, ‘_\&’).downcase!
@@ -342,6 +346,10 @@ def base_ios_test_setup(options)
   rerun = options[:rerun]
   xcargs = []
   complexHybrid = options[:complexHybrid]
+  
+  if complexHybrid and complexHybrid.strip.empty?
+    complexHybrid = nil
+  end
 
   if template 
     templateName = template.split('/').last.split('#').first

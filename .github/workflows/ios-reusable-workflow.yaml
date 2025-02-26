@@ -37,7 +37,7 @@ on:
     
 jobs:
   test-ios:
-    name: ${{ inputs.app_type }} iOS ${{ inputs.ios }} sfdx:${{ inputs.sfdx }} adv_auth:${{ inputs.adv_auth }} carthage:${{ inputs.carthage }} complex_hybrifd:${{ inputs.complex_hybrid }}
+    name: ${{ inputs.app_type }} iOS ${{ inputs.ios }} sfdx:${{ inputs.sfdx }} adv_auth:${{ inputs.adv_auth }} carthage:${{ inputs.carthage }} complex_hybrid:${{ inputs.complex_hybrid }}
     runs-on: ${{ inputs.macos }}
     env:
       FASTLANE_SKIP_UPDATE_CHECK: "true"
@@ -67,7 +67,6 @@ jobs:
 
           cd .github && fastlane ios ${TYPE}:${{ inputs.app_type }} ios:${{ inputs.ios }} adv_auth:${{ inputs.adv_auth }} sfdx:${{ inputs.sfdx }} device:${{ inputs.device }} complexHybrid:${{ inputs.complex_hybrid }}
       - name: Carthage Build and Test
-        continue-on-error: true
         if: ${{ inputs.carthage }}
         env:
           GITHUB_RUN_NUM: ${{ github.run_number }}

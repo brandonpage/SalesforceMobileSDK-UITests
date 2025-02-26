@@ -61,7 +61,6 @@ jobs:
         if: success() || failure()
       - name: Build ${{ inputs.app_type }} and Test Login
         continue-on-error: true
-        if: ${{ ! inputs.complex_hybrid }}
         run: |
           TYPE="type"
 
@@ -70,14 +69,6 @@ jobs:
           fi
 
           cd .github && fastlane android ${TYPE}:${{ inputs.app_type }} adv_auth:${{ inputs.adv_auth }} sfdx:${{ inputs.sfdx }} complexHybrid:${{ inputs.complex_hybrid }}
-      - name: Build Complex Hybrid Account Editor and Test Login
-        continue-on-error: true
-        if: ${{ inputs.complex_hybrid }}
-        run: cd .github && fastlane android type:hybrid_local complexHybrid:accounteditor sfdx:${{ inputs.sfdx }}
-      - name: Build Complex Hybrid Mobile Sync Explorer and Test Login
-        continue-on-error: true
-        if: ${{ inputs.complex_hybrid }}
-        run: cd .github && fastlane android type:hybrid_local complexHybrid:mobilesyncexplorer sfdx:${{ inputs.sfdx }}
       - name: Copy Test Results
         continue-on-error: true
         if: success() || failure()
