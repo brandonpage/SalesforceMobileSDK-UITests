@@ -37,15 +37,20 @@ class ChromePageObject : BasePageObject() {
 
     fun isAdvAuth(): Boolean {
         val continueButton = device.findObject(UiSelector().resourceId("com.android.chrome:id/signin_fre_dismiss_button"))
+        val acceptTermsButton = device.findObject(UiSelector().resourceId("com.android.chrome:id/terms_accept"))
         val noButton = device.findObject(UiSelector().resourceId("com.android.chrome:id/negative_button"))
         val toolbar = device.findObject(UiSelector().resourceId("com.android.chrome:id/toolbar"))
 
         if (continueButton.waitForExists(timeout * 3)) {
-            Log.i("uia", "Accepting chrome terms and signing in.")
+            Log.i("uia", "Accepting chrome terms. (1)")
             continueButton.click()
-            if (noButton.waitForExists(timeout)) {
-                noButton.click()
-            }
+        } else if (acceptTermsButton.waitForExists(timeout * 3)) {
+            Log.i("uia", "Accepting chrome terms. (2)")
+            acceptTermsButton.click()
+        }
+
+        if (noButton.waitForExists(timeout)) {
+            noButton.click()
         }
 
         return toolbar.waitForExists(timeout)

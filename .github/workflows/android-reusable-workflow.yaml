@@ -89,7 +89,7 @@ jobs:
             mv $result ./firebase/results/ || true 
           done    
       - name: Test Report
-        uses: mikepenz/action-junit-report@v5.4.0-b01
+        uses: mikepenz/action-junit-report@v5
         if: success() || failure()
         with:
           check_name: ${{ inputs.app_type }} Test Results
@@ -103,4 +103,6 @@ jobs:
           include_passed: true
           skip_annotations: true
           skip_success_summary: true
+          include_empty_in_summary: false
+          simplified_summary: true
           report_paths: 'firebase/results/**.xml'
