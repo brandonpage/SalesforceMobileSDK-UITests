@@ -215,12 +215,13 @@ def base_android_test_setup(options)
   app_path = Dir.glob("tmp*").sort.first.concat("/#{app_name}/")
   UI.build_failure!('App did not generate successfully.') unless Dir.exist?(app_path)
 
-  if is_hybird(app_name)
+  if is_hybrid(app_name)
     if complexHybrid 
       setup_complex_hybrid(complexHybrid, app_path)
       app_path.concat('platforms/android/')
       UI.important 'Rebuilding with modified source files'
       Dir.chdir(app_path) do
+        system("rm -rf app/build/outputs/apk/")
         result = silence_output { system("./gradlew assemble --no-daemon") }
         UI.build_failure!('Failed to rebuild with modified source files.') unless result
       end
@@ -233,7 +234,7 @@ def base_android_test_setup(options)
 
     Dir.chdir(app_path) do
       UI.important 'Building Release APK for React Native'
-      system('./gradlew app:assembleRelease -PreactNativeDevServerPort=8081 --no-daemon')
+      system('./gradlew app:assemble -PreactNativeDevServerPort=8081 --no-daemon')
       
       build_tools_dir = Dir.glob(ENV["ANDROID_HOME"] + '/build-tools/*').sort.first
       silence_output{ 
@@ -327,7 +328,7 @@ def run_android_tests_firebase(test_class, app_info)
       --results-history-name=UITest-#{app_info.app_name} \
       --results-dir=#{ENV['GCLOUD_RESULTS_DIR']} \
       --environment-variables class=#{test_class},packageName=#{app_info.package_name},password=#{$password},firebase=true#{optional_vars} \
-      --no-performance-metrics --no-auto-google-login --num-flaky-test-attempts=2")
+      --no-performance-metrics --no-auto-google-login --num-flaky-test-attempts=1")
       UI.test_failure!('Tests failed.') unless testResult
   end
 end
@@ -365,14 +366,14 @@ def base_ios_test_setup(options)
   app_name = 'ios'.concat(template ? templateName : "#{run_type}").gsub('_', '')
   $password = get_password(is_native_login(app_name))
   system("rm -rf ../../test_output/#{app_name}")
-  bundle_name = is_hybird(app_name) ? "com.salesforce.#{app_name}" : "com.salesforce.#{app_name.gsub('_', '-')}"
+  bundle_name = is_hybrid(app_name) ? "com.salesforce.#{app_name}" : "com.salesforce.#{app_name.gsub('_', '-')}"
   start_emulator(device, ios)
   
   Dir.chdir('../../') do
     generate_app('ios', run_type, template, sfdx) unless rerun
     app_path = Dir.glob("tmp*").sort.first.concat("/#{app_name}/")
 
-    if is_hybird(app_name)
+    if is_hybrid(app_name)
       setup_complex_hybrid(complexHybrid, app_path) unless complexHybrid == nil
       app_path.concat('platforms/ios/')
     elsif is_react(app_name)
@@ -529,20 +530,14 @@ def change_connected_app(app_info, consumer_key, redirect_uri, old_key = nil, ol
 
   # Determine iOS/Android
   if app_info.os == 'android'
-    if is_hybird(app_info.app_name)
+    if is_hybrid(app_info.app_name)
       config_path.concat('../../www/bootconfig.json')
     else
       config_path.concat('app/src/main/res/values/bootconfig.xml')
     end
-
-    if is_react(app_info.app_name)
-      android_build = 'assembleRelease'
-    else
-      android_build = 'assemble'
-    end
   else
     # iOS
-    if is_hybird(app_info.app_name)
+    if is_hybrid(app_info.app_name)
       config_path.concat('www/bootconfig.json')
     else
       config_path.concat(app_info.app_name + '/bootconfig.plist')
@@ -555,7 +550,7 @@ def change_connected_app(app_info, consumer_key, redirect_uri, old_key = nil, ol
   UI.important 'Rebuilding with modified source files'
   Dir.chdir(app_info.app_path) do
     if app_info.os == 'android'
-      result = silence_output { system("./gradlew #{android_build} --no-daemon") }
+      result = silence_output { system("./gradlew assemble --no-daemon") }
       UI.build_failure!('Failed to rebuild with modified source files.') unless result
     end
   end
@@ -628,7 +623,7 @@ def uncomment_manifest_block(config_path, start_line)
 end
 
 def setup_complex_hybrid(complexHybrid, app_path)
-  silence_output(true) { system('git clone git@github.com:forcedotcom/SalesforceMobileSDK-Shared.git') 
+  silence_output { system('git clone git@github.com:forcedotcom/SalesforceMobileSDK-Shared.git') 
   Dir.chdir('SalesforceMobileSDK-Shared') do
     system('git checkout dev')
     system("ls ../#{app_path}/www/")
@@ -636,7 +631,8 @@ def setup_complex_hybrid(complexHybrid, app_path)
     system("ls ../#{app_path}/www/")
   end
   Dir.chdir(app_path) do
-    system('cordova prepare') 
+    result = system('cordova prepare') 
+    UI.build_failure!('Cordova Prepare failed.') unless result
   end }
 end
 
@@ -665,7 +661,7 @@ def xcbeautify_xcodebuild(args)
 end
 
 # Generic Helpers
-def is_hybird(app_name)
+def is_hybrid(app_name)
   app_name.downcase.include?('hybrid')
 end
 

@@ -41,7 +41,7 @@ class ChromePageObject : BasePageObject() {
         val noButton = device.findObject(UiSelector().resourceId("com.android.chrome:id/negative_button"))
         val toolbar = device.findObject(UiSelector().resourceId("com.android.chrome:id/toolbar"))
 
-        if (continueButton.waitForExists(timeout * 3)) {
+        if (continueButton.waitForExists(timeout * 30)) {
             Log.i("uia", "Accepting chrome terms. (1)")
             continueButton.click()
         } else if (acceptTermsButton.waitForExists(timeout * 3)) {
