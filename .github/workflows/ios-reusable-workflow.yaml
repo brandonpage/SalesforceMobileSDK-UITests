@@ -68,6 +68,4 @@ jobs:
         if: ${{ inputs.carthage }}
         env:
           GITHUB_RUN_NUM: ${{ github.run_number }}
-        run: |
-          git config --global http.postBuffer 157286400
-          cd .github && fastlane test_carthage ios:${{ inputs.ios }} device:${{ inputs.device }}
+        run: cd .github && fastlane test_carthage ios:${{ inputs.ios }} device:${{ inputs.device }}

@@ -74,7 +74,8 @@ lane :test_carthage do |options|
   Dir.chdir('../../CarthageTest') do
     UI.important('Carthage Bootstrap')
     ENV["XCODE_XCCONFIG_FILE"] = Dir.pwd + "/tmp.xcconfig"
-    carthage_result = system("carthage bootstrap --use-xcframeworks --platform iOS")
+    system("rm -rf ~/Library/Caches/org.carthage.CarthageKit")
+    carthage_result = system("carthage bootstrap --use-xcframeworks --platform iOS --use-ssh --verbose")
     UI.build_failure!("Carthage bootstrap failed.") unless carthage_result
     
     project = Xcodeproj::Project.open('CarthageTest.xcodeproj')
@@ -624,7 +625,7 @@ end
 
 def setup_complex_hybrid(complexHybrid, app_path)
   UI.important 'Complex Hybrid Setup'
-  silence_output { system('git clone --branch dev --single-branch --depth 1 git@github.com:forcedotcom/SalesforceMobileSDK-Shared.git') }
+  system('git clone --branch dev --single-branch --depth 1 https://github.com/forcedotcom/SalesforceMobileSDK-Shared.git')
   Dir.chdir('SalesforceMobileSDK-Shared') do
     system("ls ../#{app_path}/www/")
     system("cp -RL ./samples/#{complexHybrid}/* ../#{app_path}/www/")
