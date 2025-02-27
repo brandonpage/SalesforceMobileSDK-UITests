@@ -70,4 +70,6 @@ jobs:
         if: ${{ inputs.carthage }}
         env:
           GITHUB_RUN_NUM: ${{ github.run_number }}
-        run: cd .github && fastlane test_carthage ios:${{ inputs.ios }} device:${{ inputs.device }}
+        run: |
+          git config --global http.version HTTP/1.1
+          cd .github && fastlane test_carthage ios:${{ inputs.ios }} device:${{ inputs.device }}

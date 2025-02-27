@@ -623,9 +623,9 @@ def uncomment_manifest_block(config_path, start_line)
 end
 
 def setup_complex_hybrid(complexHybrid, app_path)
-  silence_output { system('git clone git@github.com:forcedotcom/SalesforceMobileSDK-Shared.git') 
+  UI.important 'Complex Hybrid Setup'
+  silence_output { system('git clone -b dev git@github.com:forcedotcom/SalesforceMobileSDK-Shared.git --depth 1') }
   Dir.chdir('SalesforceMobileSDK-Shared') do
-    system('git checkout dev')
     system("ls ../#{app_path}/www/")
     system("cp -RL ./samples/#{complexHybrid}/* ../#{app_path}/www/")
     system("ls ../#{app_path}/www/")
@@ -633,7 +633,7 @@ def setup_complex_hybrid(complexHybrid, app_path)
   Dir.chdir(app_path) do
     result = system('cordova prepare') 
     UI.build_failure!('Cordova Prepare failed.') unless result
-  end }
+  end
 end
 
 def setup_native_login(app_info, is_android = true)
