@@ -50,8 +50,6 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
       - uses: actions/checkout@v4
         if: ${{ ! inputs.is_pr }}
-        with:
-          ref: ${{ github.head_ref }}
       - name: Install Dependencies
         run: ./install.sh
       - name: Build ${{ inputs.app_type }} ${{ inputs.ios }} and Test Login
@@ -71,5 +69,5 @@ jobs:
         env:
           GITHUB_RUN_NUM: ${{ github.run_number }}
         run: |
-          git config --global http.version HTTP/1.1
+          git config --global http.postBuffer 157286400
           cd .github && fastlane test_carthage ios:${{ inputs.ios }} device:${{ inputs.device }}

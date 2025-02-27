@@ -624,7 +624,7 @@ end
 
 def setup_complex_hybrid(complexHybrid, app_path)
   UI.important 'Complex Hybrid Setup'
-  silence_output { system('git clone -b dev git@github.com:forcedotcom/SalesforceMobileSDK-Shared.git --depth 1') }
+  silence_output { system('git clone --branch dev --single-branch --depth 1 git@github.com:forcedotcom/SalesforceMobileSDK-Shared.git') }
   Dir.chdir('SalesforceMobileSDK-Shared') do
     system("ls ../#{app_path}/www/")
     system("cp -RL ./samples/#{complexHybrid}/* ../#{app_path}/www/")
