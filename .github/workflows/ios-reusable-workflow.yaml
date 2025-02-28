@@ -68,4 +68,5 @@ jobs:
         if: ${{ inputs.carthage }}
         env:
           GITHUB_RUN_NUM: ${{ github.run_number }}
+          GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: cd .github && fastlane test_carthage ios:${{ inputs.ios }} device:${{ inputs.device }}
