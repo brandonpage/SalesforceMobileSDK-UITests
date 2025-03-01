@@ -73,9 +73,10 @@ lane :test_carthage do |options|
 
   Dir.chdir('../../CarthageTest') do
     UI.important('Carthage Bootstrap')
-    ENV["XCODE_XCCONFIG_FILE"] = Dir.pwd + "/tmp.xcconfig"
-    system("rm -rf ~/Library/Caches/org.carthage.CarthageKit")
-    carthage_result = system("carthage bootstrap --use-xcframeworks --platform iOS --use-ssh --verbose")
+    # ENV["XCODE_XCCONFIG_FILE"] = Dir.pwd + "/tmp.xcconfig"
+    # system("rm -rf ~/Library/Caches/org.carthage.CarthageKit")
+    system("carthage update --new-resolver")
+    carthage_result = system("carthage bootstrap --use-xcframeworks --platform iOS --verbose")
     UI.build_failure!("Carthage bootstrap failed.") unless carthage_result
     
     project = Xcodeproj::Project.open('CarthageTest.xcodeproj')
