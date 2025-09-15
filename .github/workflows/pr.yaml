@@ -3,7 +3,7 @@ name: Pull Request
 on:
   # Dangerious without Member Check setup!
   pull_request_target:
-    branches: [master]
+    branches: [master, ios-26-test]
 
 jobs:
   permission-check:
