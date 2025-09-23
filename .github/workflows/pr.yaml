@@ -34,9 +34,22 @@ jobs:
       fail-fast: false
       matrix:
         app_type: [native, hybrid_local, react_native] 
+        ios: ["26.0", "18.6", "17.5"]
+        include:
+            - ios: "26.0"
+              xcode: "26.0"
+              device: "iPhone-17"
+            - ios: "18.6"
+              xcode: "16.4"
+              device: "iPhone-16"
+            - ios: "17.5"
+              xcode: "16.4"
     uses: ./.github/workflows/ios-reusable-workflow.yaml
     with:
       app_type: ${{ matrix.app_type }}
+      ios: ${{ matrix.ios }}
+      xcode: ${{ matrix.xcode }}
+      device: ${{ matrix.device }}
       is_pr: true
     secrets: inherit
 
