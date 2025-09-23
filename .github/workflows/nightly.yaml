@@ -62,12 +62,16 @@ jobs:
       fail-fast: false
       matrix:
         app_type:  [native, native_swift, hybrid_local, hybrid_remote, react_native, MobileSyncExplorerReactNative, MobileSyncExplorerSwift, iOSNativeLoginTemplate]
-        ios: ["18.2", "17.5"]
+        ios: ["26.0", "18.6", "17.5"]
         include:
-            - ios: "18.2"
-              xcode: "16.2"
+            - ios: "26.0"
+              xcode: "26.0"
+              device: "iPhone-17"
+            - ios: "18.6"
+              xcode: "16.4"
+              device: "iPhone-16"
             - ios: "17.5"
-              xcode: "15.4"
+              xcode: "16.4"
             - app_type: MobileSyncExplorerReactNative
               template: true
             - app_type: MobileSyncExplorerSwift
@@ -79,6 +83,7 @@ jobs:
       app_type: ${{ matrix.app_type }}
       ios: ${{ matrix.ios }}
       xcode: ${{ matrix.xcode }}
+      device: ${{ matrix.device }}
       template: ${{ matrix.template || false }}
     secrets: inherit
 
@@ -99,18 +104,24 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ios: ["18.2", "17.5"]
+        ios: ["26.0", "18.6", "17.5"]
         include:
-          - ios: "18.2"
-            xcode: "16.2"
-          - ios: "17.5"
-            xcode: "15.4"
+            - ios: "26.0"
+              xcode: "26.0"
+              device: "iPhone-17"
+            - ios: "18.6"
+              xcode: "16.4"
+              device: "iPhone-16"
+            - ios: "17.5"
+              xcode: "16.4"
+              device: "iPhone-15"
     uses: ./.github/workflows/ios-reusable-workflow.yaml
     with:
       app_type: native
       adv_auth: true
       ios: ${{ matrix.ios }}
       xcode: ${{ matrix.xcode }}
+      device: ${{ matrix.device }}
     secrets: inherit
 
   ios-complex-hybrid:
@@ -119,34 +130,22 @@ jobs:
       fail-fast: false
       matrix:
         hybrid_type: ["accounteditor", "mobilesyncexplorer"]
-        ios: ["18.2", "17.5"]
+        ios: ["26.0", "18.6", "17.5"]
         include:
-          - ios: "18.2"
-            xcode: "16.2"
-          - ios: "17.5"
-            xcode: "15.4"
+            - ios: "26.0"
+              xcode: "26.0"
+              device: "iPhone-17"
+            - ios: "18.6"
+              xcode: "16.4"
+              device: "iPhone-16"
+            - ios: "17.5"
+              xcode: "16.4"
+              device: "iPhone-15"
     uses: ./.github/workflows/ios-reusable-workflow.yaml
     with:
       app_type: hybrid_local
       complex_hybrid: ${{ matrix.hybrid_type }}
       ios: ${{ matrix.ios }}
       xcode: ${{ matrix.xcode }}
-    secrets: inherit
-
-  carthage:
-    name: Carthage iOS ${{ matrix.ios }}
-    strategy:
-      fail-fast: false
-      matrix:
-        ios: ["18.2", "17.5"]
-        include:
-          - ios: "18.2"
-            xcode: "16.2"
-          - ios: "17.5"
-            xcode: "15.4"
-    uses: ./.github/workflows/ios-reusable-workflow.yaml
-    with:
-      carthage: true
-      ios: ${{ matrix.ios }}
-      xcode: ${{ matrix.xcode }}
+      device: ${{ matrix.device }}
     secrets: inherit

@@ -13,9 +13,6 @@ on:
       adv_auth:
         type: boolean
         default: false
-      carthage:
-        type: boolean
-        default: false
       is_pr:
         type: boolean
         default: false
@@ -24,16 +21,16 @@ on:
         type: string
       ios: 
         type: string
-        default: "18.2"
+        default: "18.5"
       xcode:
         type: string
-        default: "16.2"
+        default: "16.4"
       macos:
         type: string
-        default: macos-15
+        default: macos-26
       device:
         type: string
-        default: "iPhone-SE-3rd-generation"
+        default: "iPhone-16"
     
 jobs:
   test-ios:
@@ -52,8 +49,10 @@ jobs:
         if: ${{ ! inputs.is_pr }}
       - name: Install Dependencies
         run: ./install.sh
+      - name: Install iOS 17 runtime if needed
+        if: ${{ inputs.ios == '^17' }}
+        run: xcodes runtimes install "iOS 17.5"
       - name: Build ${{ inputs.app_type }} ${{ inputs.ios }} and Test Login
-        if: ${{ ! inputs.carthage }}
         env:
           GITHUB_RUN_NUM: ${{ github.run_number }}
         run: |
@@ -64,8 +63,3 @@ jobs:
           fi
 
           cd .github && fastlane ios ${TYPE}:${{ inputs.app_type }} ios:${{ inputs.ios }} adv_auth:${{ inputs.adv_auth }} sfdx:${{ inputs.sfdx }} device:${{ inputs.device }} complexHybrid:${{ inputs.complex_hybrid }}
-      - name: Carthage Build and Test
-        if: ${{ inputs.carthage }}
-        env:
-          GITHUB_RUN_NUM: ${{ github.run_number }}
-        run: cd .github && fastlane test_carthage ios:${{ inputs.ios }} device:${{ inputs.device }}
