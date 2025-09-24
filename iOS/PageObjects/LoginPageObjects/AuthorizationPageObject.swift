@@ -40,6 +40,10 @@ class AuthorizationPageObject {
     
     init(testApp: XCUIApplication) {
         app = testApp
+        let verify = app.textFields.element(matching: NSPredicate(format: "label CONTAINS 'Verify Your Identity'"))
+        if(verify.waitForExistence(timeout: timeout)) {
+            XCTFail("Verification Code Requried!")
+        }
     }
     
     func tapAllowIfPresent() {
