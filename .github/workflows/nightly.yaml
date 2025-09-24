@@ -72,6 +72,7 @@ jobs:
               device: "iPhone-16"
             - ios: "17.5"
               xcode: "16.4"
+              device: "iPhone-15"
             - app_type: MobileSyncExplorerReactNative
               template: true
             - app_type: MobileSyncExplorerSwift

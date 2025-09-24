@@ -44,6 +44,7 @@ jobs:
               device: "iPhone-16"
             - ios: "17.5"
               xcode: "16.4"
+              device: "iPhone-15"
     uses: ./.github/workflows/ios-reusable-workflow.yaml
     with:
       app_type: ${{ matrix.app_type }}
