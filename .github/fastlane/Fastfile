@@ -11,20 +11,22 @@ $adv_auth_consumer_key = '3MVG9CEn_O3jvv0wTqRT0Le6tmyfUanAsJ6rWLQniOaec1Ks6YBBYF
 $adv_auth_redirect_uri = 'com.mobilesdk.advauth:///oauth/success'
 $native_login_consumer_key = '3MVG9CEn_O3jvv0wTqRT0Le6tmzX.EQ9ZvtHL1TG3gHFV.4IvKZyXw5SgdiVPi61mXrpu40mCOhKevEfYNMOm'
 $native_login_redirect_uri = 'https://msdk-enhanced-dev-ed.my.site.com/services/oauth2/echo'
+$ui_test_eca_consumer_key = '3MVG9CEn_O3jvv0wTqRT0Le6tmwPpUPbma3eamkg4o8C.V4DUZ_FlnPAqXSYyiNcxrxG9SmNP5Sm7ruEw24ie'
+$ui_test_eca_redirect_uri = 'mobilesdk://ui/test'
 $native_login_url = 'https://msdk-enhanced-dev-ed.my.site.com/headless'
 $android_login_activity = '<activity android:name="com.salesforce.androidsdk.ui.LoginActivity'
 
 #
 # Default iOS Device info
 #
-$default_device = 'iPhone-SE-3rd-generation'
-$default_ios = '18-2'
+$default_device = 'iPhone-16'
+$default_ios = '18-6'
 
 #
 # Defualt Android Firebase Info
 # 
 $min_api = 28
-$max_api = 35
+$max_api = 36
 
 App_Info = Struct.new(:os, :app_name, :app_path, :package_name, :xcargs, :sfdx)
 
@@ -245,15 +247,15 @@ def base_android_test_setup(options)
   app_info = App_Info.new('android', app_name, app_path, package_name, args, sfdx)
   if adv_auth
     setup_adv_auth(app_info)
+  elsif is_native_login(app_name)
+    setup_native_login(app_info)
+  else
+    change_connected_app(app_info, $ui_test_eca_consumer_key, $ui_test_eca_redirect_uri)
   end
 
   if complexHybrid
     args.push("complexHybrid=#{complexHybrid}")
     UI.important('args: ' + args.inspect())
-  end
-
-  if is_native_login(app_name) 
-    setup_native_login(app_info)
   end
   
   return app_info
@@ -387,14 +389,14 @@ def base_ios_test_setup(options)
     if adv_auth
       setup_adv_auth(app_info)
       xcargs.push("ADV_AUTH=true")
+    elsif is_native_login(app_name) 
+      setup_native_login(app_info, false)
+    else
+      change_connected_app(app_info, $ui_test_eca_consumer_key, $ui_test_eca_redirect_uri)
     end
 
     if complexHybrid
       xcargs.push("COMPLEX_HYBRID=#{complexHybrid}")
-    end
-
-    if is_native_login(app_name) 
-      setup_native_login(app_info, false)
     end
 
     return app_info
@@ -488,15 +490,15 @@ def silence_output(silence_error = false)
     Dir.mkdir 'test_output' unless Dir.exist? 'test_output'
     out_file = 'test_output/output.txt'
     stderr, stdout = $stderr.clone, $stdout.clone
-    $stderr.reopen(File.new(out_file, 'w'))
     $stdout.reopen(File.new(out_file, 'w'))
+    $stderr.reopen(File.new(out_file, 'w')) unless silence_error
     yield
   rescue Exception => e
     $stdout.reopen(stdout)
-    $stderr.reopen(stderr)
+    $stderr.reopen(stderr) unless silence_error
   ensure
     $stdout.reopen(stdout)
-    $stderr.reopen(stderr)
+    $stderr.reopen(stderr) unless silence_error
   end
 end
 
@@ -511,12 +513,10 @@ def setup_react_native(app_path, is_android = true)
       if $is_ci
         system('sudo npm i -g react-native')
         system('sudo npm install -i -g --force react-native-cli')
-        system('mkdir android/app/src/main/assets')
-        system('sudo npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle')
-      else
-        system('mkdir android/app/src/main/assets')
-        system('npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle')
       end
+
+      system('mkdir android/app/src/main/assets')
+      system('npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res/')
     end
   end
 end
