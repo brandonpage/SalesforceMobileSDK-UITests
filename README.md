@@ -1,6 +1,6 @@
 [![Build and Test All Apps](https://github.com/forcedotcom/SalesforceMobileSDK-UITests/actions/workflows/nightly.yaml/badge.svg?branch=master)](https://github.com/forcedotcom/SalesforceMobileSDK-UITests/actions/workflows/nightly.yaml)
 
-# Salesforce MobileSDK UI Tests
+# Salesforce MobileSDK UI Tests!
 
 This repo contains tests designed to validate the functionality of apps created using the MobileSDK CLI tools [forcedroid](https://www.npmjs.com/package/forcedroid), [forceios](https://www.npmjs.com/package/forceios), and [forcehybrid](https://www.npmjs.com/package/forcehybrid).  Android and iOS test frameworks exist in their own directories and use separate technologies (UIAutomator and XCUITest, respectively).  However, they share a common fastlane file for end-to-end execution:
 1.  `install.sh`
