@@ -4,7 +4,7 @@ on:
   # pull_request_target required for fork PRs to receive secrets.
   # Mitigated by permission-check job's Member Check pattern.
   pull_request_target:  # zizmor: ignore[dangerous-triggers]
-    branches: [master]
+    branches: [master, cleanup-ci-w22712082]
 
 permissions:
   contents: read
