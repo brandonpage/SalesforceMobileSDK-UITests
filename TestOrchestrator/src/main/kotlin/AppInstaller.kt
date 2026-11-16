@@ -29,7 +29,10 @@ package com.salesforce
 import com.salesforce.TestOrchestrator.Companion.ADB
 import com.salesforce.TestOrchestrator.Companion.SIM_NAME
 import com.salesforce.util.awaitBackgroundRuntimeInstalls
+import com.salesforce.util.availableIosRuntimes
+import com.salesforce.util.compareVersions
 import com.salesforce.util.fetchSimctlRuntimes
+import com.salesforce.util.runtimeMatchesRequest
 import com.salesforce.util.createdSimulators
 import com.salesforce.util.progressBanner
 import com.salesforce.util.runCommand
@@ -110,7 +113,6 @@ fun createAndInstallIosSimulators(
         val sim = createdSimulators.poll() ?: break
         preCreated.add(sim)
     }
-    val preCreatedByMajor = preCreated.associateBy { it.iOSVersion.split(".").first() }
 
     // If no sims were pre-created (non-CI or background failed), clean up old sims
     if (preCreated.isEmpty()) {
@@ -122,12 +124,15 @@ fun createAndInstallIosSimulators(
     val deviceTypesOutput = fetchSimctlDeviceTypes()
 
     val simulators = mutableListOf<SimulatorInfo>()
+    val resolvedVersions = mutableSetOf<String>()
 
     for (version in iOSVersions) {
-        val major = version.split(".").first()
+        val resolved = resolveIosRuntimeOrNull(version, runtimesOutput)
+            ?: throw Exception("No available iOS runtime found for $version.")
+        if (!resolvedVersions.add(resolved.version)) continue
 
         // Reuse pre-created simulator if available
-        val existing = preCreatedByMajor[major]
+        val existing = preCreated.firstOrNull { it.iOSVersion == resolved.version }
         if (existing != null) {
             verbosePrinter?.invoke("Reusing pre-created simulator for iOS ${existing.iOSVersion} (${existing.simId})")
             progressBanner?.update {
@@ -144,7 +149,6 @@ fun createAndInstallIosSimulators(
 
         // Create a new simulator (fallback for non-CI or if background didn't cover this version)
         val simName = "${SIM_NAME}_$version"
-        val resolved = resolveIosRuntime(version, runtimesOutput)
         verbosePrinter?.invoke("Using runtime: ${resolved.identifier}")
         val device = resolveCompatibleDevice(iOSDevice, resolved.version, deviceTypesOutput)
 
@@ -336,45 +340,18 @@ fun resolveCompatibleDevice(requestedDevice: String, runtimeVersion: String, dev
  * Resolves the iOS simulator runtime identifier for the requested version.
  * Uses pre-fetched runtimes output to avoid redundant simctl calls.
  */
-private fun resolveIosRuntime(requestedVersion: String, runtimesOutput: String): ResolvedRuntime {
+private fun resolveIosRuntimeOrNull(requestedVersion: String, runtimesOutput: String): ResolvedRuntime? {
     val requestedParts = requestedVersion.split(".")
     val requestedMajor = requestedParts.first()
-    val allIdentifiers = Regex("""com\.apple\.CoreSimulator\.SimRuntime\.iOS-[\d-]+""")
-        .findAll(runtimesOutput)
-        .map { it.value }
-        .distinct()
-        .toList()
-    val availableVersions = allIdentifiers.joinToString(", ") {
-        it.removePrefix("com.apple.CoreSimulator.SimRuntime.iOS-").replace("-", ".")
-    }
+    val runtimes = availableIosRuntimes(runtimesOutput)
+    val availableVersions = runtimes.joinToString(", ") { it.version }
 
     verbosePrinter?.invoke("Available iOS versions: $availableVersions")
 
-    fun runtimeSortKey(id: String): List<Int> =
-        id.substringAfter("iOS-").split("-").mapNotNull { it.toIntOrNull() }
-
-    fun runtimeToVersion(id: String): String =
-        id.substringAfter("iOS-").replace("-", ".")
-
     return when {
-        requestedParts.size > 1 -> {
-            val exactId = "com.apple.CoreSimulator.SimRuntime.iOS-${requestedVersion.replace(".", "-")}"
-            if (exactId in allIdentifiers) {
-                ResolvedRuntime(exactId, runtimeToVersion(exactId))
-            } else {
-                throw Exception("Exact iOS version ($requestedVersion) not found.  Available options: $availableVersions")
-            }
-        }
-        else -> {
-            val majorMatch = allIdentifiers
-                .filter { it.startsWith("com.apple.CoreSimulator.SimRuntime.iOS-$requestedMajor-") }
-                .maxByOrNull { runtimeSortKey(it).drop(1).firstOrNull() ?: 0 }
-
-            if (majorMatch != null) {
-                ResolvedRuntime(majorMatch, runtimeToVersion(majorMatch))
-            } else {
-                throw Exception("No iOS ${requestedVersion}.x versions found.  Available options: $availableVersions")
-            }
-        }
+        requestedParts.size > 1 -> runtimes.firstOrNull { runtimeMatchesRequest(it, requestedVersion) }
+        else -> runtimes
+            .filter { it.version.split(".").first() == requestedMajor }
+            .maxWithOrNull { left, right -> compareVersions(left.version, right.version) }
     }
 }

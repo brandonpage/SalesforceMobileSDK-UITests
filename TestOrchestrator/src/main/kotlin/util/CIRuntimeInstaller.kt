@@ -54,26 +54,26 @@ fun startBackgroundRuntimeInstalls(versions: List<String>, iOSDevice: String = D
     val runtimesOutput = fetchSimctlRuntimes()
     val xcodesOutput = fetchXcodesRuntimes()
 
-    data class VersionInfo(val major: String, val alreadyInstalled: Boolean, val latestVersion: String?)
+    data class VersionInfo(val version: String, val alreadyInstalled: Boolean, val latestVersion: String?)
 
     val versionInfos = mutableListOf<VersionInfo>()
     for (version in versions) {
-        val major = version.split(".").first()
-        if (versionInfos.any { it.major == major }) continue
+        if (versionInfos.any { it.version == version }) continue
 
-        if (isRuntimeInstalled(major, runtimesOutput)) {
-            verbosePrinter?.invoke("iOS $major runtime already installed locally.")
-            versionInfos.add(VersionInfo(major, alreadyInstalled = true, latestVersion = null))
+        if (isRuntimeInstalled(version, runtimesOutput)) {
+            verbosePrinter?.invoke("iOS $version runtime already installed locally.")
+            versionInfos.add(VersionInfo(version, alreadyInstalled = true, latestVersion = null))
             continue
         }
 
-        val latestVersion = findLatestXcodesVersion(major, xcodesOutput)
-        if (latestVersion == null) {
-            installError = Exception("No iOS $major runtimes found via xcodes.")
+        val major = version.split(".").first()
+        val installVersion = findXcodesRuntimeVersion(version, xcodesOutput)
+        if (installVersion == null) {
+            installError = Exception("No matching iOS runtime for $version found via xcodes.")
             return
         }
 
-        versionInfos.add(VersionInfo(major, alreadyInstalled = false, latestVersion = latestVersion))
+        versionInfos.add(VersionInfo(version, alreadyInstalled = false, latestVersion = installVersion))
     }
 
     // Clean up old test simulators before creating new ones
@@ -85,14 +85,14 @@ fun startBackgroundRuntimeInstalls(versions: List<String>, iOSDevice: String = D
 
             // Create sims for already-installed runtimes immediately
             for (info in versionInfos.filter { it.alreadyInstalled }) {
-                createAndBootSimInBackground(info.major, iOSDevice, deviceTypesOutput)
+                createAndBootSimInBackground(info.version, iOSDevice, deviceTypesOutput)
             }
 
             // Install missing runtimes, creating a sim after each one
             for (info in versionInfos.filter { !it.alreadyInstalled }) {
                 verbosePrinter?.invoke("Installing iOS ${info.latestVersion} runtime (sequential)...")
-                installRuntime(info.major, info.latestVersion!!)
-                createAndBootSimInBackground(info.major, iOSDevice, deviceTypesOutput)
+                installRuntime(info.version, info.latestVersion!!)
+                createAndBootSimInBackground(info.version, iOSDevice, deviceTypesOutput)
             }
         } catch (e: Exception) {
             installError = e
@@ -108,11 +108,11 @@ fun startBackgroundRuntimeInstalls(versions: List<String>, iOSDevice: String = D
  * Creates and boots a simulator for the given major iOS version in the background thread.
  * The resulting [SimulatorInfo] is added to [createdSimulators].
  */
-private fun createAndBootSimInBackground(major: String, iOSDevice: String, deviceTypesOutput: String) {
+private fun createAndBootSimInBackground(requestedVersion: String, iOSDevice: String, deviceTypesOutput: String) {
     val runtimesNow = fetchSimctlRuntimes()
-    val resolved = resolveIosRuntimeByMajor(major, runtimesNow) ?: return
+    val resolved = resolveIosRuntime(requestedVersion, runtimesNow) ?: return
     val device = resolveCompatibleDevice(iOSDevice, resolved.version, deviceTypesOutput)
-    val simName = "${SIM_NAME}_$major"
+    val simName = "${SIM_NAME}_$requestedVersion"
 
     verbosePrinter?.invoke("Creating Simulator for iOS ${resolved.version}")
     val createProcess = ProcessBuilder(
@@ -144,17 +144,15 @@ private fun createAndBootSimInBackground(major: String, iOSDevice: String, devic
 /**
  * Resolves the highest minor version runtime for the given major version.
  */
-private fun resolveIosRuntimeByMajor(major: String, runtimesOutput: String): ResolvedRuntime? {
-    val allIdentifiers = Regex("""com\.apple\.CoreSimulator\.SimRuntime\.iOS-[\d-]+""")
-        .findAll(runtimesOutput).map { it.value }.distinct().toList()
-    fun runtimeSortKey(id: String): List<Int> =
-        id.substringAfter("iOS-").split("-").mapNotNull { it.toIntOrNull() }
-    fun runtimeToVersion(id: String): String =
-        id.substringAfter("iOS-").replace("-", ".")
-    val match = allIdentifiers
-        .filter { it.startsWith("com.apple.CoreSimulator.SimRuntime.iOS-$major-") }
-        .maxByOrNull { runtimeSortKey(it).drop(1).firstOrNull() ?: 0 }
-    return match?.let { ResolvedRuntime(it, runtimeToVersion(it)) }
+private fun resolveIosRuntime(requestedVersion: String, runtimesOutput: String): ResolvedRuntime? {
+    val runtimes = availableIosRuntimes(runtimesOutput)
+    return if ("." in requestedVersion) {
+        runtimes.firstOrNull { runtimeMatchesRequest(it, requestedVersion) }
+    } else {
+        runtimes
+            .filter { it.version.split(".").first() == requestedVersion }
+            .maxWithOrNull { left, right -> compareVersions(left.version, right.version) }
+    }
 }
 
 /**
@@ -195,7 +193,7 @@ fun awaitBackgroundRuntimeInstalls(versions: List<String>) {
     installError?.let { throw it }
 }
 
-private fun installRuntime(major: String, latestVersion: String) {
+private fun installRuntime(requestedVersion: String, latestVersion: String) {
     // Try xcodes first
     val xcodesProcess = ProcessBuilder("xcodes", "runtimes", "install", "iOS $latestVersion")
         .redirectErrorStream(true).start()
@@ -208,7 +206,7 @@ private fun installRuntime(major: String, latestVersion: String) {
     }
     xcodesProcess.waitFor()
 
-    if (isRuntimeInstalled(major, fetchSimctlRuntimes())) {
+    if (isRuntimeInstalled(requestedVersion, fetchSimctlRuntimes())) {
         verbosePrinter?.invoke("iOS $latestVersion runtime installed successfully via xcodes.")
         return
     }
@@ -227,7 +225,7 @@ private fun installRuntime(major: String, latestVersion: String) {
     }
     val xcodebuildExitCode = xcodebuildProcess.waitFor()
 
-    if (xcodebuildExitCode != 0 || !isRuntimeInstalled(major, fetchSimctlRuntimes())) {
+    if (xcodebuildExitCode != 0 || !isRuntimeInstalled(requestedVersion, fetchSimctlRuntimes())) {
         throw Exception(
             "Failed to install iOS $latestVersion runtime.\n" +
             "xcodes output: $xcodesOutput\n" +
@@ -256,20 +254,58 @@ private fun fetchXcodesRuntimes(): String {
 }
 
 fun isRuntimeInstalled(majorVersion: String, runtimesOutput: String): Boolean {
-    return Regex("""com\.apple\.CoreSimulator\.SimRuntime\.iOS-$majorVersion-""")
-        .containsMatchIn(runtimesOutput)
+    return availableIosRuntimes(runtimesOutput).any { runtime ->
+        if ("." in majorVersion) runtimeMatchesRequest(runtime, majorVersion)
+        else runtime.version.split(".").first() == majorVersion
+    }
 }
 
-private fun findLatestXcodesVersion(requestedMajor: String, xcodesOutput: String): String? {
+fun runtimeMatchesRequest(runtime: ResolvedRuntime, requestedVersion: String): Boolean {
+    if (runtime.version == requestedVersion) return true
+    if ("." !in requestedVersion) return runtime.version.split(".").first() == requestedVersion
+    return runtime.identifier.endsWith(".iOS-${requestedVersion.replace(".", "-")}")
+}
+
+fun availableIosRuntimes(runtimesOutput: String): List<ResolvedRuntime> {
+    val runtimes = Json.parseToJsonElement(runtimesOutput).jsonObject["runtimes"]?.jsonArray
+        ?: return emptyList()
+    return runtimes.mapNotNull { runtime ->
+        val objectValue = runtime.jsonObject
+        val identifier = objectValue["identifier"]?.jsonPrimitive?.contentOrNull
+        val version = objectValue["version"]?.jsonPrimitive?.contentOrNull
+        val platform = objectValue["platform"]?.jsonPrimitive?.contentOrNull
+        val available = objectValue["isAvailable"]?.jsonPrimitive?.booleanOrNull
+        if (platform == "iOS" && available == true && identifier != null && version != null) {
+            ResolvedRuntime(identifier, version)
+        } else {
+            null
+        }
+    }
+}
+
+fun compareVersions(left: String, right: String): Int {
+    val leftParts = left.split(".").map { it.toIntOrNull() ?: 0 }
+    val rightParts = right.split(".").map { it.toIntOrNull() ?: 0 }
+    for (index in 0 until maxOf(leftParts.size, rightParts.size)) {
+        val comparison = leftParts.getOrElse(index) { 0 }.compareTo(rightParts.getOrElse(index) { 0 })
+        if (comparison != 0) return comparison
+    }
+    return 0
+}
+
+fun findXcodesRuntimeVersion(requestedVersion: String, xcodesOutput: String): String? {
     val runtimePattern = Regex("""^iOS (\d+[\d.]*)\b""", RegexOption.MULTILINE)
-    return runtimePattern.findAll(xcodesOutput)
+    val versions = runtimePattern.findAll(xcodesOutput)
         .map { it.groupValues[1] }
-        .filter { it.split(".").first() == requestedMajor }
         .distinct()
-        .sortedWith(compareBy<String>(
-            { it.split(".").getOrElse(0) { "0" }.toIntOrNull() ?: 0 },
-            { it.split(".").getOrElse(1) { "0" }.toIntOrNull() ?: 0 },
-            { it.split(".").getOrElse(2) { "0" }.toIntOrNull() ?: 0 },
-        ).reversed())
-        .firstOrNull()
+    return if ("." in requestedVersion) {
+        versions.firstOrNull { it == requestedVersion }
+            ?: versions
+                .filter { it.startsWith("$requestedVersion.") }
+                .maxWithOrNull(::compareVersions)
+    } else {
+        versions
+            .filter { it.split(".").first() == requestedVersion }
+            .maxWithOrNull(::compareVersions)
+    }
 }
