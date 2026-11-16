@@ -47,6 +47,10 @@ private val APP_TYPE_TO_TEMPLATE = mapOf(
     "hybrid_remote" to "HybridRemoteTemplate",
     "react_native" to "ReactNativeTemplate",
 )
+// Directories in a generated app that hold SDK clones, dependencies or build output, not app sources.
+private val NATIVE_LOGIN_SEARCH_SKIPPED_DIRS = setOf(
+    "mobile_sdk", "Pods", "DerivedData", "build", "node_modules", ".gradle", ".git",
+)
 private val PRETTY_JSON = Json { prettyPrint = true }
 private const val ANDROID_GENERATION_GRADLE_JVM_ARGS =
     "-Dorg.gradle.jvmargs=-XX:MaxMetaspaceSize=1g"
@@ -219,8 +223,22 @@ fun generateApp(
  */
 internal fun applyNativeLoginConfig(appInfo: AppInfo, appConfig: AppConfig, communityUrl: String) {
     val fileName = if (appInfo.os == OS.IOS) "SceneDelegate.swift" else "MainApplication.kt"
-    val sourceFile = File(appInfo.appPath).walkTopDown().firstOrNull { it.isFile && it.name == fileName }
-        ?: throw Exception("Native Login source file $fileName not found in ${appInfo.appPath}.")
+    // The generated app contains a clone of the SDK (mobile_sdk/) and dependency/build output, which
+    // have their own SceneDelegate.swift / MainApplication.kt files. Only look at the app's own
+    // sources, and require exactly one match: directory order differs between machines, so taking
+    // the first match picked the wrong file on CI.
+    val candidates = File(appInfo.appPath).walkTopDown()
+        .onEnter { it.name !in NATIVE_LOGIN_SEARCH_SKIPPED_DIRS }
+        .filter { it.isFile && it.name == fileName }
+        .toList()
+    val sourceFile = when (candidates.size) {
+        1 -> candidates.single()
+        0 -> throw Exception("Native Login source file $fileName not found in ${appInfo.appPath}.")
+        else -> throw Exception(
+            "Expected one $fileName in ${appInfo.appPath} but found ${candidates.size}: " +
+                candidates.joinToString { it.path }
+        )
+    }
 
     val keyword = if (appInfo.os == OS.IOS) "let" else "val"
     val replacements = mapOf(
