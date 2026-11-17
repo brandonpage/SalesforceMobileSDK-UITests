@@ -269,13 +269,16 @@ fun runtimeMatchesRequest(runtime: ResolvedRuntime, requestedVersion: String): B
 fun availableIosRuntimes(runtimesOutput: String): List<ResolvedRuntime> {
     val runtimes = Json.parseToJsonElement(runtimesOutput).jsonObject["runtimes"]?.jsonArray
         ?: return emptyList()
+    val generalRuntimeIdentifier = Regex("""com\.apple\.CoreSimulator\.SimRuntime\.iOS-\d+(?:-\d+)*""")
     return runtimes.mapNotNull { runtime ->
         val objectValue = runtime.jsonObject
         val identifier = objectValue["identifier"]?.jsonPrimitive?.contentOrNull
         val version = objectValue["version"]?.jsonPrimitive?.contentOrNull
         val platform = objectValue["platform"]?.jsonPrimitive?.contentOrNull
         val available = objectValue["isAvailable"]?.jsonPrimitive?.booleanOrNull
-        if (platform == "iOS" && available == true && identifier != null && version != null) {
+        if (platform == "iOS" && available == true && identifier != null && version != null &&
+            generalRuntimeIdentifier.matches(identifier)
+        ) {
             ResolvedRuntime(identifier, version)
         } else {
             null

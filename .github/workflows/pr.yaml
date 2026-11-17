@@ -48,6 +48,8 @@ jobs:
     uses: ./.github/workflows/ios-reusable-workflow.yaml
     with:
       app: ${{ matrix.app }}
+      ios: "27"
+      runner: xcode-27
       is_pr: true
     secrets:
       IOS_UI_TEST_CONFIG: ${{ secrets.IOS_UI_TEST_CONFIG }}
