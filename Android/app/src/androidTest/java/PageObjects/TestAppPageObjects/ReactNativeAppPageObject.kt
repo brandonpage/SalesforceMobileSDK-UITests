@@ -27,6 +27,7 @@
 package pageobjects.testapppageobjects
 
 import android.os.Build
+import androidx.test.uiautomator.UiScrollable
 import androidx.test.uiautomator.UiSelector
 import android.util.Log
 import org.junit.Assert
@@ -47,8 +48,18 @@ class ReactNativeAppPageObject(private val app: TestApplication) : BasePageObjec
         Assert.assertEquals("App did not successfully login.", expectedTitle, title.text)
 
         // Check contacts loaded
-        val contact = device.findObject(UiSelector().text("Marc Benioff"))
-        contact.waitForExists(timeout * 10)
+        // The org has accumulated more contacts (e.g. test users), so this contact may sit
+        // below the fold of the list. Wait for the list to render, then scroll to it.
+        val contactSelector = UiSelector().text("Marc Benioff")
+        var contact = device.findObject(contactSelector)
+        if (!contact.waitForExists(timeout * 10)) {
+            runCatching {
+                val scrollable = UiScrollable(UiSelector().scrollable(true))
+                scrollable.setAsVerticalList()
+                scrollable.scrollIntoView(contactSelector)
+            }
+            contact = device.findObject(contactSelector)
+        }
         Assert.assertTrue("Contacts did not load.", contact.exists())
     }
 
